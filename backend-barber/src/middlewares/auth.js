@@ -26,7 +26,7 @@ exports.authorization =
         const user = await userRepository.getUserById(extractedToken.user_id);
 
         // validate the role that can be access to the next middleware
-        const accessValidation = roles.includes(user.role_id);
+        const accessValidation = roles.includes(user.role);
         if (!accessValidation) {
             throw new Forbidden("You can not access this resource!");
         }
