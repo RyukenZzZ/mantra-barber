@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model barbers {
+  id        BigInt     @id @default(autoincrement())
+  name      String     @db.VarChar
+  bio       String?
+  photo_url String?    @db.VarChar
+  is_active Boolean?   @default(true)
+  bookings  bookings[]
+}
+
+model bookings {
+  id                               BigInt          @id @default(autoincrement())
+  user_id                          BigInt?
+  barber_id                        BigInt?
+  service_id                       BigInt?
+  booking_date                     DateTime        @db.Date
+  booking_time                     DateTime        @db.Time(6)
+  source                           booking_source? @default(online)
+  status                           booking_status? @default(pending)
+  created_by                       BigInt?
+  created_at                       DateTime?       @default(now()) @db.Timestamp(6)
+  barbers                          barbers?        @relation(fields: [barber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_bookings_created_byTousers users?          @relation("bookings_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  services                         services?       @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_bookings_user_idTousers    users?          @relation("bookings_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payments                         payments[]
+}
+
+model payments {
+  id           BigInt          @id @default(autoincrement())
+  booking_id   BigInt?
+  payment_date DateTime?       @db.Timestamp(6)
+  amount       Int
+  method       payment_method
+  status       payment_status? @default(unpaid)
+  bookings     bookings?       @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model products {
+  id             BigInt  @id @default(autoincrement())
+  name           String  @db.VarChar
+  description    String?
+  price          Int?
+  image_url      String?
+  tokopedia_link String?
+}
+
+model services {
+  id          BigInt     @id @default(autoincrement())
+  name        String     @db.VarChar
+  description String?
+  price       Int
+  duration    Int
+  bookings    bookings[]
+}
+
+model users {
+  id                                  BigInt     @id @default(autoincrement())
+  name                                String     @db.VarChar
+  email                               String     @unique @db.VarChar
+  phone                               String     @db.VarChar
+  password                            String     @db.VarChar
+  profile_picture                     String?
+  role                                user_role? @default(customer)
+  created_at                          DateTime?  @default(now()) @db.Timestamp(6)
+  bookings_bookings_created_byTousers bookings[] @relation("bookings_created_byTousers")
+  bookings_bookings_user_idTousers    bookings[] @relation("bookings_user_idTousers")
+}
+
+enum booking_source {
+  online
+  walk_in
+}
+
+enum booking_status {
+  pending
+  confirmed
+  done
+  cancelled
+}
+
+enum payment_method {
+  cash
+  cashless
+}
+
+enum payment_status {
+  paid
+  unpaid
+}
+
+enum user_role {
+  admin
+  customer
+}
