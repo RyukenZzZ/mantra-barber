@@ -58,7 +58,6 @@ model services {
   name        String     @db.VarChar
   description String?
   price       Int
-  duration    Int
   bookings    bookings[]
 }
 
