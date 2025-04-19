@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
-const { NotFoundError } = require("../utils/request");
 
 const prisma = new PrismaClient();
 

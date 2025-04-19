@@ -39,7 +39,7 @@ model payments {
   booking_id   BigInt?
   payment_date DateTime?       @db.Timestamp(6)
   amount       Int
-  method       payment_method
+  method       payment_method  @default(cashless)
   status       payment_status? @default(unpaid)
   bookings     bookings?       @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
