@@ -1,9 +1,10 @@
 const { z } = require("zod");
 const { BadRequestError } = require("../utils/request");
 
-exports.validateGetProducts = (req, res, next) => {
+exports.validateGetBookings = (req, res, next) => {
   const validateQuery = z.object({
     name: z.string().nullable().optional(),
+    booking_code: z.string().nullable().optional(),
   });
 
   const resultValidateQuery = validateQuery.safeParse(req.query);
@@ -13,7 +14,7 @@ exports.validateGetProducts = (req, res, next) => {
   next();
 };
 
-exports.validateGetProductById = (req, res, next) => {
+exports.validateGetBookingById = (req, res, next) => {
   req.params = { ...req.params, id: Number(req.params.id) };
 
   const validateParams = z.object({
@@ -28,45 +29,31 @@ exports.validateGetProductById = (req, res, next) => {
   next();
 };
 
-exports.validateCreateProduct = (req, res, next) => {
-  if (req.body.price) {
-    req.body.price = parseInt(req.body.price);
-  }
+exports.validateCreateBooking = (req, res, next) => {
 
   const validateBody = z.object({
-    name: z.string(),
-    description: z.string(),
-    price: z.number(),
-    tokopedia_link: z.string(),
+    cust_name: z.string(),
+    cust_phone_number: z.string(),
+    cust_email: z.string(),
+    barber_id: z.string(),
+    service_id: z.string(),
+    booking_date: z.coerce.date(),
+    booking_time:z.coerce.date(),
+    source: z.string().optional().nullable(),
+    status: z.string().optional().nullable(),
   });
 
-  // The file is not required
-  const validateFileBody = z
-    .object({
-      image_url: z
-        .object({
-          name: z.string(),
-          data: z.any(),
-        })
-        .nullable()
-        .optional(),
-    })
-    .nullable();
 
   const result = validateBody.safeParse(req.body);
   if (!result.success) {
     throw new BadRequestError(result.error.errors);
   }
 
-  const resultValidateFiles = validateFileBody.safeParse(req.files);
-  if (!resultValidateFiles) {
-    throw new BadRequestError(resultValidateFiles.error.errors);
-  }
 
   next();
 };
 
-exports.validateUpdateProduct = (req, res, next) => {
+exports.validateUpdateBooking = (req, res, next) => {
   req.params.id = Number(req.params.id);
 
   const validateParams = z.object({
@@ -78,44 +65,28 @@ exports.validateUpdateProduct = (req, res, next) => {
     throw new BadRequestError(resultValidateParams.error.errors);
   }
 
-  if (req.body.price) {
-    req.body.price = parseInt(req.body.price);
-  }
-
   const validateBody = z.object({
-    name: z.string(),
-    description: z.string(),
-    price: z.number(),
-    tokopedia_link: z.string(),
+    cust_name: z.string(),
+    cust_phone_number: z.string(),
+    cust_email: z.string(),
+    barber_id: z.string(),
+    service_id: z.string(),
+    booking_date: z.coerce.date(),
+    booking_time:z.coerce.date(),
+    source: z.string().optional().nullable(),
+    status: z.string().optional().nullable(),
   }).partial();
 
-  // The file is not required
-  const validateFileBody = z
-    .object({
-      image_url: z
-        .object({
-          name: z.string(),
-          data: z.any(),
-        })
-        .nullable()
-        .optional(),
-    })
-    .nullable();
-
+  
   const resultValidateBody = validateBody.safeParse(req.body);
   if (!resultValidateBody.success) {
     throw new BadRequestError(resultValidateBody.error.errors);
   }
 
-  const resultValidateFiles = validateFileBody.safeParse(req.files);
-  if (!resultValidateBody.success) {
-    throw new BadRequestError(resultValidateFiles.error.errors);
-  }
-
   next();
 };
 
-exports.validateDeleteProductById = (req, res, next) => {
+exports.validateDeleteBookingById = (req, res, next) => {
   req.params.id = Number(req.params.id);
 
   const validateParams = z.object({

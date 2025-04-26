@@ -63,7 +63,7 @@ exports.validateCreateBarber = (req, res, next) => {
   }
 
   const resultValidateFiles = validateFileBody.safeParse(req.files);
-  if (!resultValidateFiles) {
+  if (!resultValidateFiles.success) {
     throw new BadRequestError(resultValidateFiles.error.errors);
   }
 
@@ -95,7 +95,7 @@ exports.validateUpdateBarber = (req, res, next) => {
     name: z.string(),
     bio: z.string(),
     is_active: z.boolean(),
-  });
+  }).partial();
 
   // The file is not required
   const validateFileBody = z
@@ -111,12 +111,12 @@ exports.validateUpdateBarber = (req, res, next) => {
     .nullable();
 
   const resultValidateBody = validateBody.safeParse(req.body);
-  if (!resultValidateBody) {
+  if (!resultValidateBody.success) {
     throw new BadRequestError(resultValidateBody.error.errors);
   }
 
   const resultValidateFiles = validateFileBody.safeParse(req.files);
-  if (!resultValidateBody) {
+  if (!resultValidateBody.success) {
     throw new BadRequestError(resultValidateFiles.error.errors);
   }
 

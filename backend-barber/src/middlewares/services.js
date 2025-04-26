@@ -68,10 +68,10 @@ exports.validateUpdateService = (req,res,next) => {
         name:z.string(),
         description:z.string(),
         price:z.number(),
-    });
+    }).partial();
 
     const resultValidateBody = validateBody.safeParse(req.body);
-    if (!resultValidateBody){
+    if (!resultValidateBody.success){
         throw new BadRequestError(resultValidateBody.error.errors);
     }
 
