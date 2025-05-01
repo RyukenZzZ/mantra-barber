@@ -168,28 +168,53 @@ exports.createBooking = async (data) => {
     },
   });
 
-const formattedBookingData = {
-  id: newBooking.id,
-  user_id: newBooking.user_id,
-  users: newBooking.users_bookings_user_idTousers,
-  cust_name:newBooking.cust_name,
-  cust_phone_number:newBooking.cust_phone_number,
-  cust_email:newBooking.cust_email,
-  barber_id: newBooking.barber_id,
-  barbers: newBooking.barbers,
-  service_id: newBooking.service_id,
-  services: newBooking.services,
-  booking_date: newBooking.booking_date,
-  booking_time: newBooking.booking_time,
-  source: newBooking.source,
-  status: newBooking.status,
-  booking_code: newBooking.booking_code,
-  created_by: newBooking.created_by,
-  created_by_name: newBooking.users_bookings_created_byTousers,
-  created_at: newBooking.created_at
+  // Setelah booking berhasil, buat payment
+  const newPayment = await prisma.payments.create({
+    data: {
+      merchant_ref: newBooking.booking_code, // gunakan booking_code sebagai merchant_ref
+      amount: newBooking.services?.price ? Math.floor(newBooking.services.price * 0.5) : 0, // 50% dari harga service
+      status: 'unpaid',
+      expired_time: new Date(Date.now() + 15 * 60 * 1000), // expired 15 menit dari sekarang
+      bookings: {
+        connect: {
+          id: newBooking.id, // ini ID booking yang barusan dibuat
+        },
+      },
+    },
+  });
+
+const responseData = {
+  booking: {
+    id: newBooking.id,
+    user_id: newBooking.user_id,
+    users: newBooking.users_bookings_user_idTousers,
+    cust_name: newBooking.cust_name,
+    cust_phone_number: newBooking.cust_phone_number,
+    cust_email: newBooking.cust_email,
+    barber_id: newBooking.barber_id,
+    barbers: newBooking.barbers,
+    service_id: newBooking.service_id,
+    services: newBooking.services,
+    booking_date: newBooking.booking_date,
+    booking_time: newBooking.booking_time,
+    source: newBooking.source,
+    status: newBooking.status,
+    booking_code: newBooking.booking_code,
+    created_by: newBooking.created_by,
+    created_by_name: newBooking.users_bookings_created_byTousers,
+    created_at: newBooking.created_at,
+  },
+  payment: {
+    id: newPayment.id,
+    booking_id: newPayment.booking_id,
+    merchant_ref: newPayment.merchant_ref,
+    amount: newPayment.amount,
+    status: newPayment.status,
+    created_at: newPayment.created_at,
+  },
 };
 
-  const serializedData = JSONBigInt.stringify(formattedBookingData);
+  const serializedData = JSONBigInt.stringify(responseData);
   return JSONBigInt.parse(serializedData);
 };
 

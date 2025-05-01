@@ -4,6 +4,7 @@ const serviceRouter = require("./services");
 const productRouter = require("./products");
 const barberRouter = require ("./barbers");
 const bookingsRouter = require("./bookings");
+const paymentsRouter = require("./payments");
 
 const router = express.Router();
 
@@ -12,5 +13,6 @@ router.use("/services",serviceRouter);
 router.use("/products",productRouter);
 router.use("/barbers",barberRouter);
 router.use("/bookings",bookingsRouter);
+router.use("/payments",paymentsRouter);
 
 module.exports = router;

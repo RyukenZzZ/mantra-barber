@@ -5,10 +5,18 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload"); // This package is to enable req.files
 const router = require("./routes");
 const { errorHandler, notFoundURLHandler } = require("./middlewares/errors");
+const cron = require('node-cron');
+const autoCancelExpiredBookings = require('./cron/autoCancelBookings');
 
 /* Make/initiate expess application */
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Jalankan cron setiap 1 menit
+cron.schedule('* * * * *', async () => {
+    console.log('Running auto-cancel cron...');
+    await autoCancelExpiredBookings();
+  });
 
 /* Enable CORS */
 app.use(cors());
