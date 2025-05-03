@@ -15,4 +15,5 @@ router.post("/login", validateLogin, login);
 router.post("/google/login", validateGoogleLogin, googleLogin);
 router.get("/profile", authorization(adminRole, userRole), getProfile);
 
+
 module.exports = router;

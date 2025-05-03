@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 const { NotFoundError } = require("../utils/request");
+const midtransClient = require('../utils/midtrans-client'); // pastikan ini mengarah ke konfigurasi midtrans kamu
 
 
 const prisma = new PrismaClient();
@@ -138,6 +139,65 @@ exports.getBookingById = async (id) => {
   return JSONBigInt.parse(serializedData);
 };
 
+exports.getBookingByUserId = async (user_id) => {
+  const Bookings = await prisma.bookings.findMany({
+    where: { user_id:user_id },
+    include: {
+      users_bookings_user_idTousers: {
+        select: {
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+      barbers: {
+        select: {
+          name: true,
+        },
+      },
+      services: {
+        select: {
+          name: true,
+          price: true,
+        },
+      },
+      users_bookings_created_byTousers:{
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!Bookings) return null;
+  
+  const formattedBookingsByUserId = Bookings.map(booking => ({
+    id: booking.id,
+    user_id: booking.user_id,
+    users: booking.users_bookings_user_idTousers,
+    cust_name: booking.cust_name,
+    cust_phone_number: booking.cust_phone_number,
+    cust_email: booking.cust_email,
+    barber_id: booking.barber_id,
+    barbers: booking.barbers,
+    service_id: booking.service_id,
+    services: booking.services,
+    booking_date: booking.booking_date,
+    booking_time: booking.booking_time,
+    source: booking.source,
+    status: booking.status,
+    booking_code: booking.booking_code,
+    created_by: booking.created_by,
+    created_by_name: booking.users_bookings_created_byTousers,
+    created_at: booking.created_at
+  }));
+  
+
+  const serializedData = JSONBigInt.stringify(formattedBookingsByUserId);
+  return JSONBigInt.parse(serializedData);
+};
+
+
 exports.createBooking = async (data) => {
   const newBooking = await prisma.bookings.create({
     data,
@@ -168,54 +228,90 @@ exports.createBooking = async (data) => {
     },
   });
 
-  // Setelah booking berhasil, buat payment
-  const newPayment = await prisma.payments.create({
-    data: {
-      merchant_ref: newBooking.booking_code, // gunakan booking_code sebagai merchant_ref
-      amount: newBooking.services?.price ? Math.floor(newBooking.services.price * 0.5) : 0, // 50% dari harga service
-      status: 'unpaid',
-      expired_time: new Date(Date.now() + 15 * 60 * 1000), // expired 15 menit dari sekarang
-      bookings: {
-        connect: {
-          id: newBooking.id, // ini ID booking yang barusan dibuat
-        },
-      },
-    },
-  });
+   // 2. Hitung jumlah pembayaran (50% dari harga layanan)
+   const amount = newBooking.services?.price
+   ? Math.floor(newBooking.services.price * 0.5)
+   : 0;
 
-const responseData = {
-  booking: {
-    id: newBooking.id,
-    user_id: newBooking.user_id,
-    users: newBooking.users_bookings_user_idTousers,
-    cust_name: newBooking.cust_name,
-    cust_phone_number: newBooking.cust_phone_number,
-    cust_email: newBooking.cust_email,
-    barber_id: newBooking.barber_id,
-    barbers: newBooking.barbers,
-    service_id: newBooking.service_id,
-    services: newBooking.services,
-    booking_date: newBooking.booking_date,
-    booking_time: newBooking.booking_time,
-    source: newBooking.source,
-    status: newBooking.status,
-    booking_code: newBooking.booking_code,
-    created_by: newBooking.created_by,
-    created_by_name: newBooking.users_bookings_created_byTousers,
-    created_at: newBooking.created_at,
-  },
-  payment: {
-    id: newPayment.id,
-    booking_id: newPayment.booking_id,
-    merchant_ref: newPayment.merchant_ref,
-    amount: newPayment.amount,
-    status: newPayment.status,
-    created_at: newPayment.created_at,
-  },
-};
+ // 3. Buat payment record
+ const newPayment = await prisma.payments.create({
+   data: {
+     amount,
+     status: 'unpaid',
+     expired_time: new Date(Date.now() + 20 * 60 * 1000), // 15 menit dari sekarang
+     bookings: {
+       connect: { id: newBooking.id },
+     },
+   },
+ });
+ // 4. Siapkan payload Midtrans
+ const orderId = `BOOK-${newBooking.booking_code}-${Date.now()}`;
+ const midtransPayload = {
+   transaction_details: {
+     order_id: orderId,
+     gross_amount: amount,
+   },
+   customer_details: {
+     first_name: newBooking.cust_name,
+     email: newBooking.cust_email,
+     phone: newBooking.cust_phone_number,
+   },
+   expiry: {
+     unit: "minute",
+     duration: 20,
+   },
+ };
 
-  const serializedData = JSONBigInt.stringify(responseData);
-  return JSONBigInt.parse(serializedData);
+ // 5. Kirim request ke Midtrans
+ const midtransResponse = await midtransClient.createTransaction(midtransPayload);
+
+ // 6. Update payment dengan response dari Midtrans
+ await prisma.payments.update({
+   where: { id: newPayment.id },
+   data: {
+     payment_url: midtransResponse.redirect_url,
+     reference: orderId,
+     pdf_url: midtransResponse?.pdf_url ?? null,
+   },
+ });
+
+ // 7. Kembalikan data booking + payment
+ const responseData = {
+   booking: {
+     id: newBooking.id,
+     user_id: newBooking.user_id,
+     users: newBooking.users_bookings_user_idTousers,
+     cust_name: newBooking.cust_name,
+     cust_phone_number: newBooking.cust_phone_number,
+     cust_email: newBooking.cust_email,
+     barber_id: newBooking.barber_id,
+     barbers: newBooking.barbers,
+     service_id: newBooking.service_id,
+     services: newBooking.services,
+     booking_date: newBooking.booking_date,
+     booking_time: newBooking.booking_time,
+     source: newBooking.source,
+     status: newBooking.status,
+     booking_code: newBooking.booking_code,
+     created_by: newBooking.created_by,
+     created_by_name: newBooking.users_bookings_created_byTousers,
+     created_at: newBooking.created_at,
+   },
+   payment: {
+     id: newPayment.id,
+     booking_id: newPayment.booking_id,
+     reference: midtransResponse.order_id,
+     amount: newPayment.amount,
+     status: newPayment.status,
+     payment_url: midtransResponse.redirect_url,
+     pdf_url: midtransResponse?.pdf_url ?? null,
+     expired_time: newPayment.expired_time,
+     created_at: newPayment.created_at,
+   },
+ };
+
+ const serializedData = JSONBigInt.stringify(responseData);
+ return JSONBigInt.parse(serializedData);
 };
 
 exports.updateBooking = async (id, data) => {
@@ -346,4 +442,18 @@ exports.deleteBookingById = async (id) => {
   });
   const serializedData = JSONBigInt.stringify(deletedBooking);
   return JSONBigInt.parse(serializedData);
+};
+
+exports.findBookingWithPayment = async (bookingId) => {
+  return prisma.bookings.findUnique({
+    where: { id: bookingId },
+    include: { services: true, payments: true },
+  });
+};
+
+exports.updateStatusByCode = async (bookingCode, status) => {
+  return prisma.bookings.updateMany({
+    where: { booking_code: bookingCode },
+    data: { status },
+  });
 };

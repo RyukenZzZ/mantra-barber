@@ -1,18 +1,15 @@
-const { successResponse } = require('../utils/response');
-const paymentServices = require("../services/payments");
+// controllers/paymentController.js
+const paymentService = require("../services/payments");
+const { successResponse } = require("../utils/response");
 
-exports.createPayment = async (req, res) => {
-  const { bookingId, method } = req.body;
-
-  const result = await paymentServices.processPayment({ bookingId, method });
-
-  return successResponse(res, result);
+exports.resumePayment = async (req, res) => {
+    const user_id = req.user.id;
+    const data = await paymentService.resumePayment(user_id, parseInt(req.params.bookingId));
+    successResponse(res, data.message, data.data);
 };
 
-exports.paymentCallback = async (req, res) => {
-  const callbackData = req.body;
-
-  await handleTripayCallback(callbackData);
-
-  return successResponse(res, { message: 'Callback berhasil diproses' });
+exports.handleMidtransNotification = async (req, res) => {
+    await paymentService.handleNotification(req.body);
+    successResponse(res, "OK");
 };
+

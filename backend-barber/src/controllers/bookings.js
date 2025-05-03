@@ -15,6 +15,12 @@ exports.getBookingById = async (req,res,next) => {
     successResponse(res,data,"Booking found successfully.");
 };
 
+exports.getBookingByUserId = async (req,res,next) => {
+  const user_id = req.user.id;
+  const data = await BookingsServices.getBookingByUserId(user_id);
+  successResponse(res,data,"Booking found successfully.");
+};
+
 exports.createBooking = async (req, res, next) => {
     const user_id = req.user.id;
     const data = await BookingsServices.createBooking(req.body,user_id);

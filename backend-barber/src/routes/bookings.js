@@ -11,6 +11,7 @@ const {
 const {
     getBookings,
     getBookingById,
+    getBookingByUserId,
     createBooking,
     updateBooking,
     deleteBookingById,
@@ -22,6 +23,10 @@ router
 .route("/")
 .get(authorization(adminRole,userRole),validateGetBookings,getBookings)
 .post(authorization(adminRole,userRole),validateCreateBooking,createBooking);
+
+router
+.route("/my-bookings")
+.get(authorization(adminRole,userRole),getBookingByUserId)
 
 router
 .route("/:id")

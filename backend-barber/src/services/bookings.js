@@ -23,6 +23,15 @@ exports.getBookingById = async (id) => {
   return Booking;
 };
 
+exports.getBookingByUserId = async (user_id) => {
+  const Booking = await BookingRepository.getBookingByUserId(user_id);
+  if (!Booking || Object.keys(Booking).length === 0) {
+    throw new NotFoundError("Kamu belum pernah melakukan booking sama sekali !");
+  }
+  
+  return Booking;
+};
+
 exports.createBooking = async (data,user_id) => {
   data.user_id = user_id;
   data.created_by = user_id;
