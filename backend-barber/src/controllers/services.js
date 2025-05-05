@@ -13,13 +13,13 @@ exports.getServiceById = async (req,res,next) => {
 };
 
 exports.createService = async (req, res, next) => {
-    const data = await serviceService.createService(req.body);
+    const data = await serviceService.createService(req.body,req.files);
     successResponse(res, data, "Service successfully added!");
   };
   
   exports.updateService = async (req, res, next) => {
     const { id } = req.params;
-    const data = await serviceService.updateService(id, req.body);
+    const data = await serviceService.updateService(id, req.body,req.files);
     successResponse(res, data, "Service successfully updated!");
   };
   

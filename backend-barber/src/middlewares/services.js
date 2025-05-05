@@ -1,94 +1,132 @@
-const {z} = require("zod");
-const {BadRequestError} = require("../utils/request")
+const { z } = require("zod");
+const { BadRequestError } = require("../utils/request");
 
-exports.validateGetServices = (req,res,next) => {
-    const validateQuery = z.object({
-        name: z.string().nullable().optional(),
-    });
+exports.validateGetServices = (req, res, next) => {
+  const validateQuery = z.object({
+    name: z.string().nullable().optional(),
+  });
 
-    const resultValidateQuery = validateQuery.safeParse(req.query);
-    if (!resultValidateQuery.success){
-        throw new BadRequestError(resultValidateQuery.error.errors);
-    }
-    next();
+  const resultValidateQuery = validateQuery.safeParse(req.query);
+  if (!resultValidateQuery.success) {
+    throw new BadRequestError(resultValidateQuery.error.errors);
+  }
+  next();
 };
 
-exports.validateGetServiceById = (req,res,next) => {
-    req.params = {...req.params, id: Number(req.params.id)};
+exports.validateGetServiceById = (req, res, next) => {
+  req.params = { ...req.params, id: Number(req.params.id) };
 
-    const validateParams = z.object({
-        id : z.number(),
-    });
+  const validateParams = z.object({
+    id: z.number(),
+  });
 
-    const result = validateParams.safeParse(req.params);
-    if (!result.success){
-        throw new BadRequestError(result.error.errors);
-    }
+  const result = validateParams.safeParse(req.params);
+  if (!result.success) {
+    throw new BadRequestError(result.error.errors);
+  }
 
-    next();
+  next();
 };
 
-exports.validateCreateService = (req,res,next) => {
-    if (req.body.price) {
-        req.body.price = parseInt(req.body.price);
-    }
+exports.validateCreateService = (req, res, next) => {
+  if (req.body.price) {
+    req.body.price = parseInt(req.body.price);
+  }
 
-    const validateBody = z.object({
-        name:z.string(),
-        description:z.string(),
-        price:z.number(),
-    });
+  const validateBody = z.object({
+    name: z.string(),
+    description: z.string(),
+    price: z.number(),
+  });
 
-    const result = validateBody.safeParse(req.body);
-    if (!result.success){
-        throw new BadRequestError(result.error.errors);
-    }
+  // The file is not required
+  const validateFileBody = z
+    .object({
+      image: z
+        .object({
+          name: z.string(),
+          data: z.any(),
+        })
+        .nullable()
+        .optional(),
+    })
+    .nullable();
 
-    next();
-}
+  const result = validateBody.safeParse(req.body);
+  if (!result.success) {
+    throw new BadRequestError(result.error.errors);
+  }
 
-exports.validateUpdateService = (req,res,next) => {
+  const resultValidateFiles = validateFileBody.safeParse(req.files);
+  if (!resultValidateFiles) {
+    throw new BadRequestError(resultValidateFiles.error.errors);
+  }
 
-    req.params.id = Number(req.params.id);
+  next();
+};
 
-    const validateParams = z.object({
-        id: z.number(),
-    });
+exports.validateUpdateService = (req, res, next) => {
+  req.params.id = Number(req.params.id);
 
-    const resultValidateParams = validateParams.safeParse(req.params);
-    if(!resultValidateParams.success){
-        throw new BadRequestError(resultValidateParams.error.errors);
-    }
+  const validateParams = z.object({
+    id: z.number(),
+  });
 
-    if (req.body.price) {
-        req.body.price = parseInt(req.body.price);
-    }
+  const resultValidateParams = validateParams.safeParse(req.params);
+  if (!resultValidateParams.success) {
+    throw new BadRequestError(resultValidateParams.error.errors);
+  }
 
-    const validateBody = z.object({
-        name:z.string(),
-        description:z.string(),
-        price:z.number(),
-    }).partial();
+  if (req.body.price) {
+    req.body.price = parseInt(req.body.price);
+  }
 
-    const resultValidateBody = validateBody.safeParse(req.body);
-    if (!resultValidateBody.success){
-        throw new BadRequestError(resultValidateBody.error.errors);
-    }
+  const validateBody = z
+    .object({
+      name: z.string(),
+      description: z.string(),
+      price: z.number(),
+    })
+    .partial();
 
-    next();
-}
+      // The file is not required
+  const validateFileBody = z
+  .object({
+    image: z
+      .object({
+        name: z.string(),
+        data: z.any(),
+      })
+      .nullable()
+      .optional(),
+  })
+  .nullable();
+    
 
-exports.validateDeleteServiceById = (req,res,next) => {
-    req.params.id = Number(req.params.id);
+  const resultValidateBody = validateBody.safeParse(req.body);
+  if (!resultValidateBody.success) {
+    throw new BadRequestError(resultValidateBody.error.errors);
+  }
 
-    const validateParams = z.object({
-        id: z.number(),
-    });
+  const resultValidateFiles = validateFileBody.safeParse(req.files);
+  if (!resultValidateFiles) {
+    throw new BadRequestError(resultValidateFiles.error.errors);
+  }
 
-    const resultValidateParams = validateParams.safeParse(req.params);
-    if(!resultValidateParams.success){
-        throw new BadRequestError(resultValidateParams.error.errors);
-    }
+  next();
+};
 
-    next();
-}
+exports.validateDeleteServiceById = (req, res, next) => {
+  req.params.id = Number(req.params.id);
+
+  const validateParams = z.object({
+    id: z.number(),
+  });
+
+  const resultValidateParams = validateParams.safeParse(req.params);
+  if (!resultValidateParams.success) {
+    throw new BadRequestError(resultValidateParams.error.errors);
+  }
+
+  next();
+};

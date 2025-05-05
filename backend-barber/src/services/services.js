@@ -1,4 +1,5 @@
 const serviceRepository = require("../repositories/services");
+const { imageUpload } = require("../utils/image-kit");
 const { NotFoundError, InternalServerError } = require("../utils/request");
 
 exports.getServices = async (name) => {
@@ -17,15 +18,31 @@ exports.getServiceById = async (id) => {
   return service;
 };
 
-exports.createService = async (data) => {
+exports.createService = async (data,file) => {
+    // Upload file to image kit
+    if (file?.image) {
+      data.image = await imageUpload(file.image);
+    }
+  
   return serviceRepository.createService(data);
 };
 
-exports.updateService = async (id, data) => {
+exports.updateService = async (id, data,file) => {
   const existingService = await serviceRepository.getServiceById(id);
   if (!existingService) {
     throw new NotFoundError("Service not found!");
   }
+
+   // replicated existing data with new data
+    data = {
+      ...existingService, // existing Student
+      ...data,
+    };
+  
+    // Upload file to image kit
+    if (file?.image) {
+      data.image = await imageUpload(file.image);
+    }
 
   const updatedService = await serviceRepository.updateService(id, data);
   if (!updatedService) {
