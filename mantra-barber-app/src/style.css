@@ -1,3 +1,7 @@
 @import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
+
+.nav-link-black {
+  @apply text-black hover:text-gray-700;
+}
