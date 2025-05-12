@@ -5,10 +5,10 @@ import mantraLogo from "../assets/mantraLogo.png"
 import bgBarber from "../assets/BG.jpg"
 
 export const Route = createFileRoute('/login')({
-  component: RouteComponent,
+  component: Login,
 });
 
-function RouteComponent() {
+function Login() {
   return (
 <div
   className="flex justify-center items-center min-h-screen bg-cover bg-center px-4"

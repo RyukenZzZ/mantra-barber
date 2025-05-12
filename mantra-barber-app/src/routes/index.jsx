@@ -9,7 +9,14 @@ import galeri1 from "../assets/galeri1.jpg";
 import galeri2 from "../assets/galeri2.jpg";
 import galeri3 from "../assets/galeri3.jpg";
 import galeri4 from "../assets/galeri4.jpg";
+import servicesBest from "../assets/services1.jpg";
+import sisirJpg from "../assets/sisir kece.jpg";
+import hairtonicJpg from "../assets/hairtonic2.jpg";
+import powderJpg from "../assets/powder.jpg";
 import bgServices from "../assets/bgServices.jpg";
+import higlightHair from "../assets/highlightHair.jpg";
+import colloringFashion from "../assets/colloringFashion.jpg"
+import permHair from "../assets/permHair.jpg"
 import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { useEffect, useState, useCallback } from "react";
@@ -62,7 +69,7 @@ function Index() {
         <h2 className="text-2xl font-bold mb-8 text-center">About Us</h2>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-center">
           <div className="text-gray-700">
-            <p>
+            <p className="mb-2">
               Mantra Barbershop bukan sekadar tempat potong rambut — ini adalah
               ruang di mana gaya bertemu kenyamanan. Kami hadir untuk memberikan
               pengalaman grooming terbaik bagi pria modern yang menghargai
@@ -70,7 +77,7 @@ function Index() {
               profesional dan suasana yang cozy, kami memastikan setiap
               kunjungan adalah waktu berkualitas untuk merawat diri.
             </p>
-            <p> ~ ✂️ Look Sharp, Feel Confident — hanya di Mantra.</p>
+            <p className="font-semibold italic"> - ✂️ WE MADE YOURSELF BOLD AND CLEAN AS FAST LIKE A MAGIC TOUCH ✂️ -</p>
             <Button className="mt-4" color="dark">
               BOOK
             </Button>
@@ -84,15 +91,16 @@ function Index() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="bg-black text-white px-6 py-12">
+      <section id="services" className="bg-black text-white px-8 py-12">
         <h2 className="text-2xl font-bold text-center mb-8">Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* CARD BEST HAIRCUT */}
           <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
+            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               Best Haircut
             </h5>
             <img
-              src={aboutUs} // ganti dengan path gambar kamu
+              src={servicesBest} // ganti dengan path gambar kamu
               alt="Best Haircut"
               className="w-full h-48 object-cover rounded-t-lg"
             />
@@ -118,7 +126,7 @@ function Index() {
                   />
                 </svg>
                 <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
+                  Hair Consultation
                 </span>
               </li>
               <li className="flex space-x-3">
@@ -135,7 +143,7 @@ function Index() {
                   />
                 </svg>
                 <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
+                  Hair Wash
                 </span>
               </li>
               <li className="flex space-x-3">
@@ -152,7 +160,41 @@ function Index() {
                   />
                 </svg>
                 <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
+                  Hair Tonic
+                </span>
+              </li>
+              <li className="flex space-x-3">
+                <svg
+                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+                  Hair Styling
+                </span>
+              </li>
+              <li className="flex space-x-3">
+                <svg
+                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+                  Hot Towel
                 </span>
               </li>
             </ul>
@@ -160,404 +202,315 @@ function Index() {
               type="button"
               className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
             >
-              Choose plan
+              Book Now
             </button>
           </Card>
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-              Best Haircut
-            </h5>
-            <img
-              src={aboutUs} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
+
+          <div className="lg:col-span-2 grid grid-rows-3 gap-5">
+            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
+              <img
+                src={higlightHair} // ganti dengan src gambar kamu
+                alt="About us"
+                className="w-1/3 h-full object-cover"
+              />
+              <div className="p-6 flex flex-col justify-between w-full">
+                <div>
+                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
+                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Colloring Highlight
+                    </h5>
+                    <span className="text-sm md:text-base font-semibold ms-3">
+                      (Rp.
+                    </span>
+                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
+                      300
+                    </span>
+                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
+                      K)
+                    </span>
+                  </div>
+
+                  <div className="mb-4">
+                    <li className="flex items-center space-x-3">
+                      <svg
+                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
+                        Coloring by (Request Customer) Bleaching 1/2 Step &
+                        Coloring Half Hair
+                      </span>
+                    </li>
+                  </div>
+                </div>
+
+                <div className="mt-auto flex justify-end">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
             </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
-                </span>
-              </li>
-            </ul>
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Choose plan
-            </button>
-          </Card>
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-              Best Haircut
-            </h5>
-            <img
-              src={aboutUs} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
+
+            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
+              <img
+                src={colloringFashion} // ganti dengan src gambar kamu
+                alt="About us"
+                className="w-1/3 h-full object-cover"
+              />
+              <div className="p-6 flex flex-col justify-between w-full">
+                <div>
+                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
+                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Colloring Fashion
+                    </h5>
+                    <span className="text-sm md:text-base font-semibold ms-3">
+                      (Rp.
+                    </span>
+                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
+                      500
+                    </span>
+                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
+                      K)
+                    </span>
+                  </div>
+
+                  <div className="mb-4">
+                    <li className="flex items-center space-x-3">
+                      <svg
+                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
+                        Coloring by (Request Customer) Bleaching 1/2 Step &
+                        Coloring Half Hair
+                      </span>
+                    </li>
+                  </div>
+                </div>
+
+                <div className="mt-auto flex justify-end">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
             </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
-                </span>
-              </li>
-            </ul>
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Choose plan
-            </button>
-          </Card>
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-              Best Haircut
-            </h5>
-            <img
-              src={aboutUs} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
+
+            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
+              <img
+                src={permHair} // ganti dengan src gambar kamu
+                alt="About us"
+                className="w-1/3 h-full object-cover"
+              />
+              <div className="p-6 flex flex-col justify-between w-full">
+                <div>
+                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
+                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      Perming
+                    </h5>
+                    <span className="text-sm md:text-base font-semibold ms-3">
+                      (Rp.
+                    </span>
+                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
+                      500
+                    </span>
+                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
+                      K)
+                    </span>
+                  </div>
+
+                  <div className="mb-4">
+                    <li className="flex items-center space-x-3">
+                      <svg
+                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
+                        Curly Hair/Wavy Hair With Processing Perming Product
+                      </span>
+                    </li>
+                  </div>
+                </div>
+
+                <div className="mt-auto flex justify-end">
+                  <button
+                    type="button"
+                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
+                  >
+                    Book Now
+                  </button>
+                </div>
+              </div>
             </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
-                </span>
-              </li>
-            </ul>
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Choose plan
-            </button>
-          </Card>
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-              Best Haircut
-            </h5>
-            <img
-              src={aboutUs} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
-            </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
-                </span>
-              </li>
-            </ul>
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Choose plan
-            </button>
-          </Card>
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">
-              Best Haircut
-            </h5>
-            <img
-              src={aboutUs} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
-            </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  2 team members
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  20GB Cloud storage
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Integration help
-                </span>
-              </li>
-            </ul>
-            <button
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Choose plan
-            </button>
-          </Card>
+          </div>
         </div>
       </section>
 
       {/* product Section */}
       <section id="product" className="px-6 py-12 bg-gray-100">
         <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <img src={aboutUs} className="rounded w-full" alt="Gallery 1" />
-          <img src={aboutUs} className="rounded w-full" alt="Gallery 2" />
-          <img src={aboutUs} className="rounded w-full" alt="Gallery 3" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+          <Card className="max-w-sm">
+            <img
+              src={sisirJpg}
+              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
+              className="h-79 w-full object-cover rounded-t-lg"
+            />
+            <div className="p-5">
+              <a href="#">
+                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                  Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon
+                  Barber shop
+                </h5>
+              </a>
+              <div className="mb-5 mt-2.5 flex items-center">
+                {[...Array(5)].map((_, index) => (
+                  <svg
+                    key={index}
+                    className="h-5 w-5 text-yellow-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                  4.9
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                  15K
+                </span>
+                <a
+                  href="#"
+                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                >
+                  Buy Now
+                </a>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="max-w-sm">
+            <img
+              src={hairtonicJpg}
+              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
+              className="h-79 w-full object-cover rounded-t-lg"
+            />
+            <div className="p-5">
+              <a href="#">
+                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                  Markarizo Barber Daily 2 in 1 hair tonic
+                </h5>
+              </a>
+              <div className="mb-5 mt-2.5 flex items-center">
+                {[...Array(5)].map((_, index) => (
+                  <svg
+                    key={index}
+                    className="h-5 w-5 text-yellow-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                  4.9
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                  75K
+                </span>
+                <a
+                  href="#"
+                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                >
+                  Buy Now
+                </a>
+              </div>
+            </div>
+          </Card>
+          <Card className="max-w-sm">
+            <img
+              src={powderJpg}
+              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
+              className="h-79 w-full object-cover rounded-t-lg"
+            />
+            <div className="p-5">
+              <a href="#">
+                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                  Hairnerd Profesional Powder Pomade
+                </h5>
+              </a>
+              <div className="mb-5 mt-2.5 flex items-center">
+                {[...Array(5)].map((_, index) => (
+                  <svg
+                    key={index}
+                    className="h-5 w-5 text-yellow-300"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                  4.9
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                  80K
+                </span>
+                <a
+                  href="#"
+                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                >
+                  Buy Now
+                </a>
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
 
       {/* Gallery Section */}
-      <section className="bg-black text-white py-12">
+      <section id="gallery" className="bg-black text-white py-12">
         <h2 className="text-2xl font-bold text-center mb-8">Gallery</h2>
         <div className="max-w-4xl mx-auto px-4">
           <div className="relative">
@@ -646,10 +599,38 @@ function Index() {
           <div>
             <h4 className="font-semibold mb-2">Support</h4>
             <ul className="text-sm space-y-1">
-              <li>Booking</li>
-              <li>Review</li>
-              <li>Gallery</li>
-              <li>Product</li>
+              <li>
+                <a
+                  href="#booking"
+                  className="transition-all duration-200 hover:text-black hover:font-bold"
+                >
+                  Booking
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#services"
+                  className="transition-all duration-200 hover:text-black hover:font-bold"
+                >
+                  Services
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#gallery"
+                  className="transition-all duration-200 hover:text-black hover:font-bold"
+                >
+                  Gallery
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#product"
+                  className="transition-all duration-200 hover:text-black hover:font-bold"
+                >
+                  Product
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -683,6 +664,7 @@ function Index() {
           </div>
         </div>
       </footer>
+
       <div className="bg-black text-white p-4">
         <p className="text-center text-xs">
           Copyright © 2024 MANTRA. All rights reserved.

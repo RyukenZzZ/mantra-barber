@@ -3,10 +3,10 @@ import { Button, Label, TextInput } from "flowbite-react";
 import googleLogo from "../assets/G-google.png";
 
 export const Route = createFileRoute("/register")({
-  component: RouteComponent,
+  component: Register,
 });
 
-function RouteComponent() {
+function Register() {
   return (
     <div
       className="flex justify-center items-center min-h-screen bg-cover bg-center"

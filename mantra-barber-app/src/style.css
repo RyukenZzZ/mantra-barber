@@ -5,3 +5,7 @@
 .nav-link-black {
   @apply text-black hover:text-gray-700;
 }
+
+html {
+  scroll-behavior: smooth;
+}
