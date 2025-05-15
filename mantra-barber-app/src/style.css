@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
+/* @plugin "daisyui"; */
+
 
 .nav-link-black {
   @apply text-black hover:text-gray-700;
@@ -8,4 +10,23 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Di file CSS (misalnya styles.css) */
+button[disabled] {
+  color: #65686d !important;           /* text-gray-400 */
+  cursor: not-allowed;
+}
+
+  [data-testid="right-icon"] {
+     pointer-events: unset;
+  }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px #374151 inset !important; /* sesuaikan warna (gray-800 misalnya) */
+  -webkit-text-fill-color: white !important; /* warna teks */
+  transition: background-color 5000s ease-in-out 0s;
 }

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button, Card } from "flowbite-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ClassNamesPlugin from "embla-carousel-class-names";
@@ -77,8 +77,8 @@ function Index() {
               profesional dan suasana yang cozy, kami memastikan setiap
               kunjungan adalah waktu berkualitas untuk merawat diri.
             </p>
-            <p className="font-semibold italic"> - ✂️ WE MADE YOURSELF BOLD AND CLEAN AS FAST LIKE A MAGIC TOUCH ✂️ -</p>
-            <Button className="mt-4" color="dark">
+            <p className="font-semibold italic text-sm"> - ✂️ WE MADE YOURSELF BOLD AND CLEAN AS FAST LIKE A MAGIC TOUCH ✂️ -</p>
+            <Button as={Link} to="/create-booking" className="mt-4 w-30" color="dark">
               BOOK
             </Button>
           </div>

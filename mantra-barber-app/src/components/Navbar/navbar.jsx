@@ -9,37 +9,59 @@ import {
   NavbarCollapse,
   NavbarToggle,
 } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useState } from "react";
+import { setToken, setUser } from "../../redux/slices/auth";
 import mantraLogo from "../../assets/mantraLogo.png";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { profile } from "../../service/auth";
+import { toast } from "react-toastify";
 
 const NavigationBar = () => {
   const [activeSection, setActiveSection] = useState("");
-const [isNavbarVisible, setIsNavbarVisible] = useState(true);
-const [lastScrollY, setLastScrollY] = useState(0);
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-useEffect(() => {
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
-    if (currentScrollY > lastScrollY && currentScrollY > 50) {
-      setIsNavbarVisible(false); // Scroll down: hide navbar
-    } else {
-      setIsNavbarVisible(true); // Scroll up: show navbar
+  const { user, token } = useSelector((state) => state.auth);
+
+  const handleLogout = useCallback(() => {
+    dispatch(setUser(null));
+    dispatch(setToken(null));
+    toast.success("Logout berhasil");
+    navigate({ to: "/login" });
+  }, [dispatch, navigate]);
+
+  const { data, isSuccess, isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: profile,
+    enabled: !!token,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(setUser(data));
+    } else if (isError) {
+      toast.error(
+        "Sesi berakhir atau gagal memuat profil. Silakan login kembali."
+      );
+      handleLogout(); // logout dan redirect
     }
-    setLastScrollY(currentScrollY);
-  };
+  }, [isSuccess, isError, data, dispatch, handleLogout]);
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [lastScrollY]);
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setIsNavbarVisible(currentScrollY < lastScrollY || currentScrollY < 50);
+      setLastScrollY(currentScrollY);
+    };
 
-  // Simulasi login
-  const user = null;
-  // const user = {
-  //   name: "Bonnie Green",
-  //   email: "name@flowbite.com",
-  //   avatar: "https://flowbite.com/docs/images/people/profile-picture-5.jpg",
-  // };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -50,25 +72,29 @@ useEffect(() => {
     return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
 
+  const logout = () => {
+    handleLogout();
+  };
+
+  if (location.pathname === "/login" || location.pathname === "/register") {
+    return null;
+  }
+
   const getLinkClass = (hash) =>
     `text-lg ${
       activeSection === hash ? "text-black font-semibold" : "text-gray-500"
     } hover:text-gray-700`;
 
   return (
-<Navbar
-  fluid
-  rounded
-  className={`!bg-gray-100 transition-transform duration-300 ${
-    isNavbarVisible ? "translate-y-0" : "-translate-y-full"
-  } fixed w-full z-50 top-0`}
->
-      <NavbarBrand href="#home">
-        <img
-          src={mantraLogo}
-          className="mr-3 h-6 w-full sm:h-9"
-          alt="Mantra Logo"
-        />
+    <Navbar
+      fluid
+      rounded
+      className={`!bg-gray-100 transition-transform duration-300 ${
+        isNavbarVisible ? "translate-y-0" : "-translate-y-full"
+      } fixed w-full z-50 top-0`}
+    >
+      <NavbarBrand as={Link} href="/">
+        <img src={mantraLogo} className="mr-3 h-12 w-full" alt="Mantra Logo" />
       </NavbarBrand>
 
       {user ? (
@@ -81,10 +107,14 @@ useEffect(() => {
               <Avatar
                 alt="User settings"
                 img={
-                  user.avatar ||
-                  "https://flowbite.com/docs/images/people/profile-picture-5.jpg"
+                  user.profile_picture === "null" ||
+                  user.profile_picture === undefined ||
+                  user.profile_picture === ""
+                    ? "https://i.pinimg.com/736x/25/a3/3f/25a33f3b84b18d51305822ee72dfcbff.jpg"
+                    : user.profile_picture
                 }
                 rounded
+                imgProps={{ referrerPolicy: "no-referrer" }}
               />
             }
           >
@@ -94,17 +124,15 @@ useEffect(() => {
                 {user.email}
               </span>
             </DropdownHeader>
-            <DropdownItem>Dashboard</DropdownItem>
+            <DropdownItem>My Bookings</DropdownItem>
             <DropdownItem>Settings</DropdownItem>
-            <DropdownItem>Earnings</DropdownItem>
             <DropdownDivider />
-            <DropdownItem>Sign out</DropdownItem>
+            <DropdownItem onClick={logout}>Sign out</DropdownItem>
           </Dropdown>
           <NavbarToggle />
         </div>
       ) : (
         <>
-          {/* Desktop View */}
           <div className="hidden md:flex gap-2 md:order-2">
             <Link
               to="/login"
@@ -119,64 +147,46 @@ useEffect(() => {
               Sign Up
             </Link>
           </div>
-          {/* Hamburger button */}
           <NavbarToggle />
         </>
       )}
 
-<NavbarCollapse>
-  <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:justify-end">
-    <a
-      href="#home"
-      className={`${getLinkClass("#home")} hover:font-semibold transition duration-200`}
-    >
-      Home
-    </a>
-    <a
-      href="#about"
-      className={`${getLinkClass("#about")} hover:font-semibold transition duration-200`}
-    >
-      About
-    </a>
-    <a
-      href="#services"
-      className={`${getLinkClass("#services")} hover:font-semibold transition duration-200`}
-    >
-      Services
-    </a>
-    <a
-      href="#product"
-      className={`${getLinkClass("#product")} hover:font-semibold transition duration-200`}
-    >
-      Product
-    </a>
-    <a
-      href="#gallery"
-      className={`${getLinkClass("#gallery")} hover:font-semibold transition duration-200`}
-    >
-      Gallery
-    </a>
+      <NavbarCollapse>
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:justify-end">
+          {[
+            { href: "#home", label: "Home" },
+            { href: "#about", label: "About" },
+            { href: "#services", label: "Services" },
+            { href: "#product", label: "Product" },
+            { href: "#gallery", label: "Gallery" },
+          ].map(({ href, label }) => (
+            <a
+              key={href}
+              href={href}
+              className={`${getLinkClass(href)} hover:font-semibold transition duration-200`}
+            >
+              {label}
+            </a>
+          ))}
 
-    {/* Mobile View: Sign In & Sign Up */}
-    {!user && (
-      <div className="flex flex-col md:hidden gap-2 mt-4 items-center">
-        <Link
-          to="/login"
-          className="w-40 text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-        >
-          Sign In
-        </Link>
-        <Link
-          to="/register"
-          className="w-40 text-center px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
-        >
-          Sign Up
-        </Link>
-      </div>
-    )}
-  </div>
-</NavbarCollapse>
-
+          {!user && (
+            <div className="flex flex-col md:hidden gap-2 mt-4 items-center">
+              <Link
+                to="/login"
+                className="w-40 text-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="w-40 text-center px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50"
+              >
+                Sign Up
+              </Link>
+            </div>
+          )}
+        </div>
+      </NavbarCollapse>
     </Navbar>
   );
 };

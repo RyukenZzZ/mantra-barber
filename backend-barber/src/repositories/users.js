@@ -1,7 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
+const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/library");
 const JSONBigInt = require("json-bigint");
 const bcrypt = require("bcrypt");
 const axios = require("axios");
+const { BadRequestError } = require("../utils/request");
 
 const prisma = new PrismaClient();
 
@@ -9,14 +11,22 @@ exports.createUser = async (data) => {
     //encrypt password
     data.password = await bcrypt.hash(data.password,10);
 
-    //create new user
-    const newUser = await prisma.users.create({
-        data,
-    });
+     return prisma.users.create({ data })
+    .then((user) => {
+      const serialized = JSONBigInt.stringify(user);
+      return JSONBigInt.parse(serialized);
+    })
+    .catch((err) => {
+      if (
+        err instanceof PrismaClientKnownRequestError &&
+        err.code === "P2002" &&
+        err.meta?.target?.includes("email")
+      ) {
+        throw new BadRequestError("Email sudah terdaftar");
+      }
 
-    // Convert BigInt fields to string for safe serialization
-    const serializedUsers = JSONBigInt.stringify(newUser);
-    return JSONBigInt.parse(serializedUsers);
+      throw err; // lempar error lainnya ke express-async-errors
+    });
 };
 
 exports.getUserByEmail = async (email) => {

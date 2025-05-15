@@ -71,6 +71,7 @@ exports.googleLogin = async (accessToken) => {
             name,
             profile_picture: picture,
             password: "",
+            phone:"",
         });
     }
     // create the token
