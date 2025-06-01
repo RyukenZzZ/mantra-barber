@@ -42,10 +42,11 @@ model payments {
   id             BigInt          @id @default(autoincrement())
   booking_id     BigInt?         // Relasi ke bookings
   reference      String?         @unique // Dari Midtrans: "order_id"
+  snap_token     String?                          // ⬅️ token Snap
+  snap_url       String?                          // ⬅️ redirect / embed URL
   amount         Int             // Jumlah yang harus dibayar
   method         String?         // Metode pembayaran (misal: QRIS, BCA, dll)
   status         payment_status? @default(unpaid) // Status: paid, unpaid, expired, etc
-  payment_url    String?         // URL checkout dari Midtrans
   pdf_url        String?         // URL ke PDF invoice dari Midtrans
   expired_time   DateTime?       // Waktu kadaluarsa pembayaran
   paid_at        DateTime?       // Kapan pembayaran diterima
@@ -98,6 +99,7 @@ enum booking_status {
   booked
   done
   cancelled
+  expired
 }
 
 enum payment_status {

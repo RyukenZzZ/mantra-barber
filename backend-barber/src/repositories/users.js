@@ -59,3 +59,24 @@ exports.googleLogin = async (accessToken) => {
     )
     return response?.data;
 }
+
+exports.updateUser = async (id, data) => {
+  try {
+    const updated = await prisma.users.update({
+      where: { id },
+      data,
+    });
+
+    const serialized = JSONBigInt.stringify(updated);
+    return JSONBigInt.parse(serialized);
+  } catch (err) {
+    if (
+      err instanceof PrismaClientKnownRequestError &&
+      err.code === 'P2002' &&
+      err.meta?.target?.includes('email')
+    ) {
+      throw new BadRequestError('Email sudah terdaftar');
+    }
+    throw err;
+  }
+};

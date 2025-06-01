@@ -76,3 +76,18 @@ exports.deleteBookingById = async (id) => {
 
   return deletedBooking;
 };
+
+exports.updateBookingStatusById = async(bookingId,status) => {
+  const existingBooking = await BookingRepository.getBookingById(bookingId);
+    if (!existingBooking) {
+    throw new NotFoundError("Booking not found!");
+  }
+
+  const updatedBookingStatusById= await BookingRepository.updateBookingStatusById(bookingId,status);
+    if (!updatedBookingStatusById) {
+    throw new InternalServerError("Failed to update the Booking Status !");
+  }
+
+  return updatedBookingStatusById;
+
+}

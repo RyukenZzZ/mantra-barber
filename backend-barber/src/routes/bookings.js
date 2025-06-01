@@ -15,6 +15,7 @@ const {
     createBooking,
     updateBooking,
     deleteBookingById,
+    updateStatusBookingById,
 } = require("../controllers/bookings");
 
 const router = express.Router();
@@ -32,6 +33,7 @@ router
 .route("/:id")
 .get(authorization(adminRole,userRole),validateGetBookingById,getBookingById)
 .put(authorization(adminRole),validateUpdateBooking,updateBooking)
-.delete(authorization(adminRole),validateDeleteBookingById,deleteBookingById);
+.delete(authorization(adminRole),validateDeleteBookingById,deleteBookingById)
+.patch(authorization(adminRole,userRole),updateStatusBookingById);
 
 module.exports = router;

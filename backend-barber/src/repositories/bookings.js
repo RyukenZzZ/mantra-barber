@@ -3,7 +3,6 @@ const JSONBigInt = require("json-bigint");
 const { NotFoundError } = require("../utils/request");
 const midtransClient = require('../utils/midtrans-client'); // pastikan ini mengarah ke konfigurasi midtrans kamu
 
-
 const prisma = new PrismaClient();
 
 exports.getBookings = async (cust_name, booking_code) => {
@@ -238,12 +237,13 @@ exports.createBooking = async (data) => {
    data: {
      amount,
      status: 'unpaid',
-     expired_time: new Date(Date.now() + 20 * 60 * 1000), // 15 menit dari sekarang
+     expired_time: new Date(Date.now() + 20 * 60 * 1000), // 20 menit dari sekarang
      bookings: {
        connect: { id: newBooking.id },
      },
    },
  });
+
  // 4. Siapkan payload Midtrans
  const orderId = `BOOK-${newBooking.booking_code}-${Date.now()}`;
  const midtransPayload = {
@@ -251,6 +251,14 @@ exports.createBooking = async (data) => {
      order_id: orderId,
      gross_amount: amount,
    },
+       item_details: [
+            {
+                id: newBooking.services?.id,
+                price: amount, 
+                quantity: 1,
+                name: newBooking.services?.name,
+            },
+          ],
    customer_details: {
      first_name: newBooking.cust_name,
      email: newBooking.cust_email,
@@ -264,12 +272,15 @@ exports.createBooking = async (data) => {
 
  // 5. Kirim request ke Midtrans
  const midtransResponse = await midtransClient.createTransaction(midtransPayload);
+ const { token, redirect_url } = midtransResponse;
+
 
  // 6. Update payment dengan response dari Midtrans
  await prisma.payments.update({
    where: { id: newPayment.id },
    data: {
-     payment_url: midtransResponse.redirect_url,
+     snap_url: redirect_url,
+     snap_token:token,
      reference: orderId,
      pdf_url: midtransResponse?.pdf_url ?? null,
    },
@@ -303,7 +314,8 @@ exports.createBooking = async (data) => {
      reference: midtransResponse.order_id,
      amount: newPayment.amount,
      status: newPayment.status,
-     payment_url: midtransResponse.redirect_url,
+     snap_token:token,
+     snap_url: midtransResponse.redirect_url,
      pdf_url: midtransResponse?.pdf_url ?? null,
      expired_time: newPayment.expired_time,
      created_at: newPayment.created_at,
@@ -445,10 +457,13 @@ exports.deleteBookingById = async (id) => {
 };
 
 exports.findBookingWithPayment = async (bookingId) => {
-  return prisma.bookings.findUnique({
+  const dataBookingwithPayment= await prisma.bookings.findUnique({
     where: { id: bookingId },
     include: { services: true, payments: true },
   });
+
+  const serializedData = JSONBigInt.stringify(dataBookingwithPayment);
+  return JSONBigInt.parse(serializedData);
 };
 
 exports.updateStatusByCode = async (bookingCode, status) => {
@@ -456,4 +471,16 @@ exports.updateStatusByCode = async (bookingCode, status) => {
     where: { booking_code: bookingCode },
     data: { status },
   });
+};
+
+exports.updateBookingStatusById = async (bookingId, status) => {
+  const update= await prisma.bookings.update({
+   where: {
+      id:bookingId,
+    },
+     data: { status:status },
+  });
+
+  const serializedData = JSONBigInt.stringify(update);
+  return JSONBigInt.parse(serializedData);
 };

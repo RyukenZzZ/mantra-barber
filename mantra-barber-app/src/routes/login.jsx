@@ -104,8 +104,13 @@ function Login() {
     >
       <div className="w-full max-w-md bg-gray-200 rounded-lg shadow-md p-6 border border-gray-200">
         <div className="flex flex-row justify-center items-center mb-5">
-          <img src={mantraLogo} alt="MantraBarber Logo" className="w-27 h-20" />
-          <p className="font-bold text-xl ms-2">MANTRA BARBER</p>
+          <Link to="/">
+            <img
+              src={mantraLogo}
+              alt="MantraBarber Logo"
+              className="w-30 h-20 cursor-pointer"
+            />
+          </Link>{" "}
         </div>
 
         <div className="mb-4 text-center">

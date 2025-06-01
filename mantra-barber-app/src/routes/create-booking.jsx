@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Button,
   Card,
@@ -12,40 +12,32 @@ import {
   TextInput,
 } from "flowbite-react";
 import bgBooking from "../assets/bg-booking3.jpg";
-import { useEffect, useState } from "react";
-import serviceImage from "../assets/aboutUs.png";
-
-// Contoh user store. Ganti sesuai implementasi kamu (misalnya dari Zustand, Context, Redux, dsb)
-const useUserStore = () => {
-  return {
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "08123456789",
-  };
-};
-
-const barbers = [
-  { name: "Yazid", image: serviceImage },
-  { name: "Rizki", image: serviceImage },
-  { name: "Aloy", image: serviceImage },
-];
-
-const services = [
-  { name: "Haircut" },
-  { name: "Shave" },
-  { name: "Hair Color" },
-];
+import { useMutation, useQuery } from "@tanstack/react-query"; // pastikan sudah terpasang
+import { useEffect, useState,useMemo } from "react";
+import { useSelector } from "react-redux";
+import { getBookings } from "../service/bookings";
+import { getServices } from "../service/services";
+import { getBarbers } from "../service/barbers";
+import { createBooking } from "../service/bookings";
+import { toast } from "react-toastify";
 
 export const Route = createFileRoute("/create-booking")({
   component: CreateBooking,
 });
 
 function CreateBooking() {
-  const user = useUserStore();
+  const navigate = useNavigate();
+  const { user, token } = useSelector((state) => state.auth);
   const [agree, setAgree] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [barber, setBarber] = useState("");
-  const [service, setService] = useState("");
+
+  const [barberName, setBarberName] = useState("");
+  const [barberId, setBarberId] = useState("");
+
+  const [serviceName, setServiceName] = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [price, setPrice] = useState("");
+
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -54,6 +46,75 @@ function CreateBooking() {
   const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
+
+  const { data: services = [] } = useQuery({
+    queryKey: ["getServices"],
+    queryFn: getServices,
+    enabled: !!token,
+  });
+
+  const { data: barbers = [] } = useQuery({
+    queryKey: ["getBarbers"],
+    queryFn: getBarbers,
+    enabled: !!token,
+  });
+
+    const { data: bookings = [] } = useQuery({
+    queryKey: ["getBookings"],
+    queryFn: getBookings,
+    enabled: !!token,
+  });
+
+ const unavailableTimes = useMemo(() => {
+  if (!barberId || !date) return [];
+
+  return bookings
+    .filter(
+      (bk) =>
+        bk.barber_id === barberId &&
+        ["booked", "done", "isPending"].includes(bk.status) &&
+        // cocokan TANGGAL lokal (yyyy-MM-dd)
+        new Date(bk.booking_date).toLocaleDateString("sv-SE") === date
+    )
+    .map((bk) => {
+      const d = new Date(bk.booking_time);          // ← sudah jadi waktu lokal
+      const hh = d.getHours().toString().padStart(2, "0");
+      const mm = d.getMinutes().toString().padStart(2, "0");
+      return `${hh}:${mm}`;                         // contoh "20:00"
+    });
+}, [bookings, barberId, date]);
+
+
+
+  const { mutate: create, isPending } = useMutation({
+    mutationFn: (request) => createBooking(request),
+    onSuccess: (response) => {
+      toast.success("Bookings Created Successfully!");
+
+      // Reset state
+      setStep(1);
+      setBarberName("");
+      setBarberId("");
+      setServiceId("");
+      setServiceName("");
+      setPrice("");
+      setDate("");
+      setTime("");
+      setAgree(false);
+
+      // Ambil payment ID dari response
+      const bookingId = response?.data?.payment?.booking_id;
+      if (bookingId) {
+        navigate({ to: `/payments/${bookingId}` });
+      } else {
+        // fallback jika payment.id tidak ditemukan
+        navigate({ to: "/my-bookings" });
+      }
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
 
   useEffect(() => {
     if (!date) {
@@ -67,11 +128,11 @@ function CreateBooking() {
 
     const day = selectedDate.getDay();
     let startHour = 11;
-    let endHour = 22;
+    let endHour = 21;
 
     if (day === 0 || day === 5 || day === 6) {
       startHour = 10;
-      endHour = 21;
+      endHour = 20;
     }
 
     const times = [];
@@ -83,6 +144,10 @@ function CreateBooking() {
     setAvailableTimes(times);
     setTime("");
   }, [date]);
+
+  useEffect(() => {
+  setTime("");
+}, [date, barberId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -118,6 +183,24 @@ function CreateBooking() {
     setStep(step + 1);
   };
 
+  const onSubmit = () => {
+    const bookingDateTime = new Date(`${date}T${time}:00`).toISOString();
+
+    const bookingData = {
+      barber_id: barberId,
+      service_id: serviceId,
+      booking_date: bookingDateTime,
+      booking_time: bookingDateTime,
+      cust_name: name,
+      cust_phone_number: phone,
+      cust_email: email,
+    };
+
+    console.log("Booking Submitted:", bookingData);
+
+    create(bookingData);
+  };
+
   return (
     <div
       className="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat pt-24"
@@ -127,11 +210,11 @@ function CreateBooking() {
         onSubmit={handleSubmit}
         className="flex-grow flex flex-col items-center px-4"
       >
-        <h1 className="text-2xl md:text-3xl font-bold text-center text-white mb-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mt-4 text-white mb-4">
           {step === 1 ? (
             "Choose Your Barber"
           ) : step === 2 ? (
-            `Choose Your Service for ${barber}`
+            `Choose Your Service for ${barberName}`
           ) : step === 3 ? (
             <>
               User Confirmation &<br />
@@ -146,14 +229,21 @@ function CreateBooking() {
           {step === 1 &&
             barbers.map((b) => (
               <Card
-                key={b.name}
+                key={b.id}
                 className="max-w-sm !bg-white border-3 !border-gray-400"
               >
-                <div className="h-30 sm:h-45 w-full overflow-hidden rounded-t-lg">
+                <div className="h-30 sm:h-40 w-full overflow-hidden rounded-t-lg">
                   <img
-                    src={b.image}
+                    src={
+                      !b.photo_url ||
+                      b.photo_url === "null" ||
+                      b.photo_url === null
+                        ? "https://i.pinimg.com/736x/89/90/48/899048ab0cc455154006fdb9676964b3.jpg"
+                        : b.photo_url
+                    }
                     alt={b.name}
-                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                    className="w-35 h-35 object-cover"
                   />
                 </div>
                 <h5 className="text-xl font-bold tracking-tight text-center text-gray-900">
@@ -163,7 +253,8 @@ function CreateBooking() {
                   color="dark"
                   outline
                   onClick={() => {
-                    setBarber(b.name);
+                    setBarberName(b.name);
+                    setBarberId(b.id);
                     setStep(2);
                   }}
                 >
@@ -175,17 +266,27 @@ function CreateBooking() {
           {step === 2 &&
             services.map((s) => (
               <Card
-                key={s.name}
+                key={s.id}
                 className="max-w-sm !bg-white border-3 !border-gray-400"
               >
-                <h5 className="text-xl font-bold tracking-tight text-center text-gray-900 py-6">
-                  {s.name}
-                </h5>
+                <div className="flex flex-row items-center text-gray-900 py-6">
+                  <h5 className="text-lg font-bold tracking-tight text-center">
+                    {s.name}
+                  </h5>
+
+                  <p className="text-xl font-bold ms-2">
+                    (Rp.{Math.floor(s.price / 1000)}
+                  </p>
+                  <p className="text-lg text-gray-500">k</p>
+                  <p className="text-lg">)</p>
+                </div>
                 <Button
                   color="dark"
                   outline
                   onClick={() => {
-                    setService(s.name);
+                    setServiceName(s.name);
+                    setServiceId(s.id);
+                    setPrice(s.price);
                     setStep(3);
                   }}
                 >
@@ -297,20 +398,21 @@ function CreateBooking() {
                       >
                         -- Pilih Jam --
                       </option>
-                      {availableTimes.map((t) => (
-                        <option
-                          key={t}
-                          value={t}
-                          className={
-                            t === "13:00"
-                              ? "text-gray-400 bg-gray-700"
-                              : "text-white bg-gray-700"
-                          }
-                          disabled={t === "13:00"}
-                        >
-                          {t}
-                        </option>
-                      ))}
+                      {availableTimes.map((t) => {
+  const isDisabled = unavailableTimes.includes(t);   // ← cek jam terpakai
+  return (
+    <option
+      key={t}
+      value={t}
+      disabled={isDisabled}                           // ⛔ non-aktif
+      className={
+        isDisabled ? "text-gray-400 bg-gray-700" : "text-white bg-gray-700"
+      }
+    >
+      {t} {isDisabled && "(booked)"}                   {/* label tambahan */}
+    </option>
+  );
+})}
                     </select>
                   </div>
                 )}
@@ -354,12 +456,12 @@ function CreateBooking() {
                 <p className="col-span-2 ">: {phone}</p>
 
                 <p className="font-semibold">Barber</p>
-                <p className="col-span-2 ">: {barber}</p>
+                <p className="col-span-2 ">: {barberName}</p>
               </div>
 
               <div className="grid grid-cols-3 gap-1">
                 <p className="font-semibold">Layanan</p>
-                <p className="col-span-2 ">: {service}</p>
+                <p className="col-span-2 ">: {serviceName}</p>
 
                 <p className="font-semibold">Tanggal</p>
                 <p className="col-span-2 ">: {date}</p>
@@ -367,8 +469,8 @@ function CreateBooking() {
                 <p className="font-semibold">Jam</p>
                 <p className="col-span-2 ">: {time}</p>
 
-                <p className="font-semibold">Jam</p>
-                <p className="col-span-2 ">: {time}</p>
+                <p className="font-semibold">Price</p>
+                <p className="col-span-2">: {Math.floor(price / 1000)}k</p>
               </div>
             </div>
 
@@ -381,6 +483,7 @@ function CreateBooking() {
                   onChange={(e) => {
                     const checked = e.target.checked;
                     setAgree(checked);
+                    setOpenModal(true);
                   }}
                 />
                 <p className="text-md">
@@ -409,30 +512,10 @@ function CreateBooking() {
               <Button
                 color="dark"
                 className="w-2/3"
-                onClick={() => {
-                  const bookingData = {
-                    name,
-                    email,
-                    phone,
-                    barber,
-                    service,
-                    date,
-                    time,
-                  };
-                  console.log("Booking Submitted:", bookingData);
-                  alert(
-                    `Booking berhasil:\n${JSON.stringify(bookingData, null, 2)}`
-                  );
-                  setStep(1);
-                  setBarber("");
-                  setService("");
-                  setDate("");
-                  setTime("");
-                  setAgree(false);
-                }}
-                disabled={!agree}
+                onClick={onSubmit}
+                disabled={!agree || isPending}
               >
-                Submit Booking
+                {isPending ? "Processing..." : "Submit Booking"}
               </Button>
             </div>
 
@@ -441,20 +524,37 @@ function CreateBooking() {
               <ModalBody className="text-white">
                 <div className="space-y-3 text-sm">
                   <p>
-                    Dengan melakukan booking, Anda menyetujui bahwa Anda akan
-                    datang tepat waktu sesuai dengan jadwal yang dipilih.
+                    Setelah menekan <strong>Submit Booking</strong>, Anda akan
+                    dialihkan ke halaman pembayaran. Tautan pembayaran berlaku
+                    <strong> maksimal 20 menit</strong>; lewat dari itu booking
+                    dibatalkan otomatis.
                   </p>
+
                   <p>
-                    Pembatalan dapat dilakukan maksimal 2 jam sebelum jadwal
-                    booking. Setelah itu, tidak ada refund atau penjadwalan
-                    ulang.
+                    Pembayaran dapat dilakukan dengan <strong>DP 50 %</strong>{" "}
+                    dari total harga layanan. Sisa pembayaran dilunasi setelah
+                    layanan selesai.
                   </p>
+
                   <p>
-                    Harap mengikuti protokol kesehatan dan menjaga ketertiban
-                    selama berada di barbershop.
+                    Ingin reschedule? Silakan hubungi admin melalui nomor yang
+                    tertera di halaman utama{" "}
+                    <strong>paling lambat 2 jam</strong> sebelum jadwal booking.
+                  </p>
+
+                  <p>
+                    <strong>Pembatalan sepihak tidak diperkenankan.</strong>{" "}
+                    Jika booking dibatalkan, seluruh pembayaran yang sudah masuk
+                    dianggap hangus.
+                  </p>
+
+                  <p>
+                    Mohon datang tepat waktu dan tetap mematuhi protokol
+                    kebersihan selama berada di barbershop Terima Kasih.
                   </p>
                 </div>
               </ModalBody>
+
               <ModalFooter>
                 <Button color="dark" onClick={() => setOpenModal(false)}>
                   Saya Mengerti

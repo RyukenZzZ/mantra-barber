@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button, Card } from "flowbite-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ClassNamesPlugin from "embla-carousel-class-names";
-import bgDashboard from "../assets/bgDashboard.jpg";
+import bgDashboard from "../assets/bgDashboard2.jpg";
 import mantraLogo from "../assets/mantraLogo.png";
 import aboutUs from "../assets/aboutUs.png";
 import galeri1 from "../assets/galeri1.jpg";
@@ -10,22 +10,31 @@ import galeri2 from "../assets/galeri2.jpg";
 import galeri3 from "../assets/galeri3.jpg";
 import galeri4 from "../assets/galeri4.jpg";
 import servicesBest from "../assets/services1.jpg";
-import sisirJpg from "../assets/sisir kece.jpg";
-import hairtonicJpg from "../assets/hairtonic2.jpg";
-import powderJpg from "../assets/powder.jpg";
 import bgServices from "../assets/bgServices.jpg";
 import higlightHair from "../assets/highlightHair.jpg";
-import colloringFashion from "../assets/colloringFashion.jpg"
-import permHair from "../assets/permHair.jpg"
+import colloringFashion from "../assets/colloringFashion.jpg";
+import permHair from "../assets/permHair.jpg";
 import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { useEffect, useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { getProducts } from "../service/products/index";
+import Swal from "sweetalert2";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { token } = useSelector((state) => state.auth);
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["getProducts"],
+    queryFn: getProducts,
+    enabled: !!token,
+  });
+
   const images = [galeri1, galeri2, galeri3, galeri4, bgServices, bgDashboard];
   const [emblaRef, embla] = useEmblaCarousel({ loop: true, align: "center" }, [
     ClassNamesPlugin(),
@@ -46,6 +55,23 @@ function Index() {
     onSelect();
   }, [embla, onSelect]);
 
+  const handleBuyNow = async (tokopediaUrl) => {
+    const confirm = await Swal.fire({
+      title: "Lanjutkan ke Tokopedia?",
+      text: "Anda akan dialihkan ke halaman Tokopedia untuk pembelian produk ini.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#aaa",
+      confirmButtonText: "Ya, lanjutkan!",
+      cancelButtonText: "Batal",
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    window.open(tokopediaUrl, "_blank");
+  };
+
   return (
     <div className="font-sans">
       {/* Hero Section */}
@@ -60,7 +86,7 @@ function Index() {
         <div className="absolute bottom-4 left-4 bg-white p-4 rounded shadow">
           <p>📍 Jl. Radar Auri No. 6 Cimanggis, Depok</p>
           <p>📞 +62 878-7828-9019</p>
-          <p>🕒 Mon-Thu: 10AM - 10PM | Fri-Sun: 10AM - 8PM</p>
+          <p>🕒 Mon-Thu: 11AM - 10PM | Fri-Sun: 10AM - 9PM</p>
         </div>
       </section>
 
@@ -77,8 +103,17 @@ function Index() {
               profesional dan suasana yang cozy, kami memastikan setiap
               kunjungan adalah waktu berkualitas untuk merawat diri.
             </p>
-            <p className="font-semibold italic text-sm"> - ✂️ WE MADE YOURSELF BOLD AND CLEAN AS FAST LIKE A MAGIC TOUCH ✂️ -</p>
-            <Button as={Link} to="/create-booking" className="mt-4 w-30" color="dark">
+            <p className="font-semibold italic text-sm">
+              {" "}
+              - ✂️ WE MADE YOURSELF BOLD AND CLEAN AS FAST LIKE A MAGIC TOUCH ✂️
+              -
+            </p>
+            <Button
+              as={Link}
+              to="/create-booking"
+              className="mt-4 w-30"
+              color="dark"
+            >
               BOOK
             </Button>
           </div>
@@ -198,12 +233,14 @@ function Index() {
                 </span>
               </li>
             </ul>
-            <button
+            <Button
+              as={Link}
+              to="/create-booking"
               type="button"
               className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
             >
               Book Now
-            </button>
+            </Button>
           </Card>
 
           <div className="lg:col-span-2 grid grid-rows-3 gap-5">
@@ -253,12 +290,14 @@ function Index() {
                 </div>
 
                 <div className="mt-auto flex justify-end">
-                  <button
+                  <Button
+                    as={Link}
+                    to="/create-booking"
                     type="button"
                     className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
                   >
                     Book Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -309,12 +348,14 @@ function Index() {
                 </div>
 
                 <div className="mt-auto flex justify-end">
-                  <button
+                  <Button
+                    as={Link}
+                    to="/create-booking"
                     type="button"
                     className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
                   >
                     Book Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -364,12 +405,14 @@ function Index() {
                 </div>
 
                 <div className="mt-auto flex justify-end">
-                  <button
+                  <Button
+                    as={Link}
+                    to="/create-booking"
                     type="button"
                     className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
                   >
                     Book Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -380,132 +423,58 @@ function Index() {
       {/* product Section */}
       <section id="product" className="px-6 py-12 bg-gray-100">
         <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
-          <Card className="max-w-sm">
-            <img
-              src={sisirJpg}
-              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
-              className="h-79 w-full object-cover rounded-t-lg"
-            />
-            <div className="p-5">
-              <a href="#">
-                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                  Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon
-                  Barber shop
-                </h5>
-              </a>
-              <div className="mb-5 mt-2.5 flex items-center">
-                {[...Array(5)].map((_, index) => (
-                  <svg
-                    key={index}
-                    className="h-5 w-5 text-yellow-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
-                  4.9
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  15K
-                </span>
-                <a
-                  href="#"
-                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                >
-                  Buy Now
-                </a>
-              </div>
-            </div>
-          </Card>
+        <div className="flex flex-wrap justify-center gap-6">
+          {products.map((product) => (
+            <Card
+              key={product.id}
+              className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
+            >
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="h-[220px] object-contain rounded-t-md "
+              />
 
-          <Card className="max-w-sm">
-            <img
-              src={hairtonicJpg}
-              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
-              className="h-79 w-full object-cover rounded-t-lg"
-            />
-            <div className="p-5">
-              <a href="#">
-                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                  Markarizo Barber Daily 2 in 1 hair tonic
-                </h5>
-              </a>
-              <div className="mb-5 mt-2.5 flex items-center">
-                {[...Array(5)].map((_, index) => (
-                  <svg
-                    key={index}
-                    className="h-5 w-5 text-yellow-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
-                  4.9
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  75K
-                </span>
-                <a
-                  href="#"
-                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                >
-                  Buy Now
+              <div className="p-5 flex flex-col justify-between flex-grow">
+                <a href="#">
+                  <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
+                    {product.name}
+                  </h5>
                 </a>
-              </div>
-            </div>
-          </Card>
-          <Card className="max-w-sm">
-            <img
-              src={powderJpg}
-              alt="Sisir Barber Mesh Comb Styling Texture 3 in 1 kecil Salon Barber shop"
-              className="h-79 w-full object-cover rounded-t-lg"
-            />
-            <div className="p-5">
-              <a href="#">
-                <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">
-                  Hairnerd Profesional Powder Pomade
-                </h5>
-              </a>
-              <div className="mb-5 mt-2.5 flex items-center">
-                {[...Array(5)].map((_, index) => (
-                  <svg
-                    key={index}
-                    className="h-5 w-5 text-yellow-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
+                <div className="mb-5 mt-2.5 flex items-center">
+                  {[...Array(5)].map((_, index) => (
+                    <svg
+                      key={index}
+                      className="h-5 w-5 text-yellow-300"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                  <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                    4.9
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                    {Math.floor(product.price / 1000)}k
+                  </span>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleBuyNow(product.tokopedia_link);
+                    }}
+                    className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
                   >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-                <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
-                  4.9
-                </span>
+                    Buy Now
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  80K
-                </span>
-                <a
-                  href="#"
-                  className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                >
-                  Buy Now
-                </a>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          ))}
         </div>
       </section>
 

@@ -22,3 +22,13 @@ exports.getProfile = async (req, res, next) => {
     delete data.password;
     successResponse(res, data);
 };
+
+exports.updateProfile = async (req, res, next) => {
+    const user_id = req.user.id;
+    const updatedUser = await authService.updateProfile(
+      user_id,
+      req.body,
+      req.files 
+    )
+    successResponse(res, updatedUser);
+};

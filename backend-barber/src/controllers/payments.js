@@ -4,8 +4,10 @@ const { successResponse } = require("../utils/response");
 
 exports.resumePayment = async (req, res) => {
     const user_id = req.user.id;
-    const data = await paymentService.resumePayment(user_id, parseInt(req.params.bookingId));
-    successResponse(res, data.message, data.data);
+    const bookingId = parseInt(req.params.id);
+
+    const data = await paymentService.resumePayment(user_id, bookingId);
+    successResponse(res, data.data, data.message);
 };
 
 exports.handleMidtransNotification = async (req, res) => {

@@ -29,7 +29,7 @@ async function autoCancelExpiredBookings() {
       },
     },
     data: {
-      status: 'cancelled', // Atau status yang kamu inginkan
+      status: 'expired', // Atau status yang kamu inginkan
     },
   });
 

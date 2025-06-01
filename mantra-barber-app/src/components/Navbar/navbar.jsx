@@ -104,17 +104,15 @@ const NavigationBar = () => {
             arrowIcon={false}
             inline
             label={
-              <Avatar
-                alt="User settings"
-                img={
-                  user.profile_picture === "null" ||
-                  user.profile_picture === undefined ||
-                  user.profile_picture === ""
+              <img
+                src={
+                  !user.profile_picture || user.profile_picture === "null" || user.profile_picture === null
                     ? "https://i.pinimg.com/736x/25/a3/3f/25a33f3b84b18d51305822ee72dfcbff.jpg"
                     : user.profile_picture
                 }
-                rounded
-                imgProps={{ referrerPolicy: "no-referrer" }}
+                alt="User avatar"
+                referrerPolicy="no-referrer"
+                className="w-10 h-10 border-1 border-black object-cover rounded-full"
               />
             }
           >
@@ -124,8 +122,10 @@ const NavigationBar = () => {
                 {user.email}
               </span>
             </DropdownHeader>
-            <DropdownItem>My Bookings</DropdownItem>
-            <DropdownItem>Settings</DropdownItem>
+            <DropdownItem as={Link} to="/my-bookings">My Bookings</DropdownItem>
+            <DropdownItem as={Link} to="/profile">
+              Profile
+            </DropdownItem>
             <DropdownDivider />
             <DropdownItem onClick={logout}>Sign out</DropdownItem>
           </Dropdown>
@@ -154,19 +154,20 @@ const NavigationBar = () => {
       <NavbarCollapse>
         <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:justify-end">
           {[
-            { href: "#home", label: "Home" },
-            { href: "#about", label: "About" },
-            { href: "#services", label: "Services" },
-            { href: "#product", label: "Product" },
-            { href: "#gallery", label: "Gallery" },
-          ].map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              className={`${getLinkClass(href)} hover:font-semibold transition duration-200`}
+            { to: "/", label: "Home", hash: "home" },
+            { to: "/", label: "About", hash: "about" }, // pakai hash
+            { to: "/", label: "Services", hash: "services" },
+            { to: "/", label: "Product", hash: "product" },
+            { to: "/", label: "Gallery", hash: "gallery" },
+          ].map(({ to, label, hash }) => (
+            <Link
+              key={`${to}${hash || ""}`}
+              to={to}
+              hash={hash}
+              className={`${getLinkClass(to)} hover:font-semibold transition duration-200`}
             >
               {label}
-            </a>
+            </Link>
           ))}
 
           {!user && (

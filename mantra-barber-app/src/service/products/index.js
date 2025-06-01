@@ -1,21 +1,21 @@
 export const getProducts = async (name) => {
     const token = localStorage.getItem("token");
-    let params = {};
-    if (name) {
-        params.name = name;
+
+    let url = `${import.meta.env.VITE_API_URL}/products`;
+
+      // Validasi: hanya tambahkan jika name adalah string dan tidak kosong
+    if (typeof name === 'string' && name.trim() !== '') {
+        const params = new URLSearchParams({ name });
+        url += `?${params.toString()}`;
     }
-    let url =
-        `${import.meta.env.VITE_API_URL}/products` +
-        new URLSearchParams(params);
 
     const response = await fetch(url, {
+        method: "GET",
         headers: {
             authorization: `Bearer ${token}`,
         },
-        method: "GET",
     });
 
-    // get data
     const result = await response.json();
     if (!result?.success) {
         throw new Error(result?.message);
@@ -23,6 +23,7 @@ export const getProducts = async (name) => {
 
     return result?.data;
 };
+
 
 export const getDetailProducts = async (id) => {
     const token = localStorage.getItem("token");

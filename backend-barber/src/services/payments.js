@@ -1,5 +1,5 @@
 // services/paymentService.js
-const { NotFoundError, Forbidden } = require("../utils/request");
+const { NotFoundError, Forbidden,BadRequestError } = require("../utils/request");
 const midtransClient = require("midtrans-client");
 const paymentRepository = require("../repositories/payments");
 const bookingRepository = require("../repositories/bookings");
@@ -15,24 +15,30 @@ exports.resumePayment = async (userId, bookingId) => {
   if (!booking) throw new NotFoundError("Booking tidak ditemukan");
   if (booking.user_id !== userId) throw new Forbidden("Akses ditolak");
 
-  const payment = booking.payments;
+  const payment = booking.payments[0];
   if (!payment) throw new NotFoundError("Data payment tidak tersedia");
 
   const now = new Date();
+  const expiredTime = new Date(payment.expired_time);
+
   if (payment.status === "paid") {
     return { message: "Pembayaran sudah selesai", data: { paid_at: payment.paid_at } };
   }
-  if (payment.status === "unpaid" && payment.expired_time > now) {
+  if (payment.status === "unpaid" && expiredTime > now) {
     return {
       message: "Lanjutkan pembayaran",
       data: {
-        payment_url: payment.payment_url,
+        snap_token: payment.snap_token,
+        snap_url:payment.snap_url,
         pdf_url: payment.pdf_url,
+        expired_time:expiredTime,
+        amount:payment.amount,
       },
     };
   }
   // TODO: Implement create new transaction if expired
-  return { message: "Pembayaran kadaluarsa, mohon buat ulang." };
+  throw new BadRequestError("Pembayaran sudah kadaluarsa, silakan buat ulang booking.");
+ ;
 };
 
 exports.handleNotification = async (notificationBody) => {

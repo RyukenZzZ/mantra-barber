@@ -12,15 +12,25 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
+import { Route as MyBookingsImport } from './routes/my-bookings'
 import { Route as LoginImport } from './routes/login'
 import { Route as CreateBookingImport } from './routes/create-booking'
 import { Route as IndexImport } from './routes/index'
+import { Route as ProfileIndexImport } from './routes/profile/index'
+import { Route as ProfileEditImport } from './routes/profile/edit'
+import { Route as PaymentsIdImport } from './routes/payments/$id'
 
 // Create/Update Routes
 
 const RegisterRoute = RegisterImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MyBookingsRoute = MyBookingsImport.update({
+  id: '/my-bookings',
+  path: '/my-bookings',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +49,24 @@ const CreateBookingRoute = CreateBookingImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileIndexRoute = ProfileIndexImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileEditRoute = ProfileEditImport.update({
+  id: '/profile/edit',
+  path: '/profile/edit',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PaymentsIdRoute = PaymentsIdImport.update({
+  id: '/payments/$id',
+  path: '/payments/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,11 +95,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/my-bookings': {
+      id: '/my-bookings'
+      path: '/my-bookings'
+      fullPath: '/my-bookings'
+      preLoaderRoute: typeof MyBookingsImport
+      parentRoute: typeof rootRoute
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterImport
+      parentRoute: typeof rootRoute
+    }
+    '/payments/$id': {
+      id: '/payments/$id'
+      path: '/payments/$id'
+      fullPath: '/payments/$id'
+      preLoaderRoute: typeof PaymentsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/profile/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -83,14 +139,22 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/payments/$id': typeof PaymentsIdRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/profile': typeof ProfileIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/payments/$id': typeof PaymentsIdRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/profile': typeof ProfileIndexRoute
 }
 
 export interface FileRoutesById {
@@ -98,15 +162,44 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
   '/login': typeof LoginRoute
+  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/payments/$id': typeof PaymentsIdRoute
+  '/profile/edit': typeof ProfileEditRoute
+  '/profile/': typeof ProfileIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create-booking' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/create-booking'
+    | '/login'
+    | '/my-bookings'
+    | '/register'
+    | '/payments/$id'
+    | '/profile/edit'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create-booking' | '/login' | '/register'
-  id: '__root__' | '/' | '/create-booking' | '/login' | '/register'
+  to:
+    | '/'
+    | '/create-booking'
+    | '/login'
+    | '/my-bookings'
+    | '/register'
+    | '/payments/$id'
+    | '/profile/edit'
+    | '/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/create-booking'
+    | '/login'
+    | '/my-bookings'
+    | '/register'
+    | '/payments/$id'
+    | '/profile/edit'
+    | '/profile/'
   fileRoutesById: FileRoutesById
 }
 
@@ -114,14 +207,22 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateBookingRoute: typeof CreateBookingRoute
   LoginRoute: typeof LoginRoute
+  MyBookingsRoute: typeof MyBookingsRoute
   RegisterRoute: typeof RegisterRoute
+  PaymentsIdRoute: typeof PaymentsIdRoute
+  ProfileEditRoute: typeof ProfileEditRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateBookingRoute: CreateBookingRoute,
   LoginRoute: LoginRoute,
+  MyBookingsRoute: MyBookingsRoute,
   RegisterRoute: RegisterRoute,
+  PaymentsIdRoute: PaymentsIdRoute,
+  ProfileEditRoute: ProfileEditRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -137,7 +238,11 @@ export const routeTree = rootRoute
         "/",
         "/create-booking",
         "/login",
-        "/register"
+        "/my-bookings",
+        "/register",
+        "/payments/$id",
+        "/profile/edit",
+        "/profile/"
       ]
     },
     "/": {
@@ -149,8 +254,20 @@ export const routeTree = rootRoute
     "/login": {
       "filePath": "login.jsx"
     },
+    "/my-bookings": {
+      "filePath": "my-bookings.jsx"
+    },
     "/register": {
       "filePath": "register.jsx"
+    },
+    "/payments/$id": {
+      "filePath": "payments/$id.jsx"
+    },
+    "/profile/edit": {
+      "filePath": "profile/edit.jsx"
+    },
+    "/profile/": {
+      "filePath": "profile/index.jsx"
     }
   }
 }

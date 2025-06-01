@@ -40,3 +40,9 @@ exports.createBooking = async (req, res, next) => {
     successResponse(res, data, "Booking successfully deleted!");
   };
   
+  exports.updateStatusBookingById = async (req,res,next) => {
+    const {id} = req.params;
+    const {status} = req.body;
+    const data = await BookingsServices.updateBookingStatusById(id,status);
+    successResponse(res,data,`Booking ${status}`)
+  }

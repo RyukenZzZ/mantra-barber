@@ -93,3 +93,24 @@ const createToken = (user) => {
     return token;
 };
 
+exports.updateProfile = async (userId, body, file) => {
+  // Ambil user lama
+  const user = await userRepository.getUserById(userId);
+  if (!user) throw new Unauthorized('User not found');
+
+  // Build data yang boleh diubah
+  const updateData = {};
+  if (body.name) updateData.name = body.name;
+  if (body.phone) updateData.phone = body.phone;
+
+  // Jika ada upload foto
+  if (file?.profile_picture) {
+    updateData.profile_picture = await imageUpload(file.profile_picture);
+  }
+
+  // Tidak boleh ganti password di sini
+  const updatedUser = await userRepository.updateUser(userId, updateData);
+
+  delete updatedUser.password;
+  return updatedUser;
+};
