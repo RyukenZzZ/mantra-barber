@@ -13,7 +13,7 @@ import {
 } from "flowbite-react";
 import bgBooking from "../assets/bg-booking3.jpg";
 import { useMutation, useQuery } from "@tanstack/react-query"; // pastikan sudah terpasang
-import { useEffect, useState,useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { getBookings } from "../service/bookings";
 import { getServices } from "../service/services";
@@ -59,32 +59,30 @@ function CreateBooking() {
     enabled: !!token,
   });
 
-    const { data: bookings = [] } = useQuery({
+  const { data: bookings = [] } = useQuery({
     queryKey: ["getBookings"],
     queryFn: getBookings,
     enabled: !!token,
   });
 
- const unavailableTimes = useMemo(() => {
-  if (!barberId || !date) return [];
+  const unavailableTimes = useMemo(() => {
+    if (!barberId || !date) return [];
 
-  return bookings
-    .filter(
-      (bk) =>
-        bk.barber_id === barberId &&
-        ["booked", "done", "isPending"].includes(bk.status) &&
-        // cocokan TANGGAL lokal (yyyy-MM-dd)
-        new Date(bk.booking_date).toLocaleDateString("sv-SE") === date
-    )
-    .map((bk) => {
-      const d = new Date(bk.booking_time);          // ← sudah jadi waktu lokal
-      const hh = d.getHours().toString().padStart(2, "0");
-      const mm = d.getMinutes().toString().padStart(2, "0");
-      return `${hh}:${mm}`;                         // contoh "20:00"
-    });
-}, [bookings, barberId, date]);
-
-
+    return bookings
+      .filter(
+        (bk) =>
+          bk.barber_id === barberId &&
+          ["booked", "done", "isPending"].includes(bk.status) &&
+          // cocokan TANGGAL lokal (yyyy-MM-dd)
+          new Date(bk.booking_date).toLocaleDateString("sv-SE") === date
+      )
+      .map((bk) => {
+        const d = new Date(bk.booking_time); // ← sudah jadi waktu lokal
+        const hh = d.getHours().toString().padStart(2, "0");
+        const mm = d.getMinutes().toString().padStart(2, "0");
+        return `${hh}:${mm}`; // contoh "20:00"
+      });
+  }, [bookings, barberId, date]);
 
   const { mutate: create, isPending } = useMutation({
     mutationFn: (request) => createBooking(request),
@@ -146,8 +144,8 @@ function CreateBooking() {
   }, [date]);
 
   useEffect(() => {
-  setTime("");
-}, [date, barberId]);
+    setTime("");
+  }, [date, barberId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -399,20 +397,23 @@ function CreateBooking() {
                         -- Pilih Jam --
                       </option>
                       {availableTimes.map((t) => {
-  const isDisabled = unavailableTimes.includes(t);   // ← cek jam terpakai
-  return (
-    <option
-      key={t}
-      value={t}
-      disabled={isDisabled}                           // ⛔ non-aktif
-      className={
-        isDisabled ? "text-gray-400 bg-gray-700" : "text-white bg-gray-700"
-      }
-    >
-      {t} {isDisabled && "(booked)"}                   {/* label tambahan */}
-    </option>
-  );
-})}
+                        const isDisabled = unavailableTimes.includes(t); // ← cek jam terpakai
+                        return (
+                          <option
+                            key={t}
+                            value={t}
+                            disabled={isDisabled} // ⛔ non-aktif
+                            className={
+                              isDisabled
+                                ? "text-gray-400 bg-gray-700"
+                                : "text-white bg-gray-700"
+                            }
+                          >
+                            {t} {isDisabled && "(booked)"}{" "}
+                            {/* label tambahan */}
+                          </option>
+                        );
+                      })}
                     </select>
                   </div>
                 )}

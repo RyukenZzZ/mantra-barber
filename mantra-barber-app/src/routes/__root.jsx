@@ -11,7 +11,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const hideNavbarOn = ["/login", "/register"];
+  const hideNavbarOn = ["/login", "/register","/admin/dashboard"];
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>

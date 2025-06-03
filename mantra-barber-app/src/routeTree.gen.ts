@@ -19,6 +19,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as ProfileEditImport } from './routes/profile/edit'
 import { Route as PaymentsIdImport } from './routes/payments/$id'
+import { Route as AdminDashboardImport } from './routes/admin/dashboard'
 
 // Create/Update Routes
 
@@ -70,6 +71,12 @@ const PaymentsIdRoute = PaymentsIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminDashboardRoute = AdminDashboardImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -109,6 +116,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardImport
+      parentRoute: typeof rootRoute
+    }
     '/payments/$id': {
       id: '/payments/$id'
       path: '/payments/$id'
@@ -141,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile': typeof ProfileIndexRoute
@@ -152,6 +167,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile': typeof ProfileIndexRoute
@@ -164,6 +180,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile/': typeof ProfileIndexRoute
@@ -177,6 +194,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/dashboard'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile'
@@ -187,6 +205,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/dashboard'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile'
@@ -197,6 +216,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/dashboard'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile/'
@@ -209,6 +229,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MyBookingsRoute: typeof MyBookingsRoute
   RegisterRoute: typeof RegisterRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
   PaymentsIdRoute: typeof PaymentsIdRoute
   ProfileEditRoute: typeof ProfileEditRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
@@ -220,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MyBookingsRoute: MyBookingsRoute,
   RegisterRoute: RegisterRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
   PaymentsIdRoute: PaymentsIdRoute,
   ProfileEditRoute: ProfileEditRoute,
   ProfileIndexRoute: ProfileIndexRoute,
@@ -240,6 +262,7 @@ export const routeTree = rootRoute
         "/login",
         "/my-bookings",
         "/register",
+        "/admin/dashboard",
         "/payments/$id",
         "/profile/edit",
         "/profile/"
@@ -259,6 +282,9 @@ export const routeTree = rootRoute
     },
     "/register": {
       "filePath": "register.jsx"
+    },
+    "/admin/dashboard": {
+      "filePath": "admin/dashboard.jsx"
     },
     "/payments/$id": {
       "filePath": "payments/$id.jsx"
