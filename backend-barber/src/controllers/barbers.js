@@ -1,4 +1,4 @@
-const barbersServices = require("../services/Barbers");
+const barbersServices = require("../services/barbers");
 const {successResponse} = require("../utils/response");
 
 exports.getBarbers = async (req,res,next) => {

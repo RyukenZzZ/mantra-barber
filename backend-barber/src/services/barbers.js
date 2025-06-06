@@ -1,4 +1,4 @@
-const BarberRepository = require("../repositories/Barbers");
+const BarberRepository = require("../repositories/barbers");
 const { imageUpload } = require("../utils/image-kit");
 const { NotFoundError, InternalServerError } = require("../utils/request");
 
