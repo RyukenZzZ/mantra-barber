@@ -1,4 +1,5 @@
 const BookingRepository = require("../repositories/bookings");
+const paymentRepository = require("../repositories/payments");
 const { v4: uuidv4 } = require('uuid');
 const { NotFoundError, InternalServerError } = require("../utils/request");
 
@@ -79,8 +80,13 @@ exports.deleteBookingById = async (id) => {
 
 exports.updateBookingStatusById = async(bookingId,status) => {
   const existingBooking = await BookingRepository.getBookingById(bookingId);
-    if (!existingBooking) {
+  if (!existingBooking) {
     throw new NotFoundError("Booking not found!");
+  }
+
+    const payment = await paymentRepository.getPaymentById(bookingId);
+    if (!payment) {
+    throw new NotFoundError("Payment not found!");
   }
 
   const updatedBookingStatusById= await BookingRepository.updateBookingStatusById(bookingId,status);
@@ -88,6 +94,14 @@ exports.updateBookingStatusById = async(bookingId,status) => {
     throw new InternalServerError("Failed to update the Booking Status !");
   }
 
-  return updatedBookingStatusById;
+  const updatedPaymentStatusById = await paymentRepository.updatePaymentStatusById(payment.id,status);
+  if (!updatedPaymentStatusById){
+    throw new InternalServerError("Failed to update the Payment Status !");
+  }
+
+return {
+  booking: updatedBookingStatusById,
+  payment: updatedPaymentStatusById,
+};
 
 }

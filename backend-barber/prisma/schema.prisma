@@ -107,6 +107,8 @@ enum payment_status {
   unpaid
   expired
   failed
+  cancelled
+  done
 }
 
 enum user_role {

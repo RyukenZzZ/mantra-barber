@@ -397,20 +397,43 @@ function CreateBooking() {
                         -- Pilih Jam --
                       </option>
                       {availableTimes.map((t) => {
-                        const isDisabled = unavailableTimes.includes(t); // ← cek jam terpakai
+                        const isBooked = unavailableTimes.includes(t);
+
+                        // Waktu sekarang + 1 jam
+                        const now = new Date();
+                         const oneHourLater = new Date(
+                          now.getTime() + 60 * 45 * 1000 //unavaible 45 mnt sejam berikutnya
+                        );
+
+                        // Buat waktu jam pilihan pada tanggal yg dipilih
+                        const [hourStr, minuteStr] = t.split(":");
+                        const selectedDateTime = new Date(date);
+                        selectedDateTime.setHours(
+                          parseInt(hourStr, 10),
+                          parseInt(minuteStr, 10),
+                          0,
+                          0
+                        );
+
+                        // Disable jika sudah booked atau waktu sudah lewat sekarang + 1 jam
+                        const isDisabled =
+                          isBooked || selectedDateTime <= oneHourLater;
+
                         return (
                           <option
                             key={t}
                             value={t}
-                            disabled={isDisabled} // ⛔ non-aktif
+                            disabled={isDisabled}
                             className={
                               isDisabled
                                 ? "text-gray-400 bg-gray-700"
                                 : "text-white bg-gray-700"
                             }
                           >
-                            {t} {isDisabled && "(booked)"}{" "}
-                            {/* label tambahan */}
+                            {t} {isBooked && "(booked)"}
+                            {selectedDateTime <= oneHourLater &&
+                              !isBooked &&
+                              " (not available)"}
                           </option>
                         );
                       })}

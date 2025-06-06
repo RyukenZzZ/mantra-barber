@@ -96,7 +96,9 @@ function MyBookingComponent() {
           </Alert>
         )}
 
-        {myBookings.map((booking) => {
+{[...myBookings]
+  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  .map((booking) => {
           const name = booking.cust_name;
           const email = booking.cust_email;
           const phone = booking.cust_phone_number;

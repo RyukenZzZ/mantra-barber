@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
 
 exports.markAsPaid = async (orderId) => {
@@ -7,3 +8,27 @@ exports.markAsPaid = async (orderId) => {
     data: { status: "paid", paid_at: new Date() },
   });
 };
+
+exports.updatePaymentStatusById = async (id, status) => {
+  const update= await prisma.payments.update({
+   where: {
+      id:id,
+    },
+     data: { status:status },
+  });
+
+  const serializedData = JSONBigInt.stringify(update);
+  return JSONBigInt.parse(serializedData);
+};
+
+exports.getPaymentById = async (bookingId) => {
+  const payment = await prisma.payments.findFirst({
+    where: {
+      booking_id: bookingId,
+    },
+  });
+
+    if (!payment) return null;
+  const serializedData = JSONBigInt.stringify(payment);
+  return JSONBigInt.parse(serializedData);
+}
