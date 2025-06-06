@@ -31,6 +31,10 @@ app.use(
     })
 );
 
+app.get("/", (req, res) => {
+  res.status(200).json({ message: "ping successfully" });
+});
+
 // All routes define here
 app.use("/", router);
 
