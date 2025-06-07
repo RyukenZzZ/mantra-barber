@@ -9,12 +9,12 @@ exports.markAsPaid = async (orderId) => {
   });
 };
 
-exports.updatePaymentStatusById = async (id, status) => {
+exports.updatePaymentStatusById = async (id, status,amount) => {
   const update= await prisma.payments.update({
    where: {
       id:id,
     },
-     data: { status:status },
+     data: { status:status,amount:amount },
   });
 
   const serializedData = JSONBigInt.stringify(update);

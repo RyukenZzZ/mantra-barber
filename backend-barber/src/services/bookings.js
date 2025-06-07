@@ -78,30 +78,37 @@ exports.deleteBookingById = async (id) => {
   return deletedBooking;
 };
 
-exports.updateBookingStatusById = async(bookingId,status) => {
+exports.updateBookingStatusById = async (bookingId, status) => {
   const existingBooking = await BookingRepository.getBookingById(bookingId);
   if (!existingBooking) {
     throw new NotFoundError("Booking not found!");
   }
 
-    const payment = await paymentRepository.getPaymentById(bookingId);
-    if (!payment) {
+  const payment = await paymentRepository.getPaymentById(bookingId);
+  if (!payment) {
     throw new NotFoundError("Payment not found!");
   }
 
-  const updatedBookingStatusById= await BookingRepository.updateBookingStatusById(bookingId,status);
-    if (!updatedBookingStatusById) {
-    throw new InternalServerError("Failed to update the Booking Status !");
+  const updatedBookingStatusById = await BookingRepository.updateBookingStatusById(bookingId, status);
+  if (!updatedBookingStatusById) {
+    throw new InternalServerError("Failed to update the Booking Status!");
   }
 
-  const updatedPaymentStatusById = await paymentRepository.updatePaymentStatusById(payment.id,status);
-  if (!updatedPaymentStatusById){
-    throw new InternalServerError("Failed to update the Payment Status !");
+  // Logika: jika status "done", maka bayar lunas (amount * 2)
+  const newAmount = status === "done" ? payment.amount * 2 : payment.amount;
+
+  const updatedPaymentStatusById = await paymentRepository.updatePaymentStatusById(
+    payment.id,
+    status,
+    newAmount
+  );
+
+  if (!updatedPaymentStatusById) {
+    throw new InternalServerError("Failed to update the Payment Status!");
   }
 
-return {
-  booking: updatedBookingStatusById,
-  payment: updatedPaymentStatusById,
+  return {
+    booking: updatedBookingStatusById,
+    payment: updatedPaymentStatusById,
+  };
 };
-
-}

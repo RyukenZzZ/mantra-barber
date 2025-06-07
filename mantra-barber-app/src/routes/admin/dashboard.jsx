@@ -77,7 +77,7 @@ const completedBookings = Bookings.filter(
 
 const todayRevenue = Bookings.filter(
   (b) =>
-    b.status === "done" && isToday(parseISO(b.booking_date))
+    b.status === "done"|| b.status === "isPending" && isToday(parseISO(b.booking_date))
 ).reduce((total, b) => total + (b.services?.price || 0), 0) / 1000;
 
   return (
@@ -160,7 +160,7 @@ const todayRevenue = Bookings.filter(
 <tbody className="divide-y text-center divide-gray-100">
   {[...Bookings]
     .filter((booking) =>
-      ["booked", "done", "pending"].includes(booking.status)
+      ["booked", "done", "isPending"].includes(booking.status)
     )
     .sort((a, b) => {
       const dateA = new Date(`${a.booking_date}T${a.booking_time}`);
@@ -182,7 +182,7 @@ const todayRevenue = Bookings.filter(
     ) : (
       [...Bookings]
         .filter((booking) =>
-          ["booked", "done", "pending"].includes(booking.status)
+          ["booked", "done", "isPending"].includes(booking.status)
         )
         .sort((a, b) => {
           const dateA = new Date(`${a.booking_date}T${a.booking_time}`);
