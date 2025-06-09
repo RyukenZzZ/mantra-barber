@@ -54,7 +54,7 @@ export const createBarber = async (request) => {
     formData.append("bio", request.bio);
     formData.append("is_active", request.is_active);
     if (request.photo_url) {
-        formData.append("profile_picture", request.photo_url);
+        formData.append("photo_url", request.photo_url);
     }
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/barbers`, {
@@ -78,7 +78,7 @@ export const updateBarber = async (id, request) => {
     formData.append("bio", request.bio);
     formData.append("is_active", request.is_active);
     if (request.photo_url) {
-        formData.append("profile_picture", request.photo_url);
+        formData.append("photo_url", request.photo_url);
     }
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/barbers/${id}`,

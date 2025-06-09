@@ -54,7 +54,7 @@ function MyBookingComponent() {
     Swal.fire({
       title: "Ingin Melakukan Reschedule?",
       html: `
-      <p>Silakan hubungi admin untuk melakukan reschedule, kirimnkan booking id dan Nama !</p>
+      <p>Silakan hubungi admin untuk melakukan reschedule, kirimnkan booking Code dan Nama !</p>
       <p class="mt-2 text-red-600 font-semibold">⚠️ Reschedule hanya dapat dilakukan sekali! ⚠️</p>
     `,
       icon: "info",

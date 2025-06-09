@@ -7,7 +7,7 @@ import {
   HiOutlineDocument,
   HiMenuAlt1,
 } from "react-icons/hi";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   Navbar,
   Avatar,
@@ -17,12 +17,17 @@ import {
 } from "flowbite-react";
 import mantraLogo from "../../assets/mantraLogo.png";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
+import { setToken, setUser } from "../../redux/slices/auth";
+import { toast } from "react-toastify";
 
 const SideBar = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isHovering, setIsHovering] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleResize = () => {
     if (window.innerWidth < 1024) {
@@ -41,6 +46,13 @@ const SideBar = ({ children }) => {
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
+    const handleLogout = useCallback(() => {
+    dispatch(setUser(null));
+    dispatch(setToken(null));
+    toast.success("Logout berhasil");
+    navigate({ to: "/login" });
+  }, [dispatch, navigate]);
 
   const shouldShowFullSidebar = isSidebarOpen || isHovering;
 
@@ -93,9 +105,9 @@ const SideBar = ({ children }) => {
               open={shouldShowFullSidebar}
             />
             <SidebarLink
-              to="/admin/customers"
+              to="/admin/barbers"
               icon={<HiUser />}
-              label="Customers"
+              label="Barbers"
               open={shouldShowFullSidebar}
             />
             <SidebarLink
@@ -105,9 +117,9 @@ const SideBar = ({ children }) => {
               open={shouldShowFullSidebar}
             />
             <SidebarLink
-              to="/admin/reports"
+              to="/admin/products"
               icon={<HiOutlineDocument />}
-              label="Reports"
+              label="Products"
               open={shouldShowFullSidebar}
             />
           </ul>
@@ -153,7 +165,7 @@ const SideBar = ({ children }) => {
     <span className="block text-sm">{user.name}</span>
     <span className="block truncate text-sm font-medium">{user.email}</span>
   </DropdownHeader>
-  <DropdownItem icon={HiOutlineLogout}>Logout</DropdownItem>
+  <DropdownItem icon={HiOutlineLogout} onClick={handleLogout}>Logout</DropdownItem>
 </Dropdown>
 
           </div>

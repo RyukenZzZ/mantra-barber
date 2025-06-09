@@ -19,7 +19,11 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as ProfileEditImport } from './routes/profile/edit'
 import { Route as PaymentsIdImport } from './routes/payments/$id'
+import { Route as AdminServicesImport } from './routes/admin/services'
+import { Route as AdminProductsImport } from './routes/admin/products'
 import { Route as AdminDashboardImport } from './routes/admin/dashboard'
+import { Route as AdminBookingsImport } from './routes/admin/bookings'
+import { Route as AdminBarbersImport } from './routes/admin/barbers'
 
 // Create/Update Routes
 
@@ -71,9 +75,33 @@ const PaymentsIdRoute = PaymentsIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminServicesRoute = AdminServicesImport.update({
+  id: '/admin/services',
+  path: '/admin/services',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminProductsRoute = AdminProductsImport.update({
+  id: '/admin/products',
+  path: '/admin/products',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AdminDashboardRoute = AdminDashboardImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminBookingsRoute = AdminBookingsImport.update({
+  id: '/admin/bookings',
+  path: '/admin/bookings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminBarbersRoute = AdminBarbersImport.update({
+  id: '/admin/barbers',
+  path: '/admin/barbers',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -116,11 +144,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterImport
       parentRoute: typeof rootRoute
     }
+    '/admin/barbers': {
+      id: '/admin/barbers'
+      path: '/admin/barbers'
+      fullPath: '/admin/barbers'
+      preLoaderRoute: typeof AdminBarbersImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/bookings': {
+      id: '/admin/bookings'
+      path: '/admin/bookings'
+      fullPath: '/admin/bookings'
+      preLoaderRoute: typeof AdminBookingsImport
+      parentRoute: typeof rootRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/admin/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/admin/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/services': {
+      id: '/admin/services'
+      path: '/admin/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AdminServicesImport
       parentRoute: typeof rootRoute
     }
     '/payments/$id': {
@@ -155,7 +211,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/barbers': typeof AdminBarbersRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile': typeof ProfileIndexRoute
@@ -167,7 +227,11 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/barbers': typeof AdminBarbersRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile': typeof ProfileIndexRoute
@@ -180,7 +244,11 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
+  '/admin/barbers': typeof AdminBarbersRoute
+  '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/products': typeof AdminProductsRoute
+  '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
   '/profile/': typeof ProfileIndexRoute
@@ -194,7 +262,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/barbers'
+    | '/admin/bookings'
     | '/admin/dashboard'
+    | '/admin/products'
+    | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile'
@@ -205,7 +277,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/barbers'
+    | '/admin/bookings'
     | '/admin/dashboard'
+    | '/admin/products'
+    | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile'
@@ -216,7 +292,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/my-bookings'
     | '/register'
+    | '/admin/barbers'
+    | '/admin/bookings'
     | '/admin/dashboard'
+    | '/admin/products'
+    | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
     | '/profile/'
@@ -229,7 +309,11 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MyBookingsRoute: typeof MyBookingsRoute
   RegisterRoute: typeof RegisterRoute
+  AdminBarbersRoute: typeof AdminBarbersRoute
+  AdminBookingsRoute: typeof AdminBookingsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminProductsRoute: typeof AdminProductsRoute
+  AdminServicesRoute: typeof AdminServicesRoute
   PaymentsIdRoute: typeof PaymentsIdRoute
   ProfileEditRoute: typeof ProfileEditRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
@@ -241,7 +325,11 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MyBookingsRoute: MyBookingsRoute,
   RegisterRoute: RegisterRoute,
+  AdminBarbersRoute: AdminBarbersRoute,
+  AdminBookingsRoute: AdminBookingsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminProductsRoute: AdminProductsRoute,
+  AdminServicesRoute: AdminServicesRoute,
   PaymentsIdRoute: PaymentsIdRoute,
   ProfileEditRoute: ProfileEditRoute,
   ProfileIndexRoute: ProfileIndexRoute,
@@ -262,7 +350,11 @@ export const routeTree = rootRoute
         "/login",
         "/my-bookings",
         "/register",
+        "/admin/barbers",
+        "/admin/bookings",
         "/admin/dashboard",
+        "/admin/products",
+        "/admin/services",
         "/payments/$id",
         "/profile/edit",
         "/profile/"
@@ -283,8 +375,20 @@ export const routeTree = rootRoute
     "/register": {
       "filePath": "register.jsx"
     },
+    "/admin/barbers": {
+      "filePath": "admin/barbers.jsx"
+    },
+    "/admin/bookings": {
+      "filePath": "admin/bookings.jsx"
+    },
     "/admin/dashboard": {
       "filePath": "admin/dashboard.jsx"
+    },
+    "/admin/products": {
+      "filePath": "admin/products.jsx"
+    },
+    "/admin/services": {
+      "filePath": "admin/services.jsx"
     },
     "/payments/$id": {
       "filePath": "payments/$id.jsx"

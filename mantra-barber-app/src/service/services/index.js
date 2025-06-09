@@ -57,7 +57,7 @@ export const createService = async (request) => {
     formData.append("price", request.price);
 
     if (request.image) {
-        formData.append("profile_picture", request.image);
+        formData.append("image", request.image);
     }
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/services`, {
@@ -81,7 +81,7 @@ export const updateService = async (id, request) => {
     formData.append("description", request.description);
     formData.append("price", request.price);
     if (request.image) {
-        formData.append("profile_picture", request.image);
+        formData.append("image", request.image);
     }
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/services/${id}`,

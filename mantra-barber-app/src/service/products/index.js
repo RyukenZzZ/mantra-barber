@@ -56,7 +56,7 @@ export const createProduct = async (request) => {
     formData.append("tokopedia_link", request.tokopedia_link);
 
     if (request.image_url) {
-        formData.append("profile_picture", request.image_url);
+        formData.append("image_url", request.image_url);
     }
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
@@ -81,7 +81,7 @@ export const updateProduct = async (id, request) => {
     formData.append("price", request.price);
     formData.append("tokopedia_link", request.tokopedia_link);
     if (request.image_url) {
-        formData.append("profile_picture", request.image_url);
+        formData.append("image_url", request.image_url);
     }
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/products/${id}`,

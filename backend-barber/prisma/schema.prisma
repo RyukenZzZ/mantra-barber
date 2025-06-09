@@ -13,6 +13,7 @@ model barbers {
   bio       String?
   photo_url String?    @db.VarChar
   is_active Boolean?   @default(true)
+  reset_count_from DateTime?  @default(now()) @db.Timestamp(6)
   bookings  bookings[]
 }
 

@@ -267,16 +267,14 @@ function CreateBooking() {
                 key={s.id}
                 className="max-w-sm !bg-white border-3 !border-gray-400"
               >
-                <div className="flex flex-row items-center text-gray-900 py-6">
+                <div className="flex flex-row items-center justify-center text-gray-900 py-6">
                   <h5 className="text-lg font-bold tracking-tight text-center">
                     {s.name}
                   </h5>
 
                   <p className="text-xl font-bold ms-2">
-                    (Rp.{Math.floor(s.price / 1000)}
+                    (Rp.{Math.floor(s.price / 1000)}K)
                   </p>
-                  <p className="text-lg text-gray-500">k</p>
-                  <p className="text-lg">)</p>
                 </div>
                 <Button
                   color="dark"

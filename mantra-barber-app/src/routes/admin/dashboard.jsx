@@ -8,12 +8,12 @@ import {
 } from "react-icons/hi2";
 import { getBookings } from "../../service/bookings";
 import { useSelector } from "react-redux";
-import { isToday,isAfter,format, parseISO } from "date-fns";
+import { isToday, isAfter, format, parseISO, parse } from "date-fns";
 import { id } from "date-fns/locale";
 import { doneBooking } from "../../service/payments";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import notFoundBooking from "../../assets/notFoundBooking.png"
+import notFoundBooking from "../../assets/notFoundBooking.png";
 
 export const Route = createFileRoute("/admin/dashboard")({
   component: AdminDashboardComponent,
@@ -24,7 +24,7 @@ function AdminDashboardComponent() {
 
   const { token } = useSelector((state) => state.auth);
 
-  const { data: Bookings = [] } = useQuery({
+  const { data: Bookings = [], isLoading } = useQuery({
     queryKey: ["getBookings"],
     queryFn: getBookings,
     enabled: !!token,
@@ -59,26 +59,41 @@ function AdminDashboardComponent() {
     });
   }
 
-  const filteredBookings = Bookings.filter(
-  (b) => ["booked", "pending"].includes(b.status)
-);
+  const filteredBookings = Bookings.filter((b) =>
+    ["booked", "pending"].includes(b.status)
+  );
 
-const todayBookings = filteredBookings.filter((b) =>
-  isToday(parseISO(b.booking_date))
-).length;
+  const todayBookings = filteredBookings.filter((b) =>
+    isToday(parseISO(b.booking_date))
+  ).length;
 
-const upcomingBookings = filteredBookings.filter((b) =>
-  isAfter(parseISO(b.booking_date), new Date())
-).length;
+  const upcomingBookings = filteredBookings.filter((b) =>
+    isAfter(parseISO(b.booking_date), new Date())
+  ).length;
 
-const completedBookings = Bookings.filter(
-  (b) => b.status === "done"
-).length;
+  const completedBookings = Bookings.filter(
+    (b) => b.status === "done" && isToday(parseISO(b.booking_date))
+  ).length;
 
-const todayRevenue = Bookings.filter(
-  (b) =>
-    b.status === "done"|| b.status === "isPending" && isToday(parseISO(b.booking_date))
-).reduce((total, b) => total + (b.services?.price || 0), 0) / 1000;
+  const todayRevenue = Bookings.filter(
+    (b) =>
+      isToday(parseISO(b.booking_date)) &&
+      ["done", "booked", "cancelled"].includes(b.status)
+  ).reduce((total, b) => {
+    const price = b.services?.price || 0;
+    if (b.status === "done") {
+      return total + price;
+    } else if (b.status === "booked" || b.status === "cancelled") {
+      return total + price / 2;
+    }
+    return total;
+  }, 0);
+
+  const todayRevenueFormatted = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  }).format(todayRevenue);
 
   return (
     <div className="py-2">
@@ -130,7 +145,7 @@ const todayRevenue = Bookings.filter(
             </div>
             <div>
               <p className="text-sm text-gray-500">Pendapatan Hari Ini</p>
-              <h3 className="text-2xl font-bold">Rp {todayRevenue}.000</h3>
+              <h3 className="text-2xl font-bold">{todayRevenueFormatted}</h3>
             </div>
           </div>
         </div>
@@ -138,7 +153,7 @@ const todayRevenue = Bookings.filter(
 
       <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-300">
         <div className="flex items-center justify-between px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold">Booking Terbaru</h2>
+          <h2 className="text-lg font-semibold">Booking Hari Ini</h2>
           <button className="text-sm text-blue-600 hover:underline">
             Lihat Semua
           </button>
@@ -157,82 +172,157 @@ const todayRevenue = Bookings.filter(
                 <th className="px-6 py-3">Aksi</th>
               </tr>
             </thead>
-<tbody className="divide-y text-center divide-gray-100">
-  {[...Bookings]
-    .filter((booking) =>
-      ["booked", "done", "isPending"].includes(booking.status)
-    )
-    .sort((a, b) => {
-      const dateA = new Date(`${a.booking_date}T${a.booking_time}`);
-      const dateB = new Date(`${b.booking_date}T${b.booking_time}`);
-      return dateB - dateA;
-    }).length === 0 ? (
-      <tr>
-        <td colSpan="8" className="py-10 text-center text-gray-500">
-          <div className="flex flex-col items-center justify-center">
-            <img
-              src={notFoundBooking} // ganti dengan link ilustrasi lain jika perlu
-              alt="No Bookings"
-              className="w-60 h-60 mb-4"
-            />
-            <p className="text-lg font-semibold">Belum ada booking untuk hari ini</p>
-          </div>
-        </td>
-      </tr>
-    ) : (
-      [...Bookings]
-        .filter((booking) =>
-          ["booked", "done", "isPending"].includes(booking.status)
-        )
-        .sort((a, b) => {
-          const dateA = new Date(`${a.booking_date}T${a.booking_time}`);
-          const dateB = new Date(`${b.booking_date}T${b.booking_time}`);
-          return dateB - dateA;
-        })
-        .map((booking, index) => (
-          <tr key={booking.id} className="hover:bg-gray-50">
-<td className="px-6 py-4">{index + 1}</td>
-                    <td className="px-6 py-4">{booking.cust_name}</td>
-                    <td className="px-6 py-4">{booking.cust_phone_number}</td>
-                    <td className="px-6 py-4">
-                      {format(parseISO(booking.booking_date), "dd MMMM yyyy", {
-                        locale: id,
-                      })}
-                    </td>
-                    <td className="px-6 py-4">
-                      {format(parseISO(`${booking.booking_time}`), "HH:mm")} WIB
-                    </td>
+            <tbody className="divide-y text-center divide-gray-100">
+              {isLoading ? (
+                <tr>
+                  <td colSpan="8" className="py-10">
+                    <div className="flex justify-center items-center">
+                      <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-600"></div>
+                    </div>
+                  </td>
+                </tr>
+              ) : [...Bookings]
+                  .filter((booking) => {
+                    const date = parseISO(booking.booking_date);
+                    return (
+                      isToday(date) &&
+                      ["booked", "done", "pending"].includes(booking.status)
+                    );
+                  })
+                  .sort((a, b) => {
+                    const dateStrA = format(
+                      parseISO(a.booking_date),
+                      "yyyy-MM-dd"
+                    );
+                    const timeStrA = a.booking_time
+                      ? format(parseISO(a.booking_time), "HH:mm")
+                      : "00:00";
 
-                    <td className="px-6 py-4">
-                      {booking.services?.name} (Rp{" "}
-                      {Math.floor(booking.services?.price / 1000)}K)
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === "done"
-                            ? "bg-green-100 text-green-600"
-                            : booking.status === "pending"
-                              ? "bg-yellow-100 text-yellow-600"
-                              : booking.status === "booked"
-                                ? "bg-blue-100 text-blue-600"
-                                : "bg-red-100 text-red-600"
-                        }`}
-                      >
-                        {booking.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <button
-                        className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-full"
-                        onClick={() => handleMarkAsDone(booking.id)}
-                      >
-                        Done
-                      </button>
-                    </td>          </tr>
-        ))
-    )}
-</tbody>
+                    const dateStrB = format(
+                      parseISO(b.booking_date),
+                      "yyyy-MM-dd"
+                    );
+                    const timeStrB = b.booking_time
+                      ? format(parseISO(b.booking_time), "HH:mm")
+                      : "00:00";
+
+                    const dateTimeA = parse(
+                      `${dateStrA} ${timeStrA}`,
+                      "yyyy-MM-dd HH:mm",
+                      new Date()
+                    );
+                    const dateTimeB = parse(
+                      `${dateStrB} ${timeStrB}`,
+                      "yyyy-MM-dd HH:mm",
+                      new Date()
+                    );
+
+                    return dateTimeA - dateTimeB; // descending order
+                  }).length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="py-10 text-center text-gray-500">
+                    <div className="flex flex-col items-center justify-center">
+                      <img
+                        src={notFoundBooking} // ganti dengan link ilustrasi lain jika perlu
+                        alt="No Bookings"
+                        className="w-60 h-60 mb-4"
+                      />
+                      <p className="text-lg font-semibold">
+                        Belum ada booking untuk hari ini
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                [...Bookings]
+                  .filter((booking) => {
+                    const date = parseISO(booking.booking_date);
+                    return (
+                      isToday(date) &&
+                      ["booked", "done", "pending"].includes(booking.status)
+                    );
+                  })
+                  .sort((a, b) => {
+                    const dateStrA = format(
+                      parseISO(a.booking_date),
+                      "yyyy-MM-dd"
+                    );
+                    const timeStrA = a.booking_time
+                      ? format(parseISO(a.booking_time), "HH:mm")
+                      : "00:00";
+
+                    const dateStrB = format(
+                      parseISO(b.booking_date),
+                      "yyyy-MM-dd"
+                    );
+                    const timeStrB = b.booking_time
+                      ? format(parseISO(b.booking_time), "HH:mm")
+                      : "00:00";
+
+                    const dateTimeA = parse(
+                      `${dateStrA} ${timeStrA}`,
+                      "yyyy-MM-dd HH:mm",
+                      new Date()
+                    );
+                    const dateTimeB = parse(
+                      `${dateStrB} ${timeStrB}`,
+                      "yyyy-MM-dd HH:mm",
+                      new Date()
+                    );
+
+                    return dateTimeA - dateTimeB; // descending order
+                  })
+                  .map((booking, index) => (
+                    <tr key={booking.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">{index + 1}</td>
+                      <td className="px-6 py-4">{booking.cust_name}</td>
+                      <td className="px-6 py-4">{booking.cust_phone_number}</td>
+                      <td className="px-6 py-4">
+                        {format(
+                          parseISO(booking.booking_date),
+                          "dd MMMM yyyy",
+                          {
+                            locale: id,
+                          }
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        {format(parseISO(`${booking.booking_time}`), "HH:mm")}{" "}
+                        WIB
+                      </td>
+                      <td className="px-6 py-4">
+                        {booking.services?.name} (Rp{" "}
+                        {Math.floor(booking.services?.price / 1000)}K)
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-2 rounded-full text-sm font-semibold ${
+                            booking.status === "done"
+                              ? "bg-green-100 text-green-600"
+                              : booking.status === "pending"
+                                ? "bg-yellow-100 text-yellow-600"
+                                : booking.status === "booked"
+                                  ? "bg-blue-100 text-blue-600"
+                                  : "bg-red-100 text-red-600"
+                          }`}
+                        >
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          className={`text-sm text-white px-3 py-1 rounded-full 
+                          ${booking.status === "done" ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                          onClick={() => handleMarkAsDone(booking.id)}
+                          disabled={booking.status === "done"}
+                        >
+                          Done
+                        </button>
+                      </td>{" "}
+                    </tr>
+                  ))
+              )}
+            </tbody>
           </table>
         </div>
       </div>
