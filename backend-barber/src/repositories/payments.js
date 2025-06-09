@@ -32,3 +32,12 @@ exports.getPaymentById = async (bookingId) => {
   const serializedData = JSONBigInt.stringify(payment);
   return JSONBigInt.parse(serializedData);
 }
+
+exports.getPayments = async () => {
+  const Payments = await prisma.payments.findMany({
+    include: {
+      bookings: true,
+    },
+  });  const serializedData = JSONBigInt.stringify(Payments);
+  return JSONBigInt.parse(serializedData);
+};

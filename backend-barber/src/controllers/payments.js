@@ -15,3 +15,7 @@ exports.handleMidtransNotification = async (req, res) => {
     successResponse(res, "OK");
 };
 
+exports.getPayments = async (req,res,next) => {
+    const data = await paymentService.getPayments();
+    successResponse(res,data);
+};

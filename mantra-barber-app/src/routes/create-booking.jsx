@@ -400,7 +400,7 @@ function CreateBooking() {
                         // Waktu sekarang + 1 jam
                         const now = new Date();
                          const oneHourLater = new Date(
-                          now.getTime() + 60 * 45 * 1000 //unavaible 45 mnt sejam berikutnya
+                          now.getTime() + 60 * 45 * 1000 //unavaible 45 mnt jam berikutnya
                         );
 
                         // Buat waktu jam pilihan pada tanggal yg dipilih

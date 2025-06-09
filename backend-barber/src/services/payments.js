@@ -51,3 +51,10 @@ exports.handleNotification = async (notificationBody) => {
   }
 };
 
+exports.getPayments = async () => {
+  const Payments = await paymentRepository.getPayments();
+  if (Payments.length === 0) {
+    throw new NotFoundError("No Payments yet !!");
+  }
+  return Payments;
+};
