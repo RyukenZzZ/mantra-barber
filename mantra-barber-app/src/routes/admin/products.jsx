@@ -150,7 +150,7 @@ function ProductsComponent() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white rounded-md">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Daftar Produk</h1>
         <button

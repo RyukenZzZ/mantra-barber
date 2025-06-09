@@ -112,3 +112,25 @@ export const deleteBarber = async (id) => {
     const result = await response.json();
     return result;
 };
+
+export const resetCount = async () => {
+    const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+  const now = new Date().toISOString();
+  formData.append("reset_count_from", now);    
+  const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/barbers`,
+        {
+            headers: {
+                authorization: `Bearer ${token}`,
+            },
+            method: "PUT",
+            body: formData,
+        }
+    );
+
+    // get the data if fetching succeed!
+    const result = await response.json();
+    return result;
+};

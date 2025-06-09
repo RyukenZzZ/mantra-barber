@@ -13,6 +13,7 @@ import {
   createBarber,
   updateBarber,
   deleteBarber,
+  resetCount,
 } from "../../service/barbers";
 import { getBookings } from "../../service/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -43,13 +44,13 @@ function BarbersComponent() {
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-const [form, setForm] = useState({
-  id: null,
-  name: "",
-  bio: "",
-  photo_url: null,
-  is_active: true,  
-});
+  const [form, setForm] = useState({
+    id: null,
+    name: "",
+    bio: "",
+    photo_url: null,
+    is_active: true,
+  });
 
   const { mutate: createNewBarber, isPending: isCreating } = useMutation({
     mutationFn: (request) => createBarber(request),
@@ -85,6 +86,17 @@ const [form, setForm] = useState({
     },
     onError: (error) => {
       toast.error(error?.message || "Failed to delete barber");
+    },
+  });
+
+  const { mutate: mutateResetCount, isPending: isResetting } = useMutation({
+    mutationFn: resetCount,
+    onSuccess: () => {
+      toast.success("Berhasil reset count!");
+      queryClient.invalidateQueries(["getBarbers"]);
+    },
+    onError: (error) => {
+      toast.error(error?.message || "Gagal reset count");
     },
   });
 
@@ -152,6 +164,23 @@ const [form, setForm] = useState({
     });
   };
 
+  const handleResetConfirm = () => {
+    Swal.fire({
+      title: "Reset Semua Count?",
+      text: "Seluruh hitungan pelanggan akan di-reset.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, reset!",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutateResetCount();
+      }
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -164,7 +193,7 @@ const [form, setForm] = useState({
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white rounded-md">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Daftar Barber</h1>
         <button
@@ -228,7 +257,10 @@ const [form, setForm] = useState({
                   <button
                     type="button"
                     onClick={() =>
-                      setForm((prev) => ({ ...prev, is_active: !prev.is_active }))
+                      setForm((prev) => ({
+                        ...prev,
+                        is_active: !prev.is_active,
+                      }))
                     }
                     className={`relative inline-flex items-center h-6 rounded-full w-12 transition-colors focus:outline-none ${
                       form.is_active ? "bg-green-500" : "bg-gray-300"
@@ -286,9 +318,20 @@ const [form, setForm] = useState({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {barbers.map((barber) => {
-          const totalCustomers = bookings.filter(
-            (b) => b.barber_id === barber.id && b.status === "done"
-          ).length;
+        const totalCustomers = bookings.filter((b) => {
+  if (b.barber_id !== barber.id || b.status !== "done") return false;
+
+  const dateStr = b.booking_date; // format: '2025-06-10'
+  const timeStr = new Date(b.booking_time).toTimeString().slice(0, 8); // hasil: '04:00:00'
+  const bookingDateTime = new Date(`${dateStr}T${timeStr}`);
+
+  const resetDate = new Date(barber.reset_count_from);
+  console.log("resetDate",barber.reset_count_from)
+
+  return bookingDateTime > resetDate;
+}).length;
+
+
 
           return (
             <div
@@ -328,14 +371,14 @@ const [form, setForm] = useState({
                   <button
                     title="Edit Barber"
                     onClick={() => handleEdit(barber.id)}
-                    className="text-blue-600 hover:text-blue-800"
+                    className="text-blue-600 hover:text-blue-800 text-2xl"
                   >
                     <FaEdit />
                   </button>
                   <button
                     title="Hapus Barber"
                     onClick={() => handleDelete(barber.id)}
-                    className="text-red-600 hover:text-red-800"
+                    className="text-red-600 hover:text-red-800 text-2xl"
                   >
                     <FaTrash />
                   </button>
@@ -344,6 +387,27 @@ const [form, setForm] = useState({
             </div>
           );
         })}
+      </div>
+      <div className="mt-6 flex justify-start">
+        <button
+          onClick={handleResetConfirm}
+          disabled={isResetting}
+          className={`flex items-center gap-2 px-4 py-2 rounded text-white ${
+            isResetting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"
+          }`}
+        >
+          {isResetting ? (
+            <>
+              <FaSpinner className="animate-spin" /> Resetting...
+            </>
+          ) : (
+            <>
+              <FaTrash /> Reset Count
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

@@ -225,41 +225,43 @@ function CreateBooking() {
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
           {step === 1 &&
-            barbers.map((b) => (
-              <Card
-                key={b.id}
-                className="max-w-sm !bg-white border-3 !border-gray-400"
-              >
-                <div className="h-30 sm:h-40 w-full overflow-hidden rounded-t-lg">
-                  <img
-                    src={
-                      !b.photo_url ||
-                      b.photo_url === "null" ||
-                      b.photo_url === null
-                        ? "https://i.pinimg.com/736x/89/90/48/899048ab0cc455154006fdb9676964b3.jpg"
-                        : b.photo_url
-                    }
-                    alt={b.name}
-                    referrerPolicy="no-referrer"
-                    className="w-35 h-35 object-cover"
-                  />
-                </div>
-                <h5 className="text-xl font-bold tracking-tight text-center text-gray-900">
-                  {b.name}
-                </h5>
-                <Button
-                  color="dark"
-                  outline
-                  onClick={() => {
-                    setBarberName(b.name);
-                    setBarberId(b.id);
-                    setStep(2);
-                  }}
+            barbers
+              .filter((b) => b.is_active) // hanya tampilkan service yang is_active === true
+              .map((b) => (
+                <Card
+                  key={b.id}
+                  className="max-w-sm !bg-white border-3 !border-gray-400"
                 >
-                  Pilih
-                </Button>
-              </Card>
-            ))}
+                  <div className="h-30 sm:h-40 w-full overflow-hidden rounded-t-lg">
+                    <img
+                      src={
+                        !b.photo_url ||
+                        b.photo_url === "null" ||
+                        b.photo_url === null
+                          ? "https://i.pinimg.com/736x/89/90/48/899048ab0cc455154006fdb9676964b3.jpg"
+                          : b.photo_url
+                      }
+                      alt={b.name}
+                      referrerPolicy="no-referrer"
+                      className="w-35 h-35 object-cover"
+                    />
+                  </div>
+                  <h5 className="text-xl font-bold tracking-tight text-center text-gray-900">
+                    {b.name}
+                  </h5>
+                  <Button
+                    color="dark"
+                    outline
+                    onClick={() => {
+                      setBarberName(b.name);
+                      setBarberId(b.id);
+                      setStep(2);
+                    }}
+                  >
+                    Pilih
+                  </Button>
+                </Card>
+              ))}
 
           {step === 2 &&
             services.map((s) => (
@@ -399,7 +401,7 @@ function CreateBooking() {
 
                         // Waktu sekarang + 1 jam
                         const now = new Date();
-                         const oneHourLater = new Date(
+                        const oneHourLater = new Date(
                           now.getTime() + 60 * 45 * 1000 //unavaible 45 mnt jam berikutnya
                         );
 
