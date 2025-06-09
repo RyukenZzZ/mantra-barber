@@ -14,6 +14,7 @@ const {
     createBarber,
     updateBarber,
     deleteBarberById,
+    updateManyDate
 } = require("../controllers/barbers");
 
 const router = express.Router();
@@ -21,7 +22,8 @@ const router = express.Router();
 router
 .route("/")
 .get(authorization(adminRole,userRole),validateGetBarbers,getBarbers)
-.post(authorization(adminRole),validateCreateBarber,createBarber);
+.post(authorization(adminRole),validateCreateBarber,createBarber)
+.put(authorization(adminRole),updateManyDate);
 
 router
 .route("/:id")

@@ -29,3 +29,8 @@ exports.createBarber = async (req, res, next) => {
     successResponse(res, data, "Barber successfully deleted!");
   };
   
+    exports.updateManyDate = async (req, res, next) => {
+    const {reset_count_from } = req.body;
+    const data = await barbersServices.updateManyBarbers(reset_count_from);
+    successResponse(res, data, "Barber successfully updated!");
+  };

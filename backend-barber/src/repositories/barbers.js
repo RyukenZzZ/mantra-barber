@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
+const { BadRequestError } = require("../utils/request");
 
 const prisma = new PrismaClient();
 
@@ -55,5 +56,21 @@ exports.deleteBarberById = async (id) => {
     },
   });
   const serializedData = JSONBigInt.stringify(deletedBarber);
+  return JSONBigInt.parse(serializedData);
+};
+
+exports.updateManyBarbers = async (resetDate) => {
+  if (!resetDate) {
+    throw new BadRequestError("reset_count_from harus disediakan");
+  }
+
+  const updatedData= await prisma.barbers.updateMany({
+    where: {},
+    data: {
+      reset_count_from: new Date(resetDate)
+    }
+  });
+
+  const serializedData = JSONBigInt.stringify(updatedData);
   return JSONBigInt.parse(serializedData);
 };

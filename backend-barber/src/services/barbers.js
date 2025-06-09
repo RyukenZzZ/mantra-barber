@@ -66,3 +66,12 @@ exports.deleteBarberById = async (id) => {
 
   return deletedBarber;
 };
+
+exports.updateManyBarbers = async (resetDate) => {
+  const updatedBarber = await BarberRepository.updateManyBarbers(resetDate);
+  if (!updatedBarber) {
+    throw new InternalServerError("Failed to updateMany the Barber!");
+  }
+
+  return updatedBarber;
+};
