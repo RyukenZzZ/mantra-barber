@@ -179,14 +179,17 @@ function MyBookingComponent() {
               {!isInactive && (
                 <div className="grid grid-cols-2 gap-3 mt-10">
                   {/* Cancel (selalu ditampilkan jika tidak inactive) */}
-                  <Button
-                    color="red"
-                    className="w-2/3 justify-self-end"
-                    onClick={() => handleCancel(booking.id)}
-                    disabled={isPending /* dari mutation */}
-                  >
-                    Cancel
-                  </Button>
+<Button
+  onClick={() => handleCancel(booking.id)}
+  disabled={isPending || pendingStatus}
+  className={`w-2/3 justify-self-end
+    ${pendingStatus || isPending
+      ? "!bg-gray-300 !text-gray-500 cursor-not-allowed"
+      : "!bg-red-600 !text-white !hover:bg-red-700"
+    }`}
+>
+  Cancel
+</Button>
 
                   {/* Tombol kedua tergantung status */}
                   {pendingStatus ? (

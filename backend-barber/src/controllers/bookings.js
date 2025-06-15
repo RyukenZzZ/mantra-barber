@@ -43,7 +43,6 @@ exports.createBooking = async (req, res, next) => {
   exports.updateStatusBookingById = async (req,res,next) => {
     const {id} = req.params;
     const {status} = req.body;
-    const {times_by} = req.body;
-    const data = await BookingsServices.updateBookingStatusById(id,status,times_by);
+    const data = await BookingsServices.updateBookingStatusById(id,status);
     successResponse(res,data,`Booking ${status}`)
   }

@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import mantraLogo from "../../assets/mantraLogo.png";
 import { toast } from "react-toastify";
 import { useNavigate } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
-import { createBooking } from "../../service/bookings";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createBooking, updateBookingById } from "../../service/bookings";
 import { useSelector } from "react-redux";
 import { Datepicker } from "flowbite-react";
 
@@ -13,16 +13,29 @@ const BookingModal = ({
   barbers,
   services,
   bookings,
+  editMode = false,
+  initialData = null,
 }) => {
+  const queryClient = useQueryClient();
+
   const navigate = useNavigate();
   const { user } = useSelector((s) => s.auth);
 
   const [selectedBarberId, setSelectedBarberId] = useState("");
   const [selectedServiceId, setSelectedServiceId] = useState("");
-
+  
+  const [pendingTimeStr, setPendingTimeStr] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [availableTimes, setAvailableTimes] = useState([]);
+
+  const resetFormState = () => {
+  setSelectedBarberId("");
+  setSelectedServiceId("");
+  setDate("");
+  setTime("");
+  setPendingTimeStr("");
+};
 
   const unavailableTimes = useMemo(() => {
     if (!selectedBarberId || !date) return [];
@@ -49,10 +62,9 @@ const BookingModal = ({
       toast.success("Bookings Created Successfully!");
 
       // Reset state
-      setSelectedBarberId("");
-      setSelectedServiceId("");
-      setDate("");
-      setTime("");
+      resetFormState();
+      queryClient.invalidateQueries({ queryKey: ["getBookings"] });
+
 
       // Ambil payment ID dari response
       const bookingId = response?.data?.payment?.booking_id;
@@ -67,6 +79,54 @@ const BookingModal = ({
       toast.error(error?.message);
     },
   });
+
+  const { mutate: updateBooking, isPending: isUpdating } = useMutation({
+    mutationFn: (data) => updateBookingById(initialData.id, data), // Buat endpoint ini
+    onSuccess: () => {
+      toast.success("Booking berhasil diperbarui!");
+      setOpenModal(false);
+          resetFormState()
+            queryClient.invalidateQueries({ queryKey: ["getBookings"] });
+
+    },
+    onError: (error) => {
+      toast.error(error?.message);
+    },
+  });
+
+  // Isi data saat edit
+useEffect(() => {
+  if (editMode && initialData) {
+    // 1. Set barber dan service
+    setSelectedBarberId(initialData.barber_id || "");
+    setSelectedServiceId(initialData.service_id || "");
+
+    // 2. Format tanggal dan set date (triggers availableTimes generator)
+    const dateOnly = new Date(initialData.booking_date);
+    const formattedDate = dateOnly.toISOString().split("T")[0];
+    setDate(formattedDate);
+
+    // 3. Simpan sementara time string (akan di-set setelah availableTimes siap)
+    if (initialData.booking_time) {
+      const time = new Date(initialData.booking_time);
+      const hh = time.getHours().toString().padStart(2, "0");
+      const mm = time.getMinutes().toString().padStart(2, "0");
+      const timeStr = `${hh}:${mm}`;
+      setPendingTimeStr(timeStr);
+    }
+  }
+}, [editMode, initialData]);
+
+// Setelah availableTimes siap, baru setTime
+useEffect(() => {
+  if (editMode && pendingTimeStr && availableTimes.length > 0) {
+    if (availableTimes.includes(pendingTimeStr)) {
+      setTime(pendingTimeStr);
+    }
+    setPendingTimeStr(""); // Clear agar tidak diulang
+  }
+}, [availableTimes, pendingTimeStr, editMode]);
+
 
   useEffect(() => {
     if (!date) {
@@ -101,6 +161,8 @@ const BookingModal = ({
     setTime("");
   }, [date, selectedBarberId]);
 
+
+
   const onSubmit = () => {
     const bookingDateTime = new Date(`${date}T${time}:00`).toISOString();
 
@@ -109,15 +171,18 @@ const BookingModal = ({
       service_id: selectedServiceId,
       booking_date: bookingDateTime,
       booking_time: bookingDateTime,
-      cust_name: user.name,
-      cust_phone_number: user.phone,
-      cust_email: user.email,
-      source:"walk_in",
+      cust_name: editMode && initialData ? initialData.cust_name : user.name,
+      cust_phone_number:
+        editMode && initialData ? initialData.cust_phone_number : user.phone,
+      cust_email: editMode && initialData ? initialData.cust_email : user.email,
+      source: "walk_in",
     };
 
-    console.log("Booking Submitted:", bookingData);
-
-    create(bookingData);
+    if (editMode) {
+      updateBooking(bookingData);
+    } else {
+      create(bookingData);
+    }
   };
 
   if (!openModal) return null;
@@ -129,7 +194,9 @@ const BookingModal = ({
         <div className="flex justify-between items-center border-b pb-2 mb-4">
           <div className="flex flex-row gap-2 items-center">
             <img src={mantraLogo} className="h-12 w-15" alt="Mantra Logo" />
-            <h2 className="text-xl font-semibold">Tambah Booking</h2>
+            <h2 className="text-xl font-semibold">
+              {editMode ? "Edit Booking" : "Tambah Booking"}
+            </h2>
           </div>
           <button
             className="text-gray-500 hover:text-gray-800"
@@ -167,19 +234,29 @@ const BookingModal = ({
               Pilih Karyawan
             </label>
             <div className="flex flex-wrap gap-2">
-              {barbers.map((barber) => (
-                <button
-                  key={barber.id}
-                  onClick={() => setSelectedBarberId(barber.id)}
-                  className={`min-w-[140px] text-center px-4 py-1 rounded-full border text-md ${
-                    selectedBarberId === barber.id
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
-                  }`}
-                >
-                  {barber.name}
-                </button>
-              ))}
+             {barbers.map((barber) => {
+  const isDisabled = !barber.is_active;
+
+  return (
+    <button
+      key={barber.id}
+      onClick={() => {
+        if (!isDisabled) setSelectedBarberId(barber.id);
+      }}
+      disabled={isDisabled}
+      className={`min-w-[140px] text-center px-4 py-1 rounded-full border text-md
+        ${isDisabled
+          ? "bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed"
+          : selectedBarberId === barber.id
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+        }`}
+    >
+      {barber.name}{isDisabled && " (nonaktif)"}
+    </button>
+  );
+})}
+
             </div>
           </div>
         </div>
@@ -285,22 +362,30 @@ const BookingModal = ({
         </div>
 
         {/* Modal Footer */}
-<div className="flex justify-center gap-2 mt-6 w-full max-w-md mx-auto">
-  <button
-    onClick={onSubmit}
-    disabled={isPending}
-    className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-  >
-    {isPending ? "Membuat..." : "Buat Booking"}
-  </button>
-  <button
-    onClick={() => setOpenModal(false)}
-    className="w-full bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-  >
-    Batal
-  </button>
-</div>
+        <div className="flex justify-center gap-2 mt-6 w-full max-w-md mx-auto">
+          <button
+            onClick={onSubmit}
+            disabled={editMode ? isUpdating : isPending}
+            className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+          >
+            {editMode
+              ? isUpdating
+                ? "Memperbarui..."
+                : "Update Booking"
+              : isPending
+                ? "Membuat..."
+                : "Buat Booking"}
+          </button>
 
+          <button
+  onClick={() => {
+    resetFormState();
+    setOpenModal(false);
+  }}            className="w-full bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          >
+            Batal
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
 import { getBookings } from "../../service/bookings";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { format, parseISO, startOfDay, endOfDay, parse } from "date-fns";
 import { id } from "date-fns/locale";
 import notFoundBooking from "../../assets/notFoundBooking.png";
@@ -23,7 +23,8 @@ function BookingsComponent() {
   const [showPicker, setShowPicker] = useState(false);
   const [filterDates, setFilterDates] = useState(null); // { from: Date, to: Date }
   const [openModal, setOpenModal] = useState(false);
-
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["getBookings", searchTerm],
@@ -31,7 +32,7 @@ function BookingsComponent() {
     enabled: !!token,
   });
 
-    const { data: services = [] } = useQuery({
+  const { data: services = [] } = useQuery({
     queryKey: ["getServices"],
     queryFn: getServices,
     enabled: !!token,
@@ -58,9 +59,9 @@ function BookingsComponent() {
         (bookingDate >= startOfDay(filterDates.from) &&
           bookingDate <= endOfDay(filterDates.to));
 
-    const isAllowedStatus = allowedStatus.includes(b.status);
+      const isAllowedStatus = allowedStatus.includes(b.status);
 
-    return matchesSearch && inDateRange && isAllowedStatus;
+      return matchesSearch && inDateRange && isAllowedStatus;
     })
     .sort((a, b) => {
       // Format date and time correctly
@@ -94,20 +95,25 @@ function BookingsComponent() {
       return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
     });
 
+  useEffect(() => {
+    if (!openModal) {
+      setEditMode(false);
+      setEditData(null);
+    }
+  }, [openModal]);
+
   return (
     <div className="px-6 py-6 bg-white rounded-2xl">
-<div className="flex items-center justify-between mb-6">
-  <h1 className="text-2xl font-bold text-gray-800">Booking Center</h1>
-  <button
-    className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">Booking Center</h1>
+        <button
+          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           onClick={() => setOpenModal(true)}
-
-  >
-    <FaPlus />
-    Tambah Booking
-  </button>
-</div>
-
+        >
+          <FaPlus />
+          Tambah Booking
+        </button>
+      </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
         <div className="relative">
@@ -268,9 +274,17 @@ function BookingsComponent() {
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-3 justify-center">
-                      <button className="text-blue-500 hover:text-blue-700">
+                      <button
+                        className="text-blue-500 hover:text-blue-700"
+                        onClick={() => {
+                          setEditMode(true);
+                          setEditData(b); // b adalah data booking yang sedang diiterasi
+                          setOpenModal(true);
+                        }}
+                      >
                         <FaEdit />
                       </button>
+
                       <button className="text-red-500 hover:text-red-700">
                         <FaTrash />
                       </button>
@@ -282,7 +296,15 @@ function BookingsComponent() {
           </table>
         )}
       </div>
-         <BookingModal openModal={openModal} setOpenModal={setOpenModal} barbers={barbers} services={services} bookings={bookings} />
+      <BookingModal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        barbers={barbers}
+        services={services}
+        bookings={bookings}
+        editMode={editMode}
+        initialData={editData}
+      />
     </div>
   );
 }

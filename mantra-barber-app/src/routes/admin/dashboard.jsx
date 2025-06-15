@@ -76,14 +76,14 @@ function AdminDashboardComponent() {
   const todayBookings = Bookings.filter(
     (b) =>
       isToday(parseISO(b.booking_date)) &&
-      ["booked", "pending"].includes(b.status)
+      ["booked", "isPending"].includes(b.status)
   ).length;
 
   // Statistik - booking mendatang (setelah hari ini)
   const upcomingBookings = Bookings.filter(
     (b) =>
       isAfter(parseISO(b.booking_date), new Date()) &&
-      ["booked", "pending"].includes(b.status)
+      ["booked", "isPending"].includes(b.status)
   ).length;
 
   // Statistik - booking selesai hari ini
@@ -118,7 +118,7 @@ function AdminDashboardComponent() {
     const date = parseISO(b.booking_date);
     if (filters.day === "today" && !isToday(date)) return false;
     if (filters.day === "tomorrow" && !isTomorrow(date)) return false;
-    return ["booked", "isPending", "done"].includes(b.status);
+    return ["booked", "isPending", "done", "cancelled"].includes(b.status);
   }).sort((a, b) => {
     // Urutkan berdasarkan tanggal + jam booking
     const dateTimeA = parse(
@@ -166,53 +166,59 @@ function AdminDashboardComponent() {
           color="green"
         />
         <StatCard
-          icon={<HiOutlineCurrencyDollar className="text-3xl text-purple-600" />}
+          icon={
+            <HiOutlineCurrencyDollar className="text-3xl text-purple-600" />
+          }
           label="Pendapatan Hari Ini"
           value={todayRevenueFormatted}
           color="purple"
         />
       </div>
 
-
       {/* Tabel Booking */}
       <div className="mt-6 bg-white rounded-xl shadow border border-gray-300">
         <div className="flex items-center justify-between px-6 py-4 border-b">
           <h2 className="text-lg font-semibold">
-            Booking {filters.day ? (filters.day === "today" ? "Hari Ini" : "Besok") : "Semua"}
+            Booking{" "}
+            {filters.day
+              ? filters.day === "today"
+                ? "Hari Ini"
+                : "Besok"
+              : "Semua"}
           </h2>
-                {/* Filter Tombol */}
-      <div className="flex gap-3">
-        <button
-          onClick={() => handleFilterClick("today")}
-          className={`px-4 py-2 rounded-md font-semibold ${
-            filters.day === "today"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Hari Ini
-        </button>
-        <button
-          onClick={() => handleFilterClick("tomorrow")}
-          className={`px-4 py-2 rounded-md font-semibold ${
-            filters.day === "tomorrow"
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Besok
-        </button>
-        <button
-          onClick={handleShowAll}
-          className={`px-4 py-2 rounded-md font-semibold ${
-            !filters.day
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
-        >
-          Semua
-        </button>
-      </div>
+          {/* Filter Tombol */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => handleFilterClick("today")}
+              className={`px-4 py-2 rounded-md font-semibold ${
+                filters.day === "today"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Hari Ini
+            </button>
+            <button
+              onClick={() => handleFilterClick("tomorrow")}
+              className={`px-4 py-2 rounded-md font-semibold ${
+                filters.day === "tomorrow"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Besok
+            </button>
+            <button
+              onClick={handleShowAll}
+              className={`px-4 py-2 rounded-md font-semibold ${
+                !filters.day
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              Semua
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -247,7 +253,12 @@ function AdminDashboardComponent() {
                         className="w-60 h-60 mb-4"
                       />
                       <p className="text-lg font-semibold">
-                        Belum ada booking untuk {filters.day ? (filters.day === "today" ? "hari ini" : "besok") : "waktu ini"}
+                        Belum ada booking untuk{" "}
+                        {filters.day
+                          ? filters.day === "today"
+                            ? "hari ini"
+                            : "besok"
+                          : "waktu ini"}
                       </p>
                     </div>
                   </td>
@@ -277,23 +288,25 @@ function AdminDashboardComponent() {
                           booking.status === "done"
                             ? "bg-green-100 text-green-600"
                             : booking.status === "pending"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : "bg-blue-100 text-blue-600"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : booking.status === "cancelled"
+                                ? "bg-red-100 text-red-600"
+                                : "bg-blue-100 text-blue-600"
                         }`}
                       >
                         {booking.status}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      {booking.status !== "done" && (
-                        <button
-                          onClick={() => handleMarkAsDone(booking.id)}
-                          className="text-sm text-white px-3 py-2 rounded-full bg-blue-600 hover:bg-blue-700"
-                        >
-                          Mark As Done
-                        </button>
-                        
-                      )}
+                      {booking.status !== "done" &&
+                        booking.status !== "cancelled" && (
+                          <button
+                            onClick={() => handleMarkAsDone(booking.id)}
+                            className="text-sm text-white px-3 py-2 rounded-full bg-blue-600 hover:bg-blue-700"
+                          >
+                            Mark As Done
+                          </button>
+                        )}
                     </td>
                   </tr>
                 ))
