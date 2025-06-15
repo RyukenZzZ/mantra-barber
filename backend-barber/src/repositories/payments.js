@@ -3,10 +3,15 @@ const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
 
 exports.markAsPaid = async (orderId) => {
-  return prisma.payments.updateMany({
-    where: { reference: orderId },
-    data: { status: "paid", paid_at: new Date() },
-  });
+ const result = await prisma.payments.updateMany({
+  where: { reference: orderId },
+  data: { status: "paid", paid_at: new Date() },
+});
+console.log(result);
+if (result.count === 0) {
+  throw new NotFoundError("No payment updated with that reference");
+}
+
 };
 
 exports.updatePaymentStatusById = async (id, status,amount) => {
