@@ -36,7 +36,6 @@ exports.getBookingByUserId = async (user_id) => {
 exports.createBooking = async (data,user_id) => {
   data.user_id = user_id;
   data.created_by = user_id;
-  console.log(user_id);
   data.booking_code = generateBookingCode();
   return BookingRepository.createBooking(data);
 };
@@ -94,8 +93,9 @@ exports.updateBookingStatusById = async (bookingId, status) => {
     throw new InternalServerError("Failed to update the Booking Status!");
   }
 
-  // Logika: jika status "done", maka bayar lunas (amount * 2)
-  const newAmount = status === "done" ? payment.amount * 2 : payment.amount;
+  const times_by = existingBooking.source === "online" ? 2 : 1;
+  // Logika: jika status "done", maka bayar lunas (amount * times_by bisa 2 jika booking online dan 1 jika offline)
+  const newAmount = status === "done" ? payment.amount * times_by : payment.amount;
 
   const updatedPaymentStatusById = await paymentRepository.updatePaymentStatusById(
     payment.id,

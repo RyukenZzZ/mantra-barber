@@ -118,7 +118,7 @@ function AdminDashboardComponent() {
     const date = parseISO(b.booking_date);
     if (filters.day === "today" && !isToday(date)) return false;
     if (filters.day === "tomorrow" && !isTomorrow(date)) return false;
-    return ["booked", "pending", "done"].includes(b.status);
+    return ["booked", "isPending", "done"].includes(b.status);
   }).sort((a, b) => {
     // Urutkan berdasarkan tanggal + jam booking
     const dateTimeA = parse(
@@ -225,6 +225,7 @@ function AdminDashboardComponent() {
                 <th className="px-6 py-3">Tanggal</th>
                 <th className="px-6 py-3">Jam</th>
                 <th className="px-6 py-3">Layanan (Harga)</th>
+                <th className="px-6 py-3">Barbers</th>
                 <th className="px-6 py-3">Status</th>
                 <th className="px-6 py-3">Aksi</th>
               </tr>
@@ -269,6 +270,7 @@ function AdminDashboardComponent() {
                       {booking.services?.name} (Rp{" "}
                       {Math.floor(booking.services?.price / 1000)}K)
                     </td>
+                    <td className="px-6 py-4">{booking.barbers.name}</td>
                     <td className="px-6 py-4">
                       <span
                         className={`px-3 py-2 rounded-full text-sm font-semibold ${

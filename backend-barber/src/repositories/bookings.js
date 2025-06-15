@@ -227,9 +227,11 @@ exports.createBooking = async (data) => {
     },
   });
 
+  const multiplier = newBooking.source === "online" ? 0.5 : 1;
+
    // 2. Hitung jumlah pembayaran (50% dari harga layanan)
    const amount = newBooking.services?.price
-   ? Math.floor(newBooking.services.price * 0.5)
+   ? Math.floor(newBooking.services.price * multiplier)
    : 0;
 
  // 3. Buat payment record

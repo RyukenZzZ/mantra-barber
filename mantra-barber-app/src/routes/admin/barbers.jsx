@@ -318,20 +318,17 @@ function BarbersComponent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {barbers.map((barber) => {
-        const totalCustomers = bookings.filter((b) => {
-  if (b.barber_id !== barber.id || b.status !== "done") return false;
+          const totalCustomers = bookings.filter((b) => {
+            if (b.barber_id !== barber.id || b.status !== "done") return false;
 
-  const dateStr = b.booking_date; // format: '2025-06-10'
-  const timeStr = new Date(b.booking_time).toTimeString().slice(0, 8); // hasil: '04:00:00'
-  const bookingDateTime = new Date(`${dateStr}T${timeStr}`);
-
-  const resetDate = new Date(barber.reset_count_from);
-  console.log("resetDate",barber.reset_count_from)
-
-  return bookingDateTime > resetDate;
-}).length;
-
-
+            const dateStr = b.booking_date.split("T")[0]; // ambil tanggal saja
+            const timeStr = new Date(b.booking_time)
+              .toISOString()
+              .split("T")[1]; // ambil jam:menit:detik
+            const bookingDateTime = new Date(`${dateStr}T${timeStr}`);
+            const resetDate = new Date(barber.reset_count_from);
+            return bookingDateTime > resetDate;
+          }).length;
 
           return (
             <div

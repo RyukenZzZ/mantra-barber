@@ -14,7 +14,7 @@ import bgServices from "../assets/bgServices.jpg";
 import higlightHair from "../assets/highlightHair.jpg";
 import colloringFashion from "../assets/colloringFashion.jpg";
 import permHair from "../assets/permHair.jpg";
-import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa";
+import { FaInstagram, FaSpinner, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { token } = useSelector((state) => state.auth);
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [],isLoading } = useQuery({
     queryKey: ["getProducts"],
     queryFn: getProducts,
     enabled: !!token,
@@ -421,62 +421,70 @@ function Index() {
       </section>
 
       {/* product Section */}
-      <section id="product" className="px-6 py-12 bg-gray-100">
-        <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
-        <div className="flex flex-wrap justify-center gap-6">
-          {products.map((product) => (
-            <Card
-              key={product.id}
-              className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
-            >
-              <img
-                src={product.image_url}
-                alt={product.name}
-                className="h-[220px] object-contain rounded-t-md "
-              />
+<section id="product" className="px-6 py-12 bg-gray-100">
+  <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
 
-              <div className="p-5 flex flex-col justify-between flex-grow">
-                <a href="#">
-                  <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
-                    {product.name}
-                  </h5>
-                </a>
-                <div className="mb-5 mt-2.5 flex items-center">
-                  {[...Array(5)].map((_, index) => (
-                    <svg
-                      key={index}
-                      className="h-5 w-5 text-yellow-300"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                  <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
-                    4.9
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {Math.floor(product.price / 1000)}k
-                  </span>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleBuyNow(product.tokopedia_link);
-                    }}
-                    className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-                  >
-                    Buy Now
-                  </a>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+  {isLoading ? (
+    <div className="flex justify-center items-center h-64">
+      <FaSpinner className="animate-spin text-blue-600 text-4xl" />
+      <span className="ml-3 text-lg font-semibold text-blue-600">Loading...</span>
+    </div>
+  ) : (
+    <div className="flex flex-wrap justify-center gap-6">
+      {products.map((product) => (
+        <Card
+          key={product.id}
+          className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
+        >
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="h-[220px] object-contain rounded-t-md"
+          />
+
+          <div className="p-5 flex flex-col justify-between flex-grow">
+            <a href="#">
+              <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
+                {product.name}
+              </h5>
+            </a>
+            <div className="mb-5 mt-2.5 flex items-center">
+              {[...Array(5)].map((_, index) => (
+                <svg
+                  key={index}
+                  className="h-5 w-5 text-yellow-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+              <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                4.9
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                {Math.floor(product.price / 1000)}k
+              </span>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleBuyNow(product.tokopedia_link);
+                }}
+                className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+              >
+                Buy Now
+              </a>
+            </div>
+          </div>
+        </Card>
+      ))}
+    </div>
+  )}
+</section>
 
       {/* Gallery Section */}
       <section id="gallery" className="bg-black text-white py-12">

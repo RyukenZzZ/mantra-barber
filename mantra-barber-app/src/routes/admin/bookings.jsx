@@ -7,10 +7,11 @@ import { useState } from "react";
 import { format, parseISO, startOfDay, endOfDay, parse } from "date-fns";
 import { id } from "date-fns/locale";
 import notFoundBooking from "../../assets/notFoundBooking.png";
-
-// Import react-day-picker dan style
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
+import BookingModal from "../../components/Modal/bookingModal";
+import { getBarbers } from "../../service/barbers";
+import { getServices } from "../../service/services";
 
 export const Route = createFileRoute("/admin/bookings")({
   component: BookingsComponent,
@@ -21,12 +22,28 @@ function BookingsComponent() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showPicker, setShowPicker] = useState(false);
   const [filterDates, setFilterDates] = useState(null); // { from: Date, to: Date }
+  const [openModal, setOpenModal] = useState(false);
+
 
   const { data: bookings = [], isLoading } = useQuery({
     queryKey: ["getBookings", searchTerm],
     queryFn: () => getBookings(searchTerm),
     enabled: !!token,
   });
+
+    const { data: services = [] } = useQuery({
+    queryKey: ["getServices"],
+    queryFn: getServices,
+    enabled: !!token,
+  });
+
+  const { data: barbers = [] } = useQuery({
+    queryKey: ["getBarbers"],
+    queryFn: getBarbers,
+    enabled: !!token,
+  });
+
+  const allowedStatus = ["booked", "done", "cancelled", "isPending"];
 
   // Filter bookings berdasarkan search dan range tanggal
   const filtered = bookings
@@ -41,7 +58,9 @@ function BookingsComponent() {
         (bookingDate >= startOfDay(filterDates.from) &&
           bookingDate <= endOfDay(filterDates.to));
 
-      return matchesSearch && inDateRange;
+    const isAllowedStatus = allowedStatus.includes(b.status);
+
+    return matchesSearch && inDateRange && isAllowedStatus;
     })
     .sort((a, b) => {
       // Format date and time correctly
@@ -81,9 +100,8 @@ function BookingsComponent() {
   <h1 className="text-2xl font-bold text-gray-800">Booking Center</h1>
   <button
     className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-    onClick={() => {
-      console.log("tambah booking");
-    }}
+          onClick={() => setOpenModal(true)}
+
   >
     <FaPlus />
     Tambah Booking
@@ -200,6 +218,7 @@ function BookingsComponent() {
                   "Tanggal",
                   "Jam",
                   "Service (Harga)",
+                  "Barbers",
                   "Kode",
                   "Status",
                   "Aksi",
@@ -230,6 +249,7 @@ function BookingsComponent() {
                       (Rp {Math.floor(b.services?.price / 1000)}K)
                     </span>
                   </td>
+                  <td className="px-4 py-3">{b.barbers.name}</td>
                   <td className="px-4 py-3 font-mono">{b.booking_code}</td>
                   <td className="px-4 py-3 capitalize">
                     <span
@@ -238,7 +258,7 @@ function BookingsComponent() {
                           ? "bg-green-100 text-green-700"
                           : b.status === "isPending"
                             ? "bg-yellow-100 text-yellow-700"
-                            : b.status === "cancelled"
+                            : b.status === "cancelled "
                               ? "bg-red-100 text-red-700"
                               : "bg-blue-100 text-blue-700"
                       }`}
@@ -262,6 +282,7 @@ function BookingsComponent() {
           </table>
         )}
       </div>
+         <BookingModal openModal={openModal} setOpenModal={setOpenModal} barbers={barbers} services={services} bookings={bookings} />
     </div>
   );
 }

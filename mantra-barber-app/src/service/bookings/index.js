@@ -76,6 +76,9 @@ export const createBooking = async (request) => {
   formData.append("cust_name", request.cust_name);
   formData.append("cust_phone_number", request.cust_phone_number);
   formData.append("cust_email", request.cust_email);
+  if(request.source){
+    formData.append("source",request.source);
+  }
 
   const response = await fetch(`${import.meta.env.VITE_API_URL}/Bookings`, {
     headers: {
@@ -89,6 +92,33 @@ export const createBooking = async (request) => {
   const result = await response.json();
   return result;
 };
+
+export const createBookingAdmin = async (request) => {
+  const token = localStorage.getItem("token");
+
+  const formData = new FormData();
+  formData.append("barber_id", request.barber_id);
+  formData.append("service_id", request.service_id);
+  formData.append("booking_date", request.booking_date);
+  formData.append("booking_time", request.booking_time);
+  formData.append("cust_name", request.cust_name);
+  formData.append("cust_phone_number", request.cust_phone_number);
+  formData.append("cust_email", request.cust_email);
+  formData.append("source","walk_in");
+
+  const response = await fetch(`${import.meta.env.VITE_API_URL}/Bookings`, {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: formData,
+  });
+
+  // get the data if fetching succeed!
+  const result = await response.json();
+  return result;
+};
+
 
 export const updateBooking = async (id, request) => {
   const token = localStorage.getItem("token");

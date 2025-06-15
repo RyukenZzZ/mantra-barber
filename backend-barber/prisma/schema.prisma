@@ -8,13 +8,13 @@ datasource db {
 }
 
 model barbers {
-  id        BigInt     @id @default(autoincrement())
-  name      String     @db.VarChar
-  bio       String?
-  photo_url String?    @db.VarChar
-  is_active Boolean?   @default(true)
+  id               BigInt     @id @default(autoincrement())
+  name             String     @db.VarChar
+  bio              String?
+  photo_url        String?    @db.VarChar
+  is_active        Boolean?   @default(true)
   reset_count_from DateTime?  @default(now()) @db.Timestamp(6)
-  bookings  bookings[]
+  bookings         bookings[]
 }
 
 model bookings {
@@ -26,12 +26,12 @@ model bookings {
   booking_time                     DateTime        @db.Time(6)
   source                           booking_source? @default(online)
   status                           booking_status? @default(isPending)
-  booking_code                     String          @unique
   created_by                       BigInt?
   created_at                       DateTime?       @default(now()) @db.Timestamp(6)
+  booking_code                     String          @unique
+  cust_email                       String?         @db.VarChar
   cust_name                        String?         @db.VarChar
   cust_phone_number                String?         @db.VarChar
-  cust_email                       String?         @db.VarChar
   barbers                          barbers?        @relation(fields: [barber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_bookings_created_byTousers users?          @relation("bookings_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   services                         services?       @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -40,23 +40,20 @@ model bookings {
 }
 
 model payments {
-  id             BigInt          @id @default(autoincrement())
-  booking_id     BigInt?         // Relasi ke bookings
-  reference      String?         @unique // Dari Midtrans: "order_id"
-  snap_token     String?                          // ⬅️ token Snap
-  snap_url       String?                          // ⬅️ redirect / embed URL
-  amount         Int             // Jumlah yang harus dibayar
-  method         String?         // Metode pembayaran (misal: QRIS, BCA, dll)
-  status         payment_status? @default(unpaid) // Status: paid, unpaid, expired, etc
-  pdf_url        String?         // URL ke PDF invoice dari Midtrans
-  expired_time   DateTime?       // Waktu kadaluarsa pembayaran
-  paid_at        DateTime?       // Kapan pembayaran diterima
-  created_at     DateTime?       @default(now()) @db.Timestamp(6)
-
-  bookings       bookings?       @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  id           BigInt          @id @default(autoincrement())
+  booking_id   BigInt?
+  amount       Int
+  status       payment_status? @default(unpaid)
+  created_at   DateTime?       @default(now()) @db.Timestamp(6)
+  expired_time DateTime?
+  paid_at      DateTime?
+  reference    String?         @unique
+  method       String?
+  pdf_url      String?
+  snap_token   String?
+  snap_url     String?
+  bookings     bookings?       @relation(fields: [booking_id], references: [id], onDelete: Cascade)
 }
-
-
 
 model products {
   id             BigInt  @id @default(autoincrement())
@@ -72,10 +69,9 @@ model services {
   name        String     @db.VarChar
   description String?
   price       Int
-  image       String?    
+  image       String?
   bookings    bookings[]
 }
-
 
 model users {
   id                                  BigInt     @id @default(autoincrement())
@@ -96,10 +92,10 @@ enum booking_source {
 }
 
 enum booking_status {
-  isPending
   booked
   done
   cancelled
+  isPending
   expired
 }
 
