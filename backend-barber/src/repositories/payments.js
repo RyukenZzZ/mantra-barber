@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
+const { NotFoundError } = require("../utils/request");
 const prisma = new PrismaClient();
+
 
 exports.markAsPaid = async (orderId) => {
  const result = await prisma.payments.updateMany({
