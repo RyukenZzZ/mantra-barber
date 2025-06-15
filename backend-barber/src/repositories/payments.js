@@ -5,14 +5,11 @@ const prisma = new PrismaClient();
 
 
 exports.markAsPaid = async (orderId) => {
- const result = await prisma.payments.updateMany({
+ return await prisma.payments.updateMany({
   where: { reference: orderId },
   data: { status: "paid", paid_at: new Date() },
 });
-console.log(result);
-if (result.count === 0) {
-  throw new NotFoundError("No payment updated with that reference");
-}
+
 
 };
 
