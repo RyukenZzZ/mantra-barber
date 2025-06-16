@@ -46,7 +46,6 @@ exports.handleNotification = async (notificationBody) => {
   const { transaction_status, order_id } = notif;
   if (transaction_status === "settlement" || transaction_status === "capture") {
     const bookingCode = order_id.replace(/^BOOK-/, "").replace(/-\d+$/, "");
-    console.log(bookingCode);
     await paymentRepository.markAsPaid(order_id);
     await bookingRepository.updateStatusByCode(bookingCode, "booked");
   }

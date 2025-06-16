@@ -163,27 +163,34 @@ useEffect(() => {
 
 
 
-  const onSubmit = () => {
-    const bookingDateTime = new Date(`${date}T${time}:00`).toISOString();
+const onSubmit = () => {
+  // Validasi: semua field wajib diisi
+  if (!selectedServiceId || !selectedBarberId || !date || !time) {
+    toast.error("Mohon lengkapi semua data booking terlebih dahulu.");
+    return;
+  }
 
-    const bookingData = {
-      barber_id: selectedBarberId,
-      service_id: selectedServiceId,
-      booking_date: bookingDateTime,
-      booking_time: bookingDateTime,
-      cust_name: editMode && initialData ? initialData.cust_name : user.name,
-      cust_phone_number:
-        editMode && initialData ? initialData.cust_phone_number : user.phone,
-      cust_email: editMode && initialData ? initialData.cust_email : user.email,
-      source: "walk_in",
-    };
+  const bookingDateTime = new Date(`${date}T${time}:00`).toISOString();
 
-    if (editMode) {
-      updateBooking(bookingData);
-    } else {
-      create(bookingData);
-    }
+  const bookingData = {
+    barber_id: selectedBarberId,
+    service_id: selectedServiceId,
+    booking_date: bookingDateTime,
+    booking_time: bookingDateTime,
+    cust_name: editMode && initialData ? initialData.cust_name : user.name,
+    cust_phone_number:
+      editMode && initialData ? initialData.cust_phone_number : user.phone,
+    cust_email: editMode && initialData ? initialData.cust_email : user.email,
+    source: "walk_in",
   };
+
+  if (editMode) {
+    updateBooking(bookingData);
+  } else {
+    create(bookingData);
+  }
+};
+
 
   if (!openModal) return null;
 

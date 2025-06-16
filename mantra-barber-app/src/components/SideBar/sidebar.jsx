@@ -6,6 +6,9 @@ import {
   HiOutlineLogout,
   HiOutlineDocument,
   HiMenuAlt1,
+  HiClipboardList,
+  HiDocumentReport,
+  HiCurrencyDollar,
 } from "react-icons/hi";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -125,6 +128,14 @@ const SideBar = ({ children }) => {
               to="/admin/products"
               icon={<HiOutlineDocument />}
               label="Products"
+              open={shouldShowFullSidebar}
+              onClickMobile={() => setIsSidebarOpen(false)}
+              isMobile={isMobile}
+            />
+            <SidebarLink
+              to="/admin/reports"
+              icon={<HiClipboardList />}
+              label="Reports"
               open={shouldShowFullSidebar}
               onClickMobile={() => setIsSidebarOpen(false)}
               isMobile={isMobile}

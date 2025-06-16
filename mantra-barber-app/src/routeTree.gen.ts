@@ -20,6 +20,7 @@ import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as ProfileEditImport } from './routes/profile/edit'
 import { Route as PaymentsIdImport } from './routes/payments/$id'
 import { Route as AdminServicesImport } from './routes/admin/services'
+import { Route as AdminReportsImport } from './routes/admin/reports'
 import { Route as AdminProductsImport } from './routes/admin/products'
 import { Route as AdminDashboardImport } from './routes/admin/dashboard'
 import { Route as AdminBookingsImport } from './routes/admin/bookings'
@@ -78,6 +79,12 @@ const PaymentsIdRoute = PaymentsIdImport.update({
 const AdminServicesRoute = AdminServicesImport.update({
   id: '/admin/services',
   path: '/admin/services',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminReportsRoute = AdminReportsImport.update({
+  id: '/admin/reports',
+  path: '/admin/reports',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -172,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsImport
       parentRoute: typeof rootRoute
     }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/admin/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsImport
+      parentRoute: typeof rootRoute
+    }
     '/admin/services': {
       id: '/admin/services'
       path: '/admin/services'
@@ -215,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -231,6 +246,7 @@ export interface FileRoutesByTo {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -248,6 +264,7 @@ export interface FileRoutesById {
   '/admin/bookings': typeof AdminBookingsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/products': typeof AdminProductsRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/services': typeof AdminServicesRoute
   '/payments/$id': typeof PaymentsIdRoute
   '/profile/edit': typeof ProfileEditRoute
@@ -266,6 +283,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/dashboard'
     | '/admin/products'
+    | '/admin/reports'
     | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
@@ -281,6 +299,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/dashboard'
     | '/admin/products'
+    | '/admin/reports'
     | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
@@ -296,6 +315,7 @@ export interface FileRouteTypes {
     | '/admin/bookings'
     | '/admin/dashboard'
     | '/admin/products'
+    | '/admin/reports'
     | '/admin/services'
     | '/payments/$id'
     | '/profile/edit'
@@ -313,6 +333,7 @@ export interface RootRouteChildren {
   AdminBookingsRoute: typeof AdminBookingsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminProductsRoute: typeof AdminProductsRoute
+  AdminReportsRoute: typeof AdminReportsRoute
   AdminServicesRoute: typeof AdminServicesRoute
   PaymentsIdRoute: typeof PaymentsIdRoute
   ProfileEditRoute: typeof ProfileEditRoute
@@ -329,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBookingsRoute: AdminBookingsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminProductsRoute: AdminProductsRoute,
+  AdminReportsRoute: AdminReportsRoute,
   AdminServicesRoute: AdminServicesRoute,
   PaymentsIdRoute: PaymentsIdRoute,
   ProfileEditRoute: ProfileEditRoute,
@@ -354,6 +376,7 @@ export const routeTree = rootRoute
         "/admin/bookings",
         "/admin/dashboard",
         "/admin/products",
+        "/admin/reports",
         "/admin/services",
         "/payments/$id",
         "/profile/edit",
@@ -386,6 +409,9 @@ export const routeTree = rootRoute
     },
     "/admin/products": {
       "filePath": "admin/products.jsx"
+    },
+    "/admin/reports": {
+      "filePath": "admin/reports.jsx"
     },
     "/admin/services": {
       "filePath": "admin/services.jsx"
