@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card } from "flowbite-react";
 import {
   FaMoneyBillWave,
@@ -13,9 +13,10 @@ import {
   startOfMonth,
   endOfDay,
   isSameDay,
-  subDays,
   startOfWeek,
   endOfWeek,
+  endOfMonth,
+  addDays,
 } from "date-fns";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { getPayments } from "../../service/payments";
@@ -33,15 +34,23 @@ import {
 } from "recharts";
 import { useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
+import { generatePDFReportWithChart } from "../../components/Reports/generatePDF";
 import { getBookings } from "../../service/bookings";
 import { getBarbers } from "../../service/barbers";
 import * as XLSX from "xlsx";
+import Protected from "../../components/Auth/Protected";
 
 export const Route = createFileRoute("/admin/reports")({
-  component: ReportComponent,
+    component: () => (
+        <Protected roles={["admin"]}>
+            <ReportComponent />
+        </Protected>
+    ),
 });
 
 function ReportComponent() {
+  const chartRef = useRef();
+
   const [filterType, setFilterType] = useState("today");
   const [dateRange, setDateRange] = useState(null);
   const [showPicker, setShowPicker] = useState(false);
@@ -68,6 +77,12 @@ function ReportComponent() {
 
   const getReportTitle = (mode = filterType, range = dateRange) => {
     const now = new Date();
+    
+        if (mode === "range" && range?.from && range?.to) {
+      const start = format(range.from, "dd MMM yyyy", { locale: id });
+      const end = format(range.to, "dd MMM yyyy", { locale: id });
+      return `Laporan Rentang Tanggal (${start} - ${end})`;
+    }
 
     if (filterType === "today") {
       return `Laporan Hari Ini (${format(now, "dd MMMM yyyy", { locale: id })})`;
@@ -91,16 +106,10 @@ function ReportComponent() {
       return `Laporan Minggu Ini (${start} - ${end})`;
     }
 
-    if (mode === "range" && range?.from && range?.to) {
-      const start = format(range.from, "dd MMM yyyy", { locale: id });
-      const end = format(range.to, "dd MMM yyyy", { locale: id });
-      return `Laporan Rentang Tanggal (${start} - ${end})`;
-    }
-
     return "Laporan Penjualan";
   };
 
-  function generateSalesData(payments, mode = "thisWeek", customRange = null) {
+  function generateSalesData(payments, mode = "today", customRange = null) {
     const today = new Date();
     let data = [];
 
@@ -115,15 +124,17 @@ function ReportComponent() {
         current.setDate(current.getDate() + 1);
       }
     } else if (mode === "thisWeek") {
-      data = Array.from({ length: 7 }, (_, i) => {
-        const date = subDays(today, 6 - i);
-        return {
-          date: format(date, "dd MMM"),
-          rawDate: format(date, "yyyy-MM-dd"),
-          sales: 0,
-        };
-      });
-    } else if (mode === "thisMonth") {
+  const start = startOfWeek(today, { weekStartsOn: 1 }); // Senin
+  data = Array.from({ length: 7 }, (_, i) => {
+    const date = addDays(start, i); // dari Senin ke Minggu
+    return {
+      date: format(date, "dd MMM"),
+      rawDate: format(date, "yyyy-MM-dd"),
+      sales: 0,
+    };
+  });
+}
+ else if (mode === "thisMonth") {
       const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       const daysInMonth = end.getDate();
       data = Array.from({ length: daysInMonth }, (_, i) => {
@@ -162,7 +173,7 @@ function ReportComponent() {
     payments.forEach((payment) => {
       const status = payment.status;
       const bookingDate = payment.bookings?.booking_date;
-      if (!["settlement", "success", "done", "paid"].includes(status)) return;
+      if (!["done", "paid","cancelled"].includes(status)) return;
       if (!bookingDate) return;
 
       const dateObj = new Date(bookingDate);
@@ -201,36 +212,41 @@ function ReportComponent() {
 
   // Perhitungan metrik
   const filteredPayments = payments.filter((p) => {
-    if (
-      !["settlement", "success", "done", "paid", "cancelled"].includes(p.status)
-    )
-      return false;
+  if (!["done", "paid", "cancelled"].includes(p.status)) return false;
 
-    const date = new Date(p.bookings?.booking_date);
-    if (appliedFilter === "range" && customRange) {
-      return (
-        date >= startOfDay(customRange.from) && date <= endOfDay(customRange.to)
-      );
-    }
-    if (appliedFilter === "today") {
-      return isSameDay(date, new Date());
-    }
+  const rawDate = p.bookings?.booking_date;
+  if (!rawDate) return false;
+  const date = new Date(rawDate); // Booking date sebagai acuan filter
 
-    if (appliedFilter === "thisWeek") {
-      const start = subDays(new Date(), 6);
-      return date >= startOfDay(start) && date <= endOfDay(new Date());
-    }
-    if (appliedFilter === "thisMonth") {
-      const start = startOfMonth(new Date());
-      return date >= startOfDay(start) && date <= endOfDay(new Date());
-    }
-    if (appliedFilter === "thisYear") {
-      const start = new Date(new Date().getFullYear(), 0, 1);
-      return date >= startOfDay(start) && date <= endOfDay(new Date());
-    }
+  if (appliedFilter === "today") {
+    return isSameDay(date, new Date());
+  }
+if (appliedFilter === "thisWeek") {
+  const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const end = endOfWeek(new Date(), { weekStartsOn: 1 });     
+  return date >= startOfDay(start) && date <= endOfDay(end);
+}
 
-    return true;
-  });
+if (appliedFilter === "thisMonth") {
+  const start = startOfMonth(new Date());
+  const end = endOfMonth(new Date());
+  return date >= startOfDay(start) && date <= endOfDay(end);
+}
+
+if (appliedFilter === "thisYear") {
+  const start = new Date(new Date().getFullYear(), 0, 1);
+  const end = new Date(new Date().getFullYear(), 11, 31);
+  return date >= startOfDay(start) && date <= endOfDay(end);
+}
+  
+  if (appliedFilter === "range" && customRange) {
+    return (
+      date >= startOfDay(customRange.from) && date <= endOfDay(customRange.to)
+    );
+  }
+
+  return true;
+});
 
   const totalSales = filteredPayments
     .filter((p) => ["done", "paid", "cancelled"].includes(p.status))
@@ -250,31 +266,36 @@ function ReportComponent() {
   });
 
   bookings
-    .filter((booking) => {
-      if (booking.status !== "done") return false;
+   .filter((booking) => {
+  if (booking.status !== "done") return false;
 
-      const date = new Date(booking.booking_date);
-      if (appliedFilter === "range" && customRange) {
-        return (
-          date >= startOfDay(customRange.from) &&
-          date <= endOfDay(customRange.to)
-        );
-      }
-      if (appliedFilter === "today") {
-        return isSameDay(date, new Date());
-      }
-
-      if (appliedFilter === "thisWeek") {
-        const start = subDays(new Date(), 6);
-        return date >= startOfDay(start) && date <= endOfDay(new Date());
-      }
-      if (appliedFilter === "thisMonth") {
-        const start = startOfMonth(new Date());
-        return date >= startOfDay(start) && date <= endOfDay(new Date());
-      }
-      return true;
-    })
-    .forEach((booking) => {
+  const date = new Date(booking.booking_date);
+  if (appliedFilter === "range" && customRange) {
+    return (
+      date >= startOfDay(customRange.from) &&
+      date <= endOfDay(customRange.to)
+    );
+  }
+  if (appliedFilter === "today") {
+    return isSameDay(date, new Date());
+  }
+  if (appliedFilter === "thisWeek") {
+    const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const end = endOfWeek(new Date(), { weekStartsOn: 1 });
+    return date >= startOfDay(start) && date <= endOfDay(end);
+  }
+  if (appliedFilter === "thisMonth") {
+    const start = startOfMonth(new Date());
+    const end = endOfMonth(new Date());
+    return date >= startOfDay(start) && date <= endOfDay(end);
+  }
+  if (appliedFilter === "thisYear") {
+    const start = new Date(new Date().getFullYear(), 0, 1);
+    const end = new Date(new Date().getFullYear(), 11, 31);
+    return date >= startOfDay(start) && date <= endOfDay(end);
+  }
+  return true;
+}).forEach((booking) => {
       const barberName = booking.barbers?.name;
       if (barberName) {
         barberCounts[barberName] = (barberCounts[barberName] || 0) + 1;
@@ -315,46 +336,52 @@ function ReportComponent() {
     icon: <FaPercentage className="text-orange-600 text-xl" />,
   }));
 
+  const barberTotals = {};
+  bookings.forEach((booking) => {
+    if (booking.status !== "done") return;
+
+    const date = new Date(booking.booking_date);
+
+   if (appliedFilter === "range" && customRange) {
+  if (
+    date < startOfDay(customRange.from) ||
+    date > endOfDay(customRange.to)
+  ) return;
+  
+} else if (appliedFilter === "today") {
+    return isSameDay(date, new Date());
+  }else if (appliedFilter === "thisWeek") {
+  const start = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const end = endOfWeek(new Date(), { weekStartsOn: 1 });
+  if (date < startOfDay(start) || date > endOfDay(end)) return;
+} else if (appliedFilter === "thisMonth") {
+  const start = startOfMonth(new Date());
+  const end = endOfMonth(new Date());
+  if (date < startOfDay(start) || date > endOfDay(end)) return;
+} else if (appliedFilter === "thisYear") {
+  const start = new Date(new Date().getFullYear(), 0, 1);
+  const end = new Date(new Date().getFullYear(), 11, 31);
+  if (date < startOfDay(start) || date > endOfDay(end)) return;
+}
+
+
+    const barberName = booking.barbers?.name;
+    const servicePrice = booking.services?.price;
+
+    if (!barberName || !servicePrice) return;
+
+    if (!barberTotals[barberName]) {
+      barberTotals[barberName] = { totalService: 0 };
+    }
+
+    barberTotals[barberName].totalService += servicePrice;
+  });
+
   const exportAllDataToExcel = () => {
     const mode = dateRange?.from && dateRange?.to ? "range" : filterType;
     const range = dateRange?.from && dateRange?.to ? dateRange : null;
 
     const reportTitle = getReportTitle(mode, range);
-    const barberTotals = {};
-    bookings.forEach((booking) => {
-      if (booking.status !== "done") return;
-
-      const date = new Date(booking.booking_date);
-
-      if (appliedFilter === "range" && customRange) {
-        if (
-          date < startOfDay(customRange.from) ||
-          date > endOfDay(customRange.to)
-        )
-          return;
-      } else if (appliedFilter === "thisWeek") {
-        const start = subDays(new Date(), 6);
-        if (date < startOfDay(start) || date > endOfDay(new Date())) return;
-      } else if (appliedFilter === "thisMonth") {
-        const start = startOfMonth(new Date());
-        if (date < startOfDay(start) || date > endOfDay(new Date())) return;
-      } else if (appliedFilter === "thisYear") {
-        const start = new Date(new Date().getFullYear(), 0, 1);
-        if (date < startOfDay(start) || date > endOfDay(new Date())) return;
-      }
-
-      const barberName = booking.barbers?.name;
-      const servicePrice = booking.services?.price;
-
-      if (!barberName || !servicePrice) return;
-
-      if (!barberTotals[barberName]) {
-        barberTotals[barberName] = { totalService: 0 };
-      }
-
-      barberTotals[barberName].totalService += servicePrice;
-    });
-
     const wb = XLSX.utils.book_new();
 
     // Sheet 1: Ringkasan Penjualan
@@ -417,12 +444,9 @@ function ReportComponent() {
   };
 
   return (
-    <div className="p-6 space-y-6 bg-white text-gray-900 min-h-screen">
+    <div className="p-6 space-y-6 bg-white text-gray-900 min-h-screen rounded-md">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Laporan - Ringkasan Penjualan</h2>
-        <span className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
-          Status: Online
-        </span>
       </div>
 
       {/* Filter */}
@@ -436,10 +460,10 @@ function ReportComponent() {
             onBlur={() => setIsOpen(false)}
             className="bg-white text-black border border-gray-300 rounded-lg px-4 py-2 w-full pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
           >
-            <option value="today">Hari Ini</option>
-            <option value="thisWeek">Minggu Ini</option>
-            <option value="thisMonth">Bulan Ini</option>
-            <option value="thisYear">Tahun Ini</option>
+            <option value="today" className="text-xs lg:text-md">Hari Ini</option>
+            <option value="thisWeek" className="text-xs lg:text-md">Minggu Ini</option>
+            <option value="thisMonth" className="text-xs lg:text-md">Bulan Ini</option>
+            <option value="thisYear" className="text-xs lg:text-md">Tahun Ini</option>
           </select>
           <div className="pointer-events-none absolute right-3 top-[15px] text-gray-700">
             {isOpen ? <FiChevronUp /> : <FiChevronDown />}
@@ -508,7 +532,7 @@ function ReportComponent() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {[...cards, ...barberCards].map((card, index) => (
           <Card key={index} className="p-4 !bg-white !border-gray-300">
             <div className="flex items-center gap-3">
@@ -525,9 +549,9 @@ function ReportComponent() {
       </div>
 
       {/* Grafik */}
-      <div className="bg-gray-50 p-6 rounded-lg shadow-md">
+      <div  className="bg-gray-50 p-6 rounded-lg shadow-md">
         <h3 className="text-lg font-semibold mb-4">Grafik Penjualan</h3>
-        <div className="w-full h-[300px]">
+        <div ref={chartRef} className="w-full h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={monthlySalesData}
@@ -560,12 +584,31 @@ function ReportComponent() {
         </div>
       </div>
 
+<div className="flex gap-4">
       <button
         onClick={exportAllDataToExcel}
         className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
       >
         Export ke Excel
       </button>
+      <button
+        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
+        onClick={() =>
+          generatePDFReportWithChart({
+      reportTitle: getReportTitle(appliedFilter, customRange),
+            totalSales,
+            totalTransactions,
+            doneBookings,
+            cancelledBookings,
+            barbers,
+            barberTotals,
+            chartRef,
+          })
+        }
+      >
+        Export PDF
+      </button>
+      </div>
     </div>
   );
 }

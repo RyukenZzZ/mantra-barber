@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
+import { FaEdit, FaPlus, FaTimes } from "react-icons/fa";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { getBookings } from "../../service/bookings";
+import { cancelBooking, getBookings } from "../../service/bookings";
 import { useEffect, useState } from "react";
 import { format, parseISO, startOfDay, endOfDay, parse } from "date-fns";
 import { id } from "date-fns/locale";
@@ -12,12 +12,20 @@ import "react-day-picker/dist/style.css";
 import BookingModal from "../../components/Modal/bookingModal";
 import { getBarbers } from "../../service/barbers";
 import { getServices } from "../../service/services";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import Protected from "../../components/Auth/Protected";
 
 export const Route = createFileRoute("/admin/bookings")({
-  component: BookingsComponent,
+    component: () => (
+        <Protected roles={["admin"]}>
+            <BookingsComponent />
+        </Protected>
+    ),
 });
 
 function BookingsComponent() {
+  const queryClient = useQueryClient();
   const { token } = useSelector((s) => s.auth);
   const [searchTerm, setSearchTerm] = useState("");
   const [showPicker, setShowPicker] = useState(false);
@@ -43,6 +51,33 @@ function BookingsComponent() {
     queryFn: getBarbers,
     enabled: !!token,
   });
+
+  const { mutate: handleCancelBooking, isPending } = useMutation({
+    mutationFn: (id) => cancelBooking(id),
+    onSuccess: () => {
+      toast.success("Booking berhasil dibatalkan");
+      queryClient.invalidateQueries({ queryKey: ["getBookings"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleCancel = async (bookingId) => {
+    const confirm = await Swal.fire({
+      title: "Batalkan Booking?",
+      text: "Apakah yakin ingin membatalkan booking ini?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, Batalkan!",
+      cancelButtonText: "Tidak",
+    });
+
+    if (!confirm.isConfirmed) return;
+    handleCancelBooking(bookingId);
+  };
 
   const allowedStatus = ["booked", "done", "cancelled", "isPending"];
 
@@ -264,7 +299,7 @@ function BookingsComponent() {
                           ? "bg-green-100 text-green-700"
                           : b.status === "isPending"
                             ? "bg-yellow-100 text-yellow-700"
-                            : b.status === "cancelled "
+                            : b.status === "cancelled"
                               ? "bg-red-100 text-red-700"
                               : "bg-blue-100 text-blue-700"
                       }`}
@@ -275,7 +310,7 @@ function BookingsComponent() {
                   <td className="px-4 py-3">
                     <div className="flex gap-3 justify-center">
                       <button
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-blue-500 hover:text-blue-700 text-xl"
                         onClick={() => {
                           setEditMode(true);
                           setEditData(b); // b adalah data booking yang sedang diiterasi
@@ -285,8 +320,12 @@ function BookingsComponent() {
                         <FaEdit />
                       </button>
 
-                      <button className="text-red-500 hover:text-red-700">
-                        <FaTrash />
+                      <button
+                        className="text-red-500 hover:text-red-700 text-xl"
+                        onClick={() => handleCancel(b.id)}
+                        disabled={isPending}
+                      >
+                        <FaTimes />
                       </button>
                     </div>
                   </td>

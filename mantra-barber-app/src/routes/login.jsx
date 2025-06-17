@@ -8,7 +8,7 @@ import { useEffect, useState } from "react"; // jika belum ter-import
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import { login, googleLogin } from "../service/auth"; // sesuaikan path
-import { setToken } from "../redux/slices/auth"; // sesuaikan path
+import { setToken, setUser } from "../redux/slices/auth"; // sesuaikan path
 
 import googleLogo from "../assets/G-google.png";
 import mantraLogo from "../assets/mantraLogo.png";
@@ -22,7 +22,7 @@ function Login() {
   const dispatch = useDispatch(); // ✅
   const navigate = useNavigate();
 
-  const { token } = useSelector((state) => state.auth); // ✅ ambil token dari redux state
+  const { token,user } = useSelector((state) => state.auth); // ✅ ambil token dari redux state
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -56,19 +56,30 @@ function Login() {
       },
     });
 
-  useEffect(() => {
+useEffect(() => {
     if (token) {
-      navigate("/");
+      if (user?.role === "admin") {
+        navigate({ to: "/admin/dashboard" });
+      } else {
+        navigate({ to: "/" });
+      }
     }
-  }, [token, navigate]);
+  }, [token, user, navigate]);
 
   const { mutate: loginUser, isLoading: isLoggingIn } = useMutation({
     mutationFn: (body) => login(body),
     onSuccess: (data) => {
       dispatch(setToken(data?.token));
+      dispatch(setUser(data?.user)); // ✅ simpan user (jika kamu punya reducer-nya)
+      console.log(data.user)
       toast.success(data?.message || "Login successful!"); // ✅ Tampilkan pesan sukses
+      // Redirect berdasarkan role
+    if (data?.user?.role === "admin") {
+      navigate({ to: "/admin/dashboard" });
+    } else {
       navigate({ to: "/" });
-    },
+    }
+  },
     onError: (err) => {
       const message =
         err?.response?.data?.message || err?.message || "Login failed!";

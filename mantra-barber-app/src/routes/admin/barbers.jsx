@@ -22,9 +22,14 @@ import { useState } from "react";
 import { FileInput, HelperText } from "flowbite-react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import Protected from "../../components/Auth/Protected";
 
 export const Route = createFileRoute("/admin/barbers")({
-  component: BarbersComponent,
+    component: () => (
+        <Protected roles={["admin"]}>
+            <BarbersComponent />
+        </Protected>
+    ),
 });
 
 function BarbersComponent() {
@@ -197,7 +202,7 @@ function BarbersComponent() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Daftar Barber</h1>
         <button
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
           onClick={() => {
             resetForm();
             setIsModalOpen(true);

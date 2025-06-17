@@ -7,8 +7,6 @@ import {
   HiOutlineDocument,
   HiMenuAlt1,
   HiClipboardList,
-  HiDocumentReport,
-  HiCurrencyDollar,
 } from "react-icons/hi";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -22,6 +20,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../../redux/slices/auth";
 import { toast } from "react-toastify";
+import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 
 const SideBar = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -146,15 +145,11 @@ const SideBar = ({ children }) => {
 
       {/* Main Content */}
 <div
-  className="flex flex-col flex-1 transition-all duration-300"
-  style={{
-    marginLeft: shouldShowFullSidebar
-      ? isMobile
-        ? "30%"
-        : "16rem"
-      : "4rem",
-  }}
+  className={`flex flex-col transition-all duration-300 ${
+    shouldShowFullSidebar ? (isMobile ? "ml-[50%]" : "ml-64") : "ml-16"
+  } flex-1 min-w-0`}
 >
+
         {/* Top Navbar */}
         <Navbar className="border-b !border-gray-200 !bg-white px-6 py-3">
           <div className="flex items-center justify-between w-full">
@@ -196,6 +191,9 @@ const SideBar = ({ children }) => {
               </DropdownHeader>
               <DropdownItem icon={HiOutlineLogout} onClick={handleLogout}>
                 Logout
+              </DropdownItem>
+              <DropdownItem icon={HiOutlineClipboardDocumentList} as={Link} to="/admin/my-bookings">
+                My-bookings
               </DropdownItem>
             </Dropdown>
           </div>

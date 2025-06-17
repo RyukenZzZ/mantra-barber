@@ -96,35 +96,35 @@ function MyBookingComponent() {
           </Alert>
         )}
 
-{[...myBookings]
-  .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-  .map((booking) => {
-          const name = booking.cust_name;
-          const email = booking.cust_email;
-          const phone = booking.cust_phone_number;
-          const barberName = booking.barbers?.name;
-          const serviceName = booking.services?.name;
-          const price = booking.services?.price;
+        {[...myBookings]
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .map((booking) => {
+            const name = booking.cust_name;
+            const email = booking.cust_email;
+            const phone = booking.cust_phone_number;
+            const barberName = booking.barbers?.name;
+            const serviceName = booking.services?.name;
+            const price = booking.services?.price;
 
-          const pendingStatus = booking.status === "isPending";
-          const isInactive =
-            booking.status === "cancelled" || booking.status === "expired";
-          const formattedDate = booking.booking_date
-            ? format(new Date(booking.booking_date), "dd MMMM yyyy")
-            : "-";
+            const pendingStatus = booking.status === "isPending";
+            const isInactive =
+              booking.status === "cancelled" || booking.status === "expired";
+            const formattedDate = booking.booking_date
+              ? format(new Date(booking.booking_date), "dd MMMM yyyy")
+              : "-";
 
-          const formattedTime = booking.booking_time
-            ? format(new Date(booking.booking_time), "HH:mm")
-            : "-";
+            const formattedTime = booking.booking_time
+              ? format(new Date(booking.booking_time), "HH:mm")
+              : "-";
 
-          return (
-            <div
-              key={booking.id}
-              className="relative w-full max-w-md sm:max-w-xl bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10"
-            >
-              {/* BADGE STATUS */}
-              <span
-                className={`
+            return (
+              <div
+                key={booking.id}
+                className="relative w-full max-w-md sm:max-w-xl bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10"
+              >
+                {/* BADGE STATUS */}
+                <span
+                  className={`
           absolute top-5 right-3 text-xs font-semibold px-3 py-1 rounded-full text-white
           ${
             isInactive
@@ -138,84 +138,85 @@ function MyBookingComponent() {
                     : "bg-black"
           }
         `}
-              >
-                {booking.status}
-              </span>
+                >
+                  {booking.status}
+                </span>
 
-              <h2 className="text-xl font-semibold mb-7 text-center">
-                {booking.booking_code}
-              </h2>
+                <h2 className="text-xl font-semibold mb-7 text-center">
+                  {booking.booking_code}
+                </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 mb-4 text-sm">
-                <div className="grid grid-cols-3 col-span-2 gap-1">
-                  <p className="font-semibold">Nama</p>
-                  <p className="col-span-2">: {name}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 mb-4 text-sm">
+                  <div className="grid grid-cols-3 col-span-2 gap-1">
+                    <p className="font-semibold">Nama</p>
+                    <p className="col-span-2">: {name}</p>
 
-                  <p className="font-semibold">Email</p>
-                  <p className="col-span-2">: {email}</p>
+                    <p className="font-semibold">Email</p>
+                    <p className="col-span-2">: {email}</p>
 
-                  <p className="font-semibold">No. Telepon</p>
-                  <p className="col-span-2">: {phone}</p>
+                    <p className="font-semibold">No. Telepon</p>
+                    <p className="col-span-2">: {phone}</p>
 
-                  <p className="font-semibold">Barber</p>
-                  <p className="col-span-2">: {barberName}</p>
+                    <p className="font-semibold">Barber</p>
+                    <p className="col-span-2">: {barberName}</p>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-1">
+                    <p className="font-semibold">Layanan</p>
+                    <p className="col-span-2">: {serviceName}</p>
+
+                    <p className="font-semibold">Tanggal</p>
+                    <p className="col-span-2">: {formattedDate}</p>
+
+                    <p className="font-semibold">Jam</p>
+                    <p className="col-span-2">: {formattedTime}</p>
+
+                    <p className="font-semibold">Price</p>
+                    <p className="col-span-2">: {Math.floor(price / 1000)}k</p>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-1">
-                  <p className="font-semibold">Layanan</p>
-                  <p className="col-span-2">: {serviceName}</p>
-
-                  <p className="font-semibold">Tanggal</p>
-                  <p className="col-span-2">: {formattedDate}</p>
-
-                  <p className="font-semibold">Jam</p>
-                  <p className="col-span-2">: {formattedTime}</p>
-
-                  <p className="font-semibold">Price</p>
-                  <p className="col-span-2">: {Math.floor(price / 1000)}k</p>
-                </div>
-              </div>
-
-              {!isInactive && (
-                <div className="grid grid-cols-2 gap-3 mt-10">
-                  {/* Cancel (selalu ditampilkan jika tidak inactive) */}
-<Button
-  onClick={() => handleCancel(booking.id)}
-  disabled={isPending || pendingStatus}
-  className={`w-2/3 justify-self-end
-    ${pendingStatus || isPending
-      ? "!bg-gray-300 !text-gray-500 cursor-not-allowed"
-      : "!bg-red-600 !text-white !hover:bg-red-700"
+                {!isInactive && (
+                  <div className="grid grid-cols-2 gap-3 mt-10">
+                    {/* Cancel (selalu ditampilkan jika tidak inactive) */}
+                    <Button
+                      onClick={() => handleCancel(booking.id)}
+                      disabled={isPending || pendingStatus}
+                      className={`w-2/3 justify-self-end
+    ${
+      pendingStatus || isPending
+        ? "!bg-gray-300 !text-gray-500 cursor-not-allowed"
+        : "!bg-red-600 !text-white !hover:bg-red-700"
     }`}
->
-  Cancel
-</Button>
+                    >
+                      Cancel
+                    </Button>
 
-                  {/* Tombol kedua tergantung status */}
-                  {pendingStatus ? (
-                    <Button
-                      as={Link}
-                      to={`/payments/${booking.id}`}
-                      color="dark"
-                      className="w-2/3"
-                    >
-                      Lanjut&nbsp;Bayar
-                    </Button>
-                  ) : (
-                    /* booked/done → Reschedule */
-                    <Button
-                      color="blue"
-                      onClick={() => handleReschedule()}
-                      className="w-2/3"
-                    >
-                      Reschedule
-                    </Button>
-                  )}
-                </div>
-              )}
-            </div>
-          );
-        })}
+                    {/* Tombol kedua tergantung status */}
+                    {pendingStatus ? (
+                      <Button
+                        as={Link}
+                        to={`/payments/${booking.id}`}
+                        color="dark"
+                        className="w-2/3"
+                      >
+                        Lanjut&nbsp;Bayar
+                      </Button>
+                    ) : (
+                      /* booked/done → Reschedule */
+                      <Button
+                        color="blue"
+                        onClick={() => handleReschedule()}
+                        className="w-2/3"
+                      >
+                        Reschedule
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
       </div>
 
       <footer className="w-full text-center py-3 bg-black bg-opacity-50 text-white mt-36">

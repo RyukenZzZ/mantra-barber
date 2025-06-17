@@ -162,3 +162,26 @@ export const cancelBooking = async (id) => {
 
   return result?.data;
 };
+
+export const doneBooking = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const url = `${import.meta.env.VITE_API_URL}/bookings/${id}`;
+
+  const response = await fetch(url, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status: "done" }),
+  });
+
+  const result = await response.json();
+
+  if (!result?.success) {
+    throw new Error(result?.message || "Gagal membatalkan booking");
+  }
+
+  return result?.data;
+};

@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button, Label, TextInput } from "flowbite-react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { register as registerService } from "../service/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,7 +17,7 @@ function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  const { token } = useSelector((state) => state.auth)
+  const { token,user } = useSelector((state) => state.auth)
   
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,10 +32,15 @@ function Register() {
     profilePicture: null, // kalau nanti mau unggah foto
   });
 
-    // get token from local storage
-  if (token) {
-    navigate({ to: '/' })
-  }
+useEffect(() => {
+    if (token) {
+      if (user?.role === "admin") {
+        navigate({ to: "/admin/dashboard" });
+      } else {
+        navigate({ to: "/" });
+      }
+    }
+  }, [token, user, navigate]);
 
   const handleChange = (e) => {
     const { id, value, files } = e.target;

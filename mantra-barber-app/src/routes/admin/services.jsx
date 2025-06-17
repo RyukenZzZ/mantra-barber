@@ -12,9 +12,14 @@ import { useState } from "react";
 import { FileInput, HelperText } from "flowbite-react";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import Protected from "../../components/Auth/Protected";
 
 export const Route = createFileRoute("/admin/services")({
-  component: ServicesComponent,
+    component: () => (
+        <Protected roles={["admin"]}>
+            <ServicesComponent />
+        </Protected>
+    ),
 });
 
 function ServicesComponent() {

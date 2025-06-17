@@ -18,13 +18,19 @@ import {
   isTomorrow,
 } from "date-fns";
 import { id } from "date-fns/locale";
-import { doneBooking } from "../../service/payments";
+import { doneBooking } from "../../service/bookings";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import notFoundBooking from "../../assets/notFoundBooking.png";
+import Protected from "../../components/Auth/Protected";
+import { HiCheck } from "react-icons/hi";
 
 export const Route = createFileRoute("/admin/dashboard")({
-  component: AdminDashboardComponent,
+    component: () => (
+        <Protected roles={["admin"]}>
+            <AdminDashboardComponent />
+        </Protected>
+    ),
 });
 
 function AdminDashboardComponent() {
@@ -146,7 +152,7 @@ function AdminDashboardComponent() {
   return (
     <div className="py-4 px-4 sm:px-6 lg:px-8">
       {/* Statistik */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard
           icon={<HiOutlineCalendarDays className="text-3xl text-blue-600" />}
           label="Booking Hari Ini"
@@ -266,25 +272,25 @@ function AdminDashboardComponent() {
               ) : (
                 filteredBookings.map((booking, index) => (
                   <tr key={booking.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">{index + 1}</td>
-                    <td className="px-6 py-4">{booking.cust_name}</td>
-                    <td className="px-6 py-4">{booking.cust_phone_number}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-xs">{index + 1}</td>
+                    <td className="px-6 py-4 text-xs">{booking.cust_name}</td>
+                    <td className="px-6 py-4 text-xs">{booking.cust_phone_number}</td>
+                    <td className="px-6 py-4 text-xs">
                       {format(parseISO(booking.booking_date), "dd MMMM yyyy", {
                         locale: id,
                       })}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-xs">
                       {format(parseISO(booking.booking_time), "HH:mm")} WIB
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-xs">
                       {booking.services?.name} (Rp{" "}
                       {Math.floor(booking.services?.price / 1000)}K)
                     </td>
-                    <td className="px-6 py-4">{booking.barbers.name}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-xs">{booking.barbers.name}</td>
+                    <td className="px-6 py-4 text-xs">
                       <span
-                        className={`px-3 py-2 rounded-full text-sm font-semibold ${
+                        className={`px-3 py-2 rounded-full text-xs font-semibold ${
                           booking.status === "done"
                             ? "bg-green-100 text-green-600"
                             : booking.status === "pending"
@@ -297,14 +303,14 @@ function AdminDashboardComponent() {
                         {booking.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-xs">
                       {booking.status !== "done" &&
                         booking.status !== "cancelled" && (
                           <button
                             onClick={() => handleMarkAsDone(booking.id)}
-                            className="text-sm text-white px-3 py-2 rounded-full bg-blue-600 hover:bg-blue-700"
+                            className="text-xs text-white px-2 py-2 rounded-full bg-blue-600 hover:bg-blue-700"
                           >
-                            Mark As Done
+                            <HiCheck />
                           </button>
                         )}
                     </td>
@@ -326,7 +332,7 @@ function StatCard({ icon, label, value, color }) {
         <div className={`rounded-full bg-${color}-100 p-3`}>{icon}</div>
         <div>
           <p className="text-sm text-gray-500">{label}</p>
-          <h3 className="text-2xl font-bold">{value}</h3>
+          <h3 className="text-lg font-bold sm:text-xl">{value}</h3>
         </div>
       </div>
     </div>

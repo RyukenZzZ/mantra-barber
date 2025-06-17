@@ -10,7 +10,6 @@ import galeri2 from "../assets/galeri2.jpg";
 import galeri3 from "../assets/galeri3.jpg";
 import galeri4 from "../assets/galeri4.jpg";
 import servicesBest from "../assets/services1.jpg";
-import bgServices from "../assets/bgServices.jpg";
 import higlightHair from "../assets/highlightHair.jpg";
 import colloringFashion from "../assets/colloringFashion.jpg";
 import permHair from "../assets/permHair.jpg";
@@ -35,7 +34,7 @@ function Index() {
     enabled: !!token,
   });
 
-  const images = [galeri1, galeri2, galeri3, galeri4, bgServices, bgDashboard];
+  const images = [galeri1, galeri2, galeri3, galeri4, bgDashboard];
   const [emblaRef, embla] = useEmblaCarousel({ loop: true, align: "center" }, [
     ClassNamesPlugin(),
   ]);
