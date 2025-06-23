@@ -3,7 +3,7 @@ import bgBooking from "../assets/bg-booking3.jpg";
 import { cancelBooking, getMyBookings } from "../service/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
-import { Alert, Button } from "flowbite-react";
+import { Alert, Button, Spinner } from "flowbite-react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
@@ -80,8 +80,12 @@ function MyBookingComponent() {
           History Bookings
         </h2>
 
-        {isLoading && <p className="text-center text-white">Memuat data...</p>}
-
+{isLoading && (
+  <div className="flex flex-col items-center gap-2 text-white">
+    <Spinner color="info" />
+    <p>Memuat data...</p>
+  </div>
+)}
         {myBookings.length === 0 && !isLoading && (
           <Alert color="warning" className="text-center w-full text-white">
             Kamu belum melakukan Booking sama sekali.

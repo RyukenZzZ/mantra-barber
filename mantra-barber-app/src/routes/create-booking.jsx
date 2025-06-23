@@ -20,9 +20,14 @@ import { getServices } from "../service/services";
 import { getBarbers } from "../service/barbers";
 import { createBooking } from "../service/bookings";
 import { toast } from "react-toastify";
+import Protected from "../components/Auth/Protected";
 
 export const Route = createFileRoute("/create-booking")({
-  component: CreateBooking,
+  component: () => (
+    <Protected roles={["admin", "customer"]}>
+      <CreateBooking />
+    </Protected>
+  ),
 });
 
 function CreateBooking() {
@@ -47,13 +52,13 @@ function CreateBooking() {
   const [email, setEmail] = useState(user.email);
   const [phone, setPhone] = useState(user.phone);
 
-  const { data: services = [] } = useQuery({
+  const { data: services = [], isLoading: servicesLoading } = useQuery({
     queryKey: ["getServices"],
     queryFn: getServices,
     enabled: !!token,
   });
 
-  const { data: barbers = [] } = useQuery({
+  const { data: barbers = [], isLoading: barbersLoading } = useQuery({
     queryKey: ["getBarbers"],
     queryFn: getBarbers,
     enabled: !!token,
@@ -224,6 +229,13 @@ function CreateBooking() {
         </h1>
 
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6">
+          {step === 1 && barbersLoading && (
+            <div className="flex flex-col items-center justify-center col-span-full">
+              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+              <p className="text-white">Memuat data barber...</p>
+            </div>
+          )}
+
           {step === 1 &&
             barbers
               .filter((b) => b.is_active) // hanya tampilkan service yang is_active === true
@@ -262,6 +274,13 @@ function CreateBooking() {
                   </Button>
                 </Card>
               ))}
+
+          {step === 2 && servicesLoading && (
+            <div className="flex flex-col items-center justify-center col-span-full">
+              <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
+              <p className="text-white">Memuat data layanan...</p>
+            </div>
+          )}
 
           {step === 2 &&
             services.map((s) => (

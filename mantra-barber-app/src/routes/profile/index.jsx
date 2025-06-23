@@ -1,16 +1,33 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
-import { Avatar, Card, Button, Spinner } from "flowbite-react";
+import { Card, Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import bgProfile from "../../assets/bgProfile.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { getBookings } from "../../service/bookings";
 
 export const Route = createFileRoute("/profile/")({
   component: ProfileComponent,
 });
 
 function ProfileComponent() {
-  const { user } = useSelector((state) => state.auth);
+  const { user,token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(true);
+
+    const { data: bookings = [] } = useQuery({
+    queryKey: ["getBookings"],
+    queryFn: getBookings,
+    enabled: !!token,
+  });
+
+const userBookings = bookings.filter((b) =>
+  b.user_id === user?.id &&
+  ["booked", "done", "canceled"].includes(b.status)
+);
+
+const totalBooking = userBookings.length;
+
+
 
   useEffect(() => {
     if (user) {
@@ -33,7 +50,7 @@ function ProfileComponent() {
         backgroundImage: `url(${bgProfile})`,
       }}
     >
-      <Card className="w-full max-w-lg p-6 text-black !bg-white border-3 !border-gray-300">
+      <Card className="w-full max-w-lg p-4 text-black !bg-white border-3 !border-gray-300">
         <h1 className="text-2xl font-bold text-center mb-6">Profile</h1>
 
         <div className="grid grid-cols-3 gap-4 items-center mb-4">
@@ -60,7 +77,7 @@ function ProfileComponent() {
         <hr />
         <InfoRow label="Phone" value={user?.phone || ""} />
         <hr />
-        <InfoRow label="Total Booking" value={"0"} />
+<InfoRow label="Total Booking" value={totalBooking.toString()} />
         <hr />
 
         <div className="flex justify-end mt-6 gap-4">

@@ -8,18 +8,23 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import NavigationBar from "../components/Navbar/navbar";
 import SideBar from "../components/SideBar/sidebar"; // asumsi file sidebar kamu
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { useSelector } from "react-redux";
 
 function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user, token } = useSelector((state) => state.auth);
+
 
   const hideNavbarOn = ["/login", "/register"];
   const isAdminRoute = pathname.startsWith("/admin");
+  const isAdmin = token && user?.role === "admin";
+
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
       <>
         {/* Tampilkan Sidebar jika /admin, selain itu NavigationBar jika tidak di-hide */}
-        {isAdminRoute ? (
+        {isAdminRoute && isAdmin ? (
           <SideBar>
             <Outlet />
           </SideBar>
