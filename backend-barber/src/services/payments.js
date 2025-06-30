@@ -30,7 +30,6 @@ exports.resumePayment = async (userId, bookingId) => {
       data: {
         snap_token: payment.snap_token,
         snap_url:payment.snap_url,
-        pdf_url: payment.pdf_url,
         expired_time:expiredTime,
         amount:payment.amount,
       },

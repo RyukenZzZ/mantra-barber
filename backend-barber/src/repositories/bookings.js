@@ -284,7 +284,6 @@ exports.createBooking = async (data) => {
      snap_url: redirect_url,
      snap_token:token,
      reference: orderId,
-     pdf_url: midtransResponse?.pdf_url ?? null,
    },
  });
 
@@ -318,7 +317,6 @@ exports.createBooking = async (data) => {
      status: newPayment.status,
      snap_token:token,
      snap_url: midtransResponse.redirect_url,
-     pdf_url: midtransResponse?.pdf_url ?? null,
      expired_time: newPayment.expired_time,
      created_at: newPayment.created_at,
    },
