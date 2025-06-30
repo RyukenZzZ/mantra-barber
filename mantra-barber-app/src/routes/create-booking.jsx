@@ -3,7 +3,6 @@ import {
   Button,
   Card,
   Datepicker,
-  Label,
   Modal,
   ModalBody,
   ModalFooter,
@@ -11,7 +10,7 @@ import {
   Radio,
   TextInput,
 } from "flowbite-react";
-import bgBooking from "../assets/bg-booking3.jpg";
+import bgBooking from "../assets/bg-booking6.jpg";
 import { useMutation, useQuery } from "@tanstack/react-query"; // pastikan sudah terpasang
 import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -24,7 +23,7 @@ import Protected from "../components/Auth/Protected";
 
 export const Route = createFileRoute("/create-booking")({
   component: () => (
-    <Protected roles={["admin", "customer"]}>
+    <Protected roles={["customer","admin"]}>
       <CreateBooking />
     </Protected>
   ),
@@ -157,6 +156,16 @@ function CreateBooking() {
     setStep(4); // Lanjut ke halaman konfirmasi
   };
 
+  const isFormIncomplete = !(
+    name &&
+    email &&
+    phone &&
+    barberId &&
+    serviceId &&
+    date &&
+    time
+  );
+
   const handleNext = (event) => {
     if (event) event.preventDefault();
 
@@ -182,7 +191,6 @@ function CreateBooking() {
         return;
       }
     }
-
     setStep(step + 1);
   };
 
@@ -470,15 +478,21 @@ function CreateBooking() {
             >
               &larr; Back
             </Button>
-
-            <Button
-              color="dark"
-              className="w-full mt-2"
-              type="button"
-              onClick={handleNext}
+            <div
+              className={
+                isFormIncomplete ? "cursor-not-allowed" : "cursor-pointer"
+              }
             >
-              Confirm Booking
-            </Button>
+              <Button
+                color="dark"
+                className="w-full mt-2"
+                type="button"
+                disabled={isFormIncomplete}
+                onClick={handleNext}
+              >
+                Confirm Booking
+              </Button>
+            </div>
           </div>
         )}
 

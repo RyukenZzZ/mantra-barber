@@ -12,7 +12,7 @@ import { setToken, setUser } from "../redux/slices/auth"; // sesuaikan path
 
 import googleLogo from "../assets/G-google.png";
 import mantraLogo from "../assets/mantraLogo.png";
-import bgBarber from "../assets/BG.jpg";
+import bgBarber from "../assets/bg-booking6.jpg";
 
 export const Route = createFileRoute("/login")({
   component: Login,

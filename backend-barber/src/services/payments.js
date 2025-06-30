@@ -43,10 +43,10 @@ exports.resumePayment = async (userId, bookingId) => {
 
 exports.handleNotification = async (notificationBody) => {
   const notif = await core.transaction.notification(notificationBody);
-  const { transaction_status, order_id } = notif;
+  const { transaction_status, order_id, payment_type } = notif;
   if (transaction_status === "settlement" || transaction_status === "capture") {
     const bookingCode = order_id.replace(/^BOOK-/, "").replace(/-\d+$/, "");
-    await paymentRepository.markAsPaid(order_id);
+    await paymentRepository.markAsPaid(order_id,payment_type);
     await bookingRepository.updateStatusByCode(bookingCode, "booked");
   }
 };

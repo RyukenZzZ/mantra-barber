@@ -7,6 +7,7 @@ import { register as registerService } from "../service/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../redux/slices/auth"; // sesuaikan path
+import bgBarber from "../assets/bg-booking6.jpg";
 
 
 export const Route = createFileRoute("/register")({
@@ -101,10 +102,9 @@ const handleSubmit = (e) => {
 
   return (
     <div
-      className="flex justify-center items-center min-h-screen bg-cover bg-center"
+      className="flex justify-center items-center min-h-screen bg-cover bg-center px-4"
       style={{
-        backgroundImage:
-          'url("https://media.istockphoto.com/id/1244833615/id/foto/ilustrasi-3d-interior-tempat-kerja-barbershop.jpg?s=2048x2048&w=is&k=20&c=SBl6XLkMdH2RqlVA6JR0NDPUmbJfCmIJ3efY166zq_I=")',
+        backgroundImage: `url(${bgBarber})`,
       }}
     >
       <div className="w-2/3 max-w-md bg-gray-800 bg-opacity-90 rounded-lg shadow-md p-6">

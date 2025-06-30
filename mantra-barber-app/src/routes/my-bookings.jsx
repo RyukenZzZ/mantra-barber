@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import bgBooking from "../assets/bg-booking3.jpg";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import bgBooking from "../assets/bgProfile.jpg";
 import { cancelBooking, getMyBookings } from "../service/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
@@ -7,13 +7,15 @@ import { Alert, Button, Spinner } from "flowbite-react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/my-bookings")({
   component: MyBookingComponent,
 });
 
 function MyBookingComponent() {
-  const { token } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+  const { user,token } = useSelector((state) => state.auth);
 
   const { data: myBookings = [], isLoading } = useQuery({
     queryKey: ["getMyBookings"],
@@ -50,6 +52,16 @@ function MyBookingComponent() {
     handleCancelBooking(bookingId);
   };
 
+  useEffect(() => {
+      if (!token || !user) {
+        if (user?.role === "admin") {
+          navigate({ to: "/admin/dashboard" });
+        } else {
+          navigate({ to: "/" });
+        }
+      }
+    }, [token, user, navigate]);
+
   const handleReschedule = () => {
     Swal.fire({
       title: "Ingin Melakukan Reschedule?",
@@ -80,12 +92,12 @@ function MyBookingComponent() {
           History Bookings
         </h2>
 
-{isLoading && (
-  <div className="flex flex-col items-center gap-2 text-white">
-    <Spinner color="info" />
-    <p>Memuat data...</p>
-  </div>
-)}
+        {isLoading && (
+          <div className="flex flex-col items-center gap-2 text-white">
+            <Spinner color="info" />
+            <p>Memuat data...</p>
+          </div>
+        )}
         {myBookings.length === 0 && !isLoading && (
           <Alert color="warning" className="text-center w-full text-white">
             Kamu belum melakukan Booking sama sekali.
@@ -112,7 +124,7 @@ function MyBookingComponent() {
 
             const pendingStatus = booking.status === "isPending";
             const isInactive =
-              booking.status === "cancelled" || booking.status === "expired";
+              booking.status === "cancelled" || booking.status === "expired" || booking.status === "done";
             const formattedDate = booking.booking_date
               ? format(new Date(booking.booking_date), "dd MMMM yyyy")
               : "-";
@@ -131,7 +143,7 @@ function MyBookingComponent() {
                   className={`
           absolute top-5 right-3 text-xs font-semibold px-3 py-1 rounded-full text-white
           ${
-            isInactive
+            booking.status === "cancelled" || booking.status === "expired"
               ? "bg-red-600"
               : isPending
                 ? "bg-gray-500"

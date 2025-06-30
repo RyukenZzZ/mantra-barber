@@ -50,9 +50,12 @@ const SideBar = ({ children }) => {
   const handleLogout = useCallback(() => {
     dispatch(setUser(null));
     dispatch(setToken(null));
+      localStorage.removeItem("token");
+  localStorage.removeItem("user");
     toast.success("Logout berhasil");
     navigate({ to: "/login" });
   }, [dispatch, navigate]);
+
 
   const shouldShowFullSidebar = isSidebarOpen || isHovering;
 

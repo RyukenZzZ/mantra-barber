@@ -49,7 +49,6 @@ model payments {
   paid_at      DateTime?
   reference    String?         @unique
   method       String?
-  pdf_url      String?
   snap_token   String?
   snap_url     String?
   bookings     bookings?       @relation(fields: [booking_id], references: [id], onDelete: Cascade)

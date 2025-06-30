@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import bgBooking from "../../assets/bg-booking3.jpg";
+import bgBooking from "../../assets/bgProfile.jpg";
 import { cancelBooking, getMyBookings } from "../../service/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
@@ -116,7 +116,7 @@ function MyBookingAdminComponent() {
 
             const pendingStatus = booking.status === "isPending";
             const isInactive =
-              booking.status === "cancelled" || booking.status === "expired";
+              booking.status === "cancelled" || booking.status === "expired" || booking.status === "done";
             const formattedDate = booking.booking_date
               ? format(new Date(booking.booking_date), "dd MMMM yyyy")
               : "-";
@@ -135,7 +135,7 @@ function MyBookingAdminComponent() {
                   className={`
           absolute top-5 right-3 text-xs font-semibold px-3 py-1 rounded-full text-white
           ${
-            isInactive
+            booking.status === "cancelled" || booking.status === "expired"
               ? "bg-red-600"
               : isPending
                 ? "bg-gray-500"

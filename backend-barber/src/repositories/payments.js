@@ -4,10 +4,10 @@ const { NotFoundError } = require("../utils/request");
 const prisma = new PrismaClient();
 
 
-exports.markAsPaid = async (orderId) => {
+exports.markAsPaid = async (orderId,payment_type) => {
  return await prisma.payments.updateMany({
   where: { reference: orderId },
-  data: { status: "paid", paid_at: new Date() },
+  data: { status: "paid",method:payment_type,paid_at: new Date() },
 });
 
 

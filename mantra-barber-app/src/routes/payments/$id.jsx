@@ -2,15 +2,19 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, Spinner, Alert, Button } from "flowbite-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import bgBooking from "../../assets/bg-booking3.jpg";
+import bgBooking from "../../assets/bg-booking6.jpg";
 import { getDetailBookings } from "../../service/bookings";
 import { getUrlPayment } from "../../service/payments";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
+import Protected from "../../components/Auth/Protected";
 
 export const Route = createFileRoute("/payments/$id")({
-  component: PaymentsRoute,
-});
+ component: () => (
+        <Protected roles={["customer","admin"]}>
+            <PaymentsRoute />
+        </Protected>
+    ),});
 
 function PaymentsRoute() {
   const { id } = Route.useParams();
@@ -109,7 +113,7 @@ function PaymentsRoute() {
           },
         });
         setSnapEmbedded(true);
-      }, 1000);
+      }, 3000);
     }
   }, [snapReady, payment, snapEmbedded, navigate]);
 
@@ -205,7 +209,7 @@ function PaymentsRoute() {
           </div>
 
           {/* DETAIL */}
-          <Card className="!bg-white/90 border border-gray-300 order-1 md:order-2">
+          <Card className="!bg-white/95 border border-gray-300 order-1 md:order-2">
             <h2 className="text-xl font-semibold text-center mb-4">
               Detail Booking
             </h2>
