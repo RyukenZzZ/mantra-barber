@@ -31,14 +31,15 @@ const NavigationBar = () => {
     dispatch(setUser(null));
     dispatch(setToken(null));
     toast.success("Logout berhasil");
-    navigate({ to: "/login" });
-    window.location.reload(); // untuk mencegah hydration pakai localStorage lama
+    navigate({ to: "/login", replace: true });
+
   }, [dispatch, navigate]);
 
-  const { data, isSuccess, isError } = useQuery({
+  const { data, isSuccess, isError, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: profile,
     enabled: !!token,
+    retry: false,
   });
 
   useEffect(() => {
@@ -85,6 +86,8 @@ const NavigationBar = () => {
       activeSection === hash ? "text-black font-semibold" : "text-gray-500"
     } hover:text-gray-700`;
 
+  if (isLoading) return null;
+
   return (
     <Navbar
       fluid
@@ -106,7 +109,9 @@ const NavigationBar = () => {
             label={
               <img
                 src={
-                  !user.profile_picture || user.profile_picture === "null" || user.profile_picture === null
+                  !user.profile_picture ||
+                  user.profile_picture === "null" ||
+                  user.profile_picture === null
                     ? "https://i.pinimg.com/736x/25/a3/3f/25a33f3b84b18d51305822ee72dfcbff.jpg"
                     : user.profile_picture
                 }
@@ -122,7 +127,9 @@ const NavigationBar = () => {
                 {user.email}
               </span>
             </DropdownHeader>
-            <DropdownItem as={Link} to="/my-bookings">My Bookings</DropdownItem>
+            <DropdownItem as={Link} to="/my-bookings">
+              My Bookings
+            </DropdownItem>
             <DropdownItem as={Link} to="/profile">
               Profile
             </DropdownItem>
