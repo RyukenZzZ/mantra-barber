@@ -8,6 +8,7 @@ import { getUrlPayment } from "../../service/payments";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import Protected from "../../components/Auth/Protected";
+import { useSelector } from "react-redux";
 
 export const Route = createFileRoute("/payments/$id")({
  component: () => (
@@ -18,6 +19,9 @@ export const Route = createFileRoute("/payments/$id")({
 
 function PaymentsRoute() {
   const { id } = Route.useParams();
+  const { user} = useSelector((s) => s.auth);
+  const isAdmin = user?.role === "admin";
+
   const navigate = useNavigate();
 
   const snapBoxRef = useRef(null);
@@ -58,6 +62,7 @@ function PaymentsRoute() {
       setSnapReady(true);
       return;
     }
+    
 
     const s = document.createElement("script");
     s.src = "https://app.sandbox.midtrans.com/snap/snap.js";
@@ -73,6 +78,19 @@ function PaymentsRoute() {
     // Reset embed state saat ID berubah
     setSnapEmbedded(false);
   }, [id]);
+
+useEffect(() => {
+  if (!booking && !loadingBooking) {
+    navigate({ to: "/" });
+    return;
+  }
+
+  if (booking && user?.role === "customer" && booking.user_id !== user?.id) {
+    toast.error("Anda tidak memiliki akses ke pembayaran ini.");
+    navigate({ to: "/" });
+  }
+}, [booking, loadingBooking, user, navigate]);
+
 
   useEffect(() => {
     if (
@@ -113,7 +131,7 @@ function PaymentsRoute() {
           },
         });
         setSnapEmbedded(true);
-      }, 3000);
+      }, 1000);
     }
   }, [snapReady, payment, snapEmbedded, navigate]);
 
@@ -155,7 +173,7 @@ function PaymentsRoute() {
 
   return (
     <div
-      className="min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat pt-20"
+      className={`min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat ${isAdmin? "pt-5":"pt-20"}`}
       style={{ backgroundImage: `url(${bgBooking})` }}
     >
       {loading && (
@@ -178,7 +196,11 @@ function PaymentsRoute() {
               <Button
                 size="sm"
                 color="dark"
-                onClick={() => navigate({ to: "/create-booking" })}
+onClick={() =>
+  isAdmin
+    ? navigate({ to: "/admin/bookings" })
+    : navigate({ to: "/create-booking" })
+}
               >
                 Buat Ulang Booking
               </Button>
@@ -200,16 +222,19 @@ function PaymentsRoute() {
       {booking && payment && !infoMsg && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto mt-7 items-start">
           {/* SNAP */}
-          <div className="w-full h-[600px] bg-white rounded-xl shadow p-4 order-2 md:order-1">
+          <div className="w-full h-[700px] bg-white rounded-xl shadow p-4 order-2 md:order-1">
+          <h2 className="text-xl font-semibold text-center mb-4">Payment Method</h2>
+
             <div
               id="midtrans-container"
               ref={snapBoxRef}
-              className="w-full h-full justify-self-center"
+              className="w-full justify-self-center"
             />
           </div>
 
           {/* DETAIL */}
           <Card className="!bg-white/95 border border-gray-300 order-1 md:order-2">
+          
             <h2 className="text-xl font-semibold text-center mb-4">
               Detail Booking
             </h2>
@@ -234,6 +259,9 @@ function PaymentsRoute() {
                   : "-"
               }
             />
+              <p className="text-xs italic text-red-500">
+  Jika pembayaran tidak muncul, silakan refresh halaman
+  </p>
           </Card>
         </div>
       )}

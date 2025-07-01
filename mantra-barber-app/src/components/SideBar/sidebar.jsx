@@ -50,10 +50,9 @@ const SideBar = ({ children }) => {
   const handleLogout = useCallback(() => {
     dispatch(setUser(null));
     dispatch(setToken(null));
-      localStorage.removeItem("token");
-  localStorage.removeItem("user");
     toast.success("Logout berhasil");
     navigate({ to: "/login" });
+    window.location.reload(); // untuk mencegah hydration pakai localStorage lama
   }, [dispatch, navigate]);
 
 
@@ -195,7 +194,7 @@ const SideBar = ({ children }) => {
               <DropdownItem icon={HiOutlineLogout} onClick={handleLogout}>
                 Logout
               </DropdownItem>
-              <DropdownItem icon={HiOutlineClipboardDocumentList} as={Link} to="/admin/my-bookings">
+              <DropdownItem icon={HiOutlineClipboardDocumentList} as={Link} to="/my-bookings">
                 My-bookings
               </DropdownItem>
             </Dropdown>

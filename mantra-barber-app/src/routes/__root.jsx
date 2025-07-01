@@ -14,22 +14,20 @@ function RootComponent() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user, token } = useSelector((state) => state.auth);
 
-
   const hideNavbarOn = ["/login", "/register"];
-  const isAdminRoute = pathname.startsWith("/admin");
   const isAdmin = token && user?.role === "admin";
-
 
   return (
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_AUTH_CLIENT_ID}>
       <>
-        {/* Tampilkan Sidebar jika /admin, selain itu NavigationBar jika tidak di-hide */}
-        {isAdminRoute && isAdmin ? (
+        {/* Admin dengan Sidebar */}
+        {isAdmin ? (
           <SideBar>
             <Outlet />
           </SideBar>
         ) : (
           <>
+            {/* Tampilkan Navbar jika bukan di halaman login/register */}
             {!hideNavbarOn.includes(pathname) && <NavigationBar />}
             <Outlet />
           </>

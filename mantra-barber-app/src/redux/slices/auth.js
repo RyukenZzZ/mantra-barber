@@ -22,12 +22,6 @@ export const authSlice = createSlice({
         localStorage.removeItem("user");
       }
       state.user = action.payload;
-      // Simpan user ke localStorage
-      // if (action.payload) {
-      //   localStorage.setItem("user", JSON.stringify(action.payload));
-      // } else {
-      //   localStorage.removeItem("user");
-      // }
     },
     setToken: (state, action) => {
       if (action.payload) {

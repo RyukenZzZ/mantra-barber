@@ -16,6 +16,8 @@ export const Route = createFileRoute("/my-bookings")({
 function MyBookingComponent() {
     const navigate = useNavigate();
   const { user,token } = useSelector((state) => state.auth);
+    const isAdmin = user?.role ==="admin";
+
 
   const { data: myBookings = [], isLoading } = useQuery({
     queryKey: ["getMyBookings"],
@@ -53,13 +55,9 @@ function MyBookingComponent() {
   };
 
   useEffect(() => {
-      if (!token || !user) {
-        if (user?.role === "admin") {
-          navigate({ to: "/admin/dashboard" });
-        } else {
-          navigate({ to: "/" });
-        }
-      }
+    if(!token || !user){
+      navigate({to: "/"})
+    }
     }, [token, user, navigate]);
 
   const handleReschedule = () => {
@@ -83,10 +81,13 @@ function MyBookingComponent() {
   };
 
   return (
-    <div
-      className="min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat pt-24"
-      style={{ backgroundImage: `url(${bgBooking})` }}
-    >
+   <div
+  className={`min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat ${
+    isAdmin ? "" : "pt-24"
+  }`}
+  style={{ backgroundImage: `url(${bgBooking})` }}
+>
+
       <div className="max-w-4xl mx-auto p-4 grid gap-6">
         <h2 className="text-2xl font-bold text-center text-white mb-4">
           History Bookings
@@ -103,7 +104,11 @@ function MyBookingComponent() {
             Kamu belum melakukan Booking sama sekali.
             <Button
               as={Link}
-              to="/create-booking"
+onClick={() =>
+  isAdmin
+    ? navigate({ to: "/admin/bookings" })
+    : navigate({ to: "/create-booking" })
+}
               color="dark"
               className="mt-4"
             >

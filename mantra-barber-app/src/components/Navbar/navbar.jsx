@@ -32,6 +32,7 @@ const NavigationBar = () => {
     dispatch(setToken(null));
     toast.success("Logout berhasil");
     navigate({ to: "/login" });
+    window.location.reload(); // untuk mencegah hydration pakai localStorage lama
   }, [dispatch, navigate]);
 
   const { data, isSuccess, isError } = useQuery({
