@@ -21,7 +21,7 @@ import { id } from "date-fns/locale";
 import { doneBooking } from "../../service/bookings";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import NotFoundBookings from "../../assets/NotFoundBookings.png";
+import NFBooking from "../../assets/NotFoundBookings.png";
 import Protected from "../../components/Auth/Protected";
 import { HiCheck } from "react-icons/hi";
 
@@ -254,7 +254,7 @@ function AdminDashboardComponent() {
                   <td colSpan="8" className="py-10 text-gray-500">
                     <div className="flex flex-col items-center">
                       <img
-                        src={NotFoundBookings}
+                        src={NFBooking}
                         alt="No Bookings"
                         className="w-60 h-60 mb-4"
                       />
