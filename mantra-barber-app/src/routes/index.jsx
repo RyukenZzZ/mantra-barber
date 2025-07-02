@@ -17,7 +17,6 @@ import { FaInstagram, FaSpinner, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
 import { getProducts } from "../service/products/index";
 import Swal from "sweetalert2";
 
@@ -26,12 +25,10 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { token } = useSelector((state) => state.auth);
 
   const { data: products = [],isLoading } = useQuery({
     queryKey: ["getProducts"],
     queryFn: getProducts,
-    enabled: !!token,
   });
 
   const images = [galeri1, galeri2, galeri3, galeri4, bgDashboard];

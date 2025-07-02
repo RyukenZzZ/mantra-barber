@@ -11,12 +11,7 @@ import {
 } from "react-icons/hi";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { Link, useNavigate, useLocation } from "@tanstack/react-router";
-import {
-  Navbar,
-  Dropdown,
-  DropdownHeader,
-  DropdownItem,
-} from "flowbite-react";
+import { Navbar, Dropdown, DropdownHeader, DropdownItem } from "flowbite-react";
 import mantraLogo from "../../assets/mantraLogo.PNG";
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -79,10 +74,16 @@ const SideBar = ({ children }) => {
           shouldShowFullSidebar ? (isMobile ? "w-1/2" : "w-64") : "w-16"
         }`}
       >
-        <div className={`flex items-center py-4 border-b !border-gray-200 px-4`}>
-          <img src={mantraLogo} alt="Logo" className="h-8 mr-2" />
-          {shouldShowFullSidebar && <span className="text-xl font-bold">MANTRA</span>}
+        <Link to="/admin/dashboard">
+        <div
+          className={`flex items-center py-4 border-b !border-gray-200 px-4`}
+        >
+            <img src={mantraLogo} alt="Logo" className="h-8 mr-2" />
+          {shouldShowFullSidebar && (
+            <span className="text-xl font-bold">MANTRA</span>
+          )}
         </div>
+          </Link>{" "}
 
         <nav className="px-2 py-6">
           <ul className="space-y-2">
@@ -122,7 +123,9 @@ const SideBar = ({ children }) => {
               inline
               label={
                 <div className="flex items-center space-x-3 cursor-pointer">
-                  <span className="text-md font-medium text-gray-900">{user?.name}</span>
+                  <span className="text-md font-medium text-gray-900">
+                    {user?.name}
+                  </span>
                   <img
                     src={
                       !user?.profile_picture || user.profile_picture === "null"
@@ -141,7 +144,11 @@ const SideBar = ({ children }) => {
                   {user?.email}
                 </span>
               </DropdownHeader>
-              <DropdownItem icon={HiOutlineClipboardDocumentList} as={Link} to="/my-bookings">
+              <DropdownItem
+                icon={HiOutlineClipboardDocumentList}
+                as={Link}
+                to="/my-bookings"
+              >
                 My Bookings
               </DropdownItem>
               <DropdownItem icon={HiOutlineLogout} onClick={handleLogout}>
@@ -152,7 +159,9 @@ const SideBar = ({ children }) => {
         </Navbar>
 
         {/* Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-100 p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -20,12 +20,12 @@ const router = express.Router();
 
 router
 .route("/")
-.get(authorization(adminRole,userRole),validateGetProducts,getProducts)
+.get(validateGetProducts,getProducts)
 .post(authorization(adminRole),validateCreateProduct,createProduct);
 
 router
 .route("/:id")
-.get(authorization(adminRole,userRole),validateGetProductById,getProductById)
+.get(validateGetProductById,getProductById)
 .put(authorization(adminRole),validateUpdateProduct,updateProduct)
 .delete(authorization(adminRole),validateDeleteProductById,deleteProductById);
 
