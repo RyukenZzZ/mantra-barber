@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import mantraLogo from "../../assets/mantraLogo.png";
+import mantraLogo from "../../assets/mantraLogo.PNG";
 import { toast } from "react-toastify";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

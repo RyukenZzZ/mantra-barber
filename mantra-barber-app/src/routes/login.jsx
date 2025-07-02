@@ -11,8 +11,8 @@ import { login, googleLogin } from "../service/auth"; // sesuaikan path
 import { setToken, setUser } from "../redux/slices/auth"; // sesuaikan path
 
 import googleLogo from "../assets/G-google.png";
-import mantraLogo from "../assets/mantraLogo.png";
-import bgBarber from "../assets/bg-booking6.jpg";
+import mantraLogo from "../assets/mantraLogo.PNG";
+import bgBarber from "../assets/bg-booking6.JPG";
 
 export const Route = createFileRoute("/login")({
   component: Login,

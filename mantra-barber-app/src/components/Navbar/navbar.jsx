@@ -11,7 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 import { setToken, setUser } from "../../redux/slices/auth";
-import mantraLogo from "../../assets/mantraLogo.png";
+import mantraLogo from "../../assets/mantraLogo.PNG";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { profile } from "../../service/auth";

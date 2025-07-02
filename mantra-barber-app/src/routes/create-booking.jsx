@@ -10,7 +10,7 @@ import {
   Radio,
   TextInput,
 } from "flowbite-react";
-import bgBooking from "../assets/bg-booking6.jpg";
+import bgBooking from "../assets/bg-booking6.JPG";
 import { useMutation, useQuery } from "@tanstack/react-query"; // pastikan sudah terpasang
 import { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";

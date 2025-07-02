@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import bgBooking from "../assets/bgProfile.jpg";
+import bgBooking from "../assets/bgProfile.JPG";
 import { cancelBooking, getMyBookings } from "../service/bookings";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSelector } from "react-redux";

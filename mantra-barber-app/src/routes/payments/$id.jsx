@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Card, Spinner, Alert, Button } from "flowbite-react";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import bgBooking from "../../assets/bg-booking6.jpg";
+import bgBooking from "../../assets/bg-booking6.JPG";
 import { getDetailBookings } from "../../service/bookings";
 import { getUrlPayment } from "../../service/payments";
 import { format } from "date-fns";

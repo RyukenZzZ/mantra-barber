@@ -17,7 +17,7 @@ import {
   DropdownHeader,
   DropdownItem,
 } from "flowbite-react";
-import mantraLogo from "../../assets/mantraLogo.png";
+import mantraLogo from "../../assets/mantraLogo.PNG";
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken, setUser } from "../../redux/slices/auth";

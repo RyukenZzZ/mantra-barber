@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSelector } from "react-redux";
 import { Card, Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
-import bgProfile from "../../assets/bgProfile.jpg";
+import bgProfile from "../../assets/bgProfile.JPG";
 import { useQuery } from "@tanstack/react-query";
 import { getBookings } from "../../service/bookings";
 

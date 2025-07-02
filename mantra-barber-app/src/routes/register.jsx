@@ -7,7 +7,7 @@ import { register as registerService } from "../service/auth";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../redux/slices/auth"; // sesuaikan path
-import bgBarber from "../assets/bg-booking6.jpg";
+import bgBarber from "../assets/bg-booking6.JPG";
 
 
 export const Route = createFileRoute("/register")({
