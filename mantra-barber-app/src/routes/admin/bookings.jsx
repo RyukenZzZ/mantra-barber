@@ -6,7 +6,7 @@ import { cancelBooking, getBookings } from "../../service/bookings";
 import { useEffect, useState } from "react";
 import { format, parseISO, startOfDay, endOfDay, parse } from "date-fns";
 import { id } from "date-fns/locale";
-import NotFoundBooking from "../../assets/notFoundBooking.png";
+import NotFoundBookings from "../../assets/NotFoundBookings.png";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
 import BookingModal from "../../components/Modal/bookingModal";
@@ -242,7 +242,7 @@ function BookingsComponent() {
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10">
             <img
-              src={NotFoundBooking}
+              src={NotFoundBookings}
               alt="No Bookings"
               className="w-60 h-60 mb-4"
             />
