@@ -9,8 +9,6 @@ exports.markAsPaid = async (orderId,payment_type) => {
   where: { reference: orderId },
   data: { status: "paid",method:payment_type, paid_at: new Date() },
 });
-
-
 };
 
 exports.updatePaymentStatusById = async (id, status,amount) => {

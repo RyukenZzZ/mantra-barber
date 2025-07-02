@@ -584,7 +584,7 @@ function CreateBooking() {
                   <p>
                     Setelah menekan <strong>Submit Booking</strong>, Anda akan
                     dialihkan ke halaman pembayaran. Tautan pembayaran berlaku
-                    <strong> maksimal 20 menit</strong>; lewat dari itu booking
+                    <strong> maksimal 15 menit</strong>; lewat dari itu booking
                     dibatalkan otomatis.
                   </p>
 

@@ -21,7 +21,7 @@ async function autoCancelExpiredBookings() {
   // Update bookings yang isPending DAN payment-nya expired
   await prisma.bookings.updateMany({
     where: {
-      status: 'isPending', // <= ganti jadi isPending
+      status: 'isPending', 
       payments: {
         some: {
           status: 'expired',
@@ -32,6 +32,18 @@ async function autoCancelExpiredBookings() {
       status: 'expired', // Atau status yang kamu inginkan
     },
   });
+
+  await prisma.payments.deleteMany({
+  where: {
+    status: "expired",
+  },
+});
+
+await prisma.bookings.deleteMany({
+  where: {
+    status: "expired",
+  },
+});
 
   console.log(`[${now.toISOString()}] Auto-cancel expired bookings executed`);
 }

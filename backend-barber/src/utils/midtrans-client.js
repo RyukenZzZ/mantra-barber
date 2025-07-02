@@ -8,19 +8,3 @@ const snap = new midtransClient.Snap({
 });
 
 module.exports = snap;
-
-// exports.createMidtransTransaction = async ({ orderId, amount, customer }) => {
-//   const transaction = await snap.createTransaction({
-//     transaction_details: {
-//       order_id: orderId,
-//       gross_amount: amount,
-//     },
-//     customer_details: customer,
-//     expiry: {
-//       unit: "minute",
-//       duration: 20,
-//     },
-//   });
-
-//   return transaction;
-// };

@@ -239,7 +239,7 @@ exports.createBooking = async (data) => {
    data: {
      amount,
      status: 'unpaid',
-     expired_time: new Date(Date.now() + 20 * 60 * 1000), // 20 menit dari sekarang
+     expired_time: new Date(Date.now() + 15 * 60 * 1000), // 15 menit dari sekarang
      bookings: {
        connect: { id: newBooking.id },
      },

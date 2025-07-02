@@ -11,15 +11,16 @@ import Protected from "../../components/Auth/Protected";
 import { useSelector } from "react-redux";
 
 export const Route = createFileRoute("/payments/$id")({
- component: () => (
-        <Protected roles={["customer","admin"]}>
-            <PaymentsRoute />
-        </Protected>
-    ),});
+  component: () => (
+    <Protected roles={["customer", "admin"]}>
+      <PaymentsRoute />
+    </Protected>
+  ),
+});
 
 function PaymentsRoute() {
   const { id } = Route.useParams();
-  const { user} = useSelector((s) => s.auth);
+  const { user } = useSelector((s) => s.auth);
   const isAdmin = user?.role === "admin";
 
   const navigate = useNavigate();
@@ -62,7 +63,6 @@ function PaymentsRoute() {
       setSnapReady(true);
       return;
     }
-    
 
     const s = document.createElement("script");
     s.src = "https://app.sandbox.midtrans.com/snap/snap.js";
@@ -79,18 +79,17 @@ function PaymentsRoute() {
     setSnapEmbedded(false);
   }, [id]);
 
-useEffect(() => {
-  if (!booking && !loadingBooking) {
-    navigate({ to: "/" });
-    return;
-  }
+  useEffect(() => {
+    if (!booking && !loadingBooking) {
+      navigate({ to: "/" });
+      return;
+    }
 
-  if (booking && user?.role === "customer" && booking.user_id !== user?.id) {
-    toast.error("Anda tidak memiliki akses ke pembayaran ini.");
-    navigate({ to: "/" });
-  }
-}, [booking, loadingBooking, user, navigate]);
-
+    if (booking && user?.role === "customer" && booking.user_id !== user?.id) {
+      toast.error("Anda tidak memiliki akses ke pembayaran ini.");
+      navigate({ to: "/" });
+    }
+  }, [booking, loadingBooking, user, navigate]);
 
   useEffect(() => {
     if (
@@ -146,8 +145,8 @@ useEffect(() => {
   useEffect(() => {
     if (!payment?.expired_time) return;
 
-      const targetTime = new Date(payment.expired_time).getTime();
-      const interval = setInterval(() => {
+    const targetTime = new Date(payment.expired_time).getTime();
+    const interval = setInterval(() => {
       const now = new Date().getTime();
       const diff = targetTime - now;
 
@@ -173,7 +172,7 @@ useEffect(() => {
 
   return (
     <div
-      className={`min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat ${isAdmin? "pt-5":"pt-20"}`}
+      className={`min-h-screen flex flex-col justify-between bg-cover bg-center bg-no-repeat ${isAdmin ? "pt-5" : "pt-20"}`}
       style={{ backgroundImage: `url(${bgBooking})` }}
     >
       {loading && (
@@ -196,11 +195,11 @@ useEffect(() => {
               <Button
                 size="sm"
                 color="dark"
-onClick={() =>
-  isAdmin
-    ? navigate({ to: "/admin/bookings" })
-    : navigate({ to: "/create-booking" })
-}
+                onClick={() =>
+                  isAdmin
+                    ? navigate({ to: "/admin/bookings" })
+                    : navigate({ to: "/create-booking" })
+                }
               >
                 Buat Ulang Booking
               </Button>
@@ -223,7 +222,9 @@ onClick={() =>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto mt-7 items-start">
           {/* SNAP */}
           <div className="w-full h-[700px] bg-white rounded-xl shadow p-4 order-2 md:order-1">
-          <h2 className="text-xl font-semibold text-center mb-4">Payment Method</h2>
+            <h2 className="text-xl font-semibold text-center mb-4">
+              Payment Method
+            </h2>
 
             <div
               id="midtrans-container"
@@ -234,7 +235,6 @@ onClick={() =>
 
           {/* DETAIL */}
           <Card className="!bg-white/95 border border-gray-300 order-1 md:order-2">
-          
             <h2 className="text-xl font-semibold text-center mb-4">
               Detail Booking
             </h2>
@@ -259,9 +259,9 @@ onClick={() =>
                   : "-"
               }
             />
-              <p className="text-xs italic text-red-500">
-  Jika pembayaran tidak muncul, silakan refresh halaman
-  </p>
+            <p className="text-xs italic text-red-500">
+              Jika pembayaran tidak muncul, silakan refresh halaman
+            </p>
           </Card>
         </div>
       )}
