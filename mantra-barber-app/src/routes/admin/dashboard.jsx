@@ -21,7 +21,7 @@ import { id } from "date-fns/locale";
 import { doneBooking } from "../../service/bookings";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import NotFoundBooking from "../../assets/notFoundBooking.png";
+import NotFoundBooking from "../../assets/notfoundbooking.png";
 import Protected from "../../components/Auth/Protected";
 import { HiCheck } from "react-icons/hi";
 
