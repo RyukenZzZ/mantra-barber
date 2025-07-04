@@ -21,13 +21,13 @@ const router = express.Router();
 
 router
 .route("/")
-.get(authorization(adminRole,userRole),validateGetBarbers,getBarbers)
+.get(validateGetBarbers,getBarbers)
 .post(authorization(adminRole),validateCreateBarber,createBarber)
 .put(authorization(adminRole),updateManyDate);
 
 router
 .route("/:id")
-.get(authorization(adminRole,userRole),validateGetBarberById,getBarberById)
+.get(validateGetBarberById,getBarberById)
 .put(authorization(adminRole),validateUpdateBarber,updateBarber)
 .delete(authorization(adminRole),validateDeleteBarberById,deleteBarberById);
 

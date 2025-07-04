@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button, Card } from "flowbite-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ClassNamesPlugin from "embla-carousel-class-names";
-import bgDashboard from "../assets/bgDashboard2.JPG";
+import bgDashboard from "../assets/bg-dashboards.JPG";
 import mantraLogo from "../assets/mantraLogo.PNG";
 import aboutUs from "../assets/aboutUs.png";
 import galeri1 from "../assets/galeri1.jpg";

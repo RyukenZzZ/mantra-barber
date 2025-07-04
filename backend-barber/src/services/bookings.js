@@ -35,7 +35,6 @@ exports.getBookingByUserId = async (user_id) => {
 
 exports.createBooking = async (data,user_id) => {
   data.user_id = user_id;
-  data.created_by = user_id;
   data.booking_code = generateBookingCode();
   return BookingRepository.createBooking(data);
 };
@@ -45,10 +44,7 @@ exports.updateBooking = async (id, data, user_id) => {
   if (!existingBooking) {
     throw new NotFoundError("Booking not found!");
   }
-  //input created/updated by user
-  data.created_by = user_id;
-
-
+  
   // replicated existing data with new data
   data = {
     ...existingBooking, // existing Student

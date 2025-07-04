@@ -11,11 +11,7 @@ import Protected from "../../components/Auth/Protected";
 import { useSelector } from "react-redux";
 
 export const Route = createFileRoute("/payments/$id")({
-  component: () => (
-    <Protected roles={["customer", "admin"]}>
-      <PaymentsRoute />
-    </Protected>
-  ),
+  component: PaymentsRoute
 });
 
 function PaymentsRoute() {
@@ -83,11 +79,6 @@ function PaymentsRoute() {
     if (!booking && !loadingBooking) {
       navigate({ to: "/" });
       return;
-    }
-
-    if (booking && user?.role === "customer" && booking.user_id !== user?.id) {
-      toast.error("Anda tidak memiliki akses ke pembayaran ini.");
-      navigate({ to: "/" });
     }
   }, [booking, loadingBooking, user, navigate]);
 

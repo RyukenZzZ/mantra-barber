@@ -22,16 +22,13 @@ import { toast } from "react-toastify";
 import Protected from "../components/Auth/Protected";
 
 export const Route = createFileRoute("/create-booking")({
-  component: () => (
-    <Protected roles={["customer","admin"]}>
-      <CreateBooking />
-    </Protected>
-  ),
+  component: CreateBooking,
+
 });
 
 function CreateBooking() {
   const navigate = useNavigate();
-  const { user, token } = useSelector((state) => state.auth);
+  const { user} = useSelector((state) => state.auth);
   const [agree, setAgree] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -47,26 +44,24 @@ function CreateBooking() {
   const [availableTimes, setAvailableTimes] = useState([]);
   const [step, setStep] = useState(1);
 
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [phone, setPhone] = useState(user.phone);
+const [name, setName] = useState(user ? user.name :"");
+const [email, setEmail] = useState(user ? user.email : "");
+const [phone, setPhone] = useState(user ? user.phone : "");
+
 
   const { data: services = [], isLoading: servicesLoading } = useQuery({
     queryKey: ["getServices"],
     queryFn: getServices,
-    enabled: !!token,
   });
 
   const { data: barbers = [], isLoading: barbersLoading } = useQuery({
     queryKey: ["getBarbers"],
     queryFn: getBarbers,
-    enabled: !!token,
   });
 
   const { data: bookings = [] } = useQuery({
     queryKey: ["getBookings"],
     queryFn: getBookings,
-    enabled: !!token,
   });
 
   const unavailableTimes = useMemo(() => {

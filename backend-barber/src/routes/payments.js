@@ -5,7 +5,7 @@ const { authorization } = require('../middlewares/auth');
 const { adminRole, userRole } = require('../constants/auth');
 
 router.get("/",authorization(adminRole),getPayments)
-router.get("/:id",authorization(adminRole,userRole), resumePayment);
+router.get("/:id",resumePayment);
 router.post("/midtrans-notification", handleMidtransNotification);
 
 module.exports = router;

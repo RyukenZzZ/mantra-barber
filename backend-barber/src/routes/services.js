@@ -20,12 +20,12 @@ const router = express.Router();
 
 router
 .route("/")
-.get(authorization(adminRole,userRole),validateGetServices,getServices)
+.get(validateGetServices,getServices)
 .post(authorization(adminRole),validateCreateService,createService);
 
 router
 .route("/:id")
-.get(authorization(adminRole,userRole),validateGetServiceById,getServiceById)
+.get(validateGetServiceById,getServiceById)
 .put(authorization(adminRole),validateUpdateService,updateService)
 .delete(authorization(adminRole),validateDeleteServiceById,deleteServiceById);
 

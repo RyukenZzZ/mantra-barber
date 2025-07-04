@@ -22,7 +22,7 @@ exports.getBookingByUserId = async (req,res,next) => {
 };
 
 exports.createBooking = async (req, res, next) => {
-    const user_id = req.user.id;
+    const user_id = req.user ? req.user.id : null; // Jika login ambil id, kalau tidak login biarkan null
     const data = await BookingsServices.createBooking(req.body,user_id);
     successResponse(res, data, "Booking successfully added!");
   };

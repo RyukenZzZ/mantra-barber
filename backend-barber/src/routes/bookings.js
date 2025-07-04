@@ -22,8 +22,8 @@ const router = express.Router();
 
 router
 .route("/")
-.get(authorization(adminRole,userRole),validateGetBookings,getBookings)
-.post(authorization(adminRole,userRole),validateCreateBooking,createBooking);
+.get(validateGetBookings,getBookings)
+.post(validateCreateBooking,createBooking);
 
 router
 .route("/my-bookings")
@@ -31,7 +31,7 @@ router
 
 router
 .route("/:id")
-.get(authorization(adminRole,userRole),validateGetBookingById,getBookingById)
+.get(validateGetBookingById,getBookingById)
 .put(authorization(adminRole),validateUpdateBooking,updateBooking)
 .delete(authorization(adminRole),validateDeleteBookingById,deleteBookingById)
 .patch(authorization(adminRole,userRole),updateStatusBookingById);

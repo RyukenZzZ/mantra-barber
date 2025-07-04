@@ -26,14 +26,12 @@ model bookings {
   booking_time                     DateTime        @db.Time(6)
   source                           booking_source? @default(online)
   status                           booking_status? @default(isPending)
-  created_by                       BigInt?
   created_at                       DateTime?       @default(now()) @db.Timestamp(6)
   booking_code                     String          @unique
   cust_email                       String?         @db.VarChar
   cust_name                        String?         @db.VarChar
   cust_phone_number                String?         @db.VarChar
   barbers                          barbers?        @relation(fields: [barber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users_bookings_created_byTousers users?          @relation("bookings_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   services                         services?       @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_bookings_user_idTousers    users?          @relation("bookings_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   payments                         payments[]
@@ -81,7 +79,6 @@ model users {
   profile_picture                     String?
   role                                user_role? @default(customer)
   created_at                          DateTime?  @default(now()) @db.Timestamp(6)
-  bookings_bookings_created_byTousers bookings[] @relation("bookings_created_byTousers")
   bookings_bookings_user_idTousers    bookings[] @relation("bookings_user_idTousers")
 }
 
