@@ -3,10 +3,9 @@ const paymentService = require("../services/payments");
 const { successResponse } = require("../utils/response");
 
 exports.resumePayment = async (req, res) => {
-    const user_id = req.user.id;
     const bookingId = parseInt(req.params.id);
 
-    const data = await paymentService.resumePayment(user_id, bookingId);
+    const data = await paymentService.resumePayment(bookingId);
     successResponse(res, data.data, data.message);
 };
 

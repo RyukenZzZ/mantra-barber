@@ -102,12 +102,13 @@ function PaymentsRoute() {
         window.snap.embed(payment.snap_token, {
           embedId: "midtrans-container",
           onSuccess: () => {
-            toast.success("Payment Successful!");
-            navigate({ to: "/my-bookings" });
+            toast.success(`Payment successful! Your booking code is: ${booking.booking_code}`);
+            navigate({ to: "/history-bookings" });
             setSnapEmbedded(false);
           },
           onPending: () => {
-            navigate({ to: "/my-bookings" });
+            toast.info(`Payment is pending. Your booking code is: ${booking.booking_code}`);
+            navigate({ to: "/history-bookings" });
             setSnapEmbedded(false);
           },
           onError: (err) => {
@@ -226,9 +227,10 @@ function PaymentsRoute() {
 
           {/* DETAIL */}
           <Card className="!bg-white/95 border border-gray-300 order-1 md:order-2">
-            <h2 className="text-xl font-semibold text-center mb-4">
+            <h2 className="text-xl font-semibold text-center">
               Detail Booking
             </h2>
+            <h2 className="text-xl font-bold text-center mb-4" >{booking.booking_code}</h2>
             <Info label="Customer" value={booking.cust_name} />
             <Info label="Email" value={booking.cust_email} />
             <Info label="Telepon" value={booking.cust_phone_number} />

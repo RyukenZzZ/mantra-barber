@@ -10,10 +10,9 @@ const core = new midtransClient.CoreApi({
   clientKey: process.env.MIDTRANS_CLIENT_KEY,
 });
 
-exports.resumePayment = async (userId, bookingId) => {
+exports.resumePayment = async (bookingId) => {
   const booking = await bookingRepository.findBookingWithPayment(bookingId);
   if (!booking) throw new NotFoundError("Booking tidak ditemukan");
-  if (booking.user_id !== userId) throw new Forbidden("Akses ditolak");
 
   const payment = booking.payments[0];
   if (!payment) throw new NotFoundError("Data payment tidak tersedia");

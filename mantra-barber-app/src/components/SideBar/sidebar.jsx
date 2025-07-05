@@ -147,7 +147,7 @@ const SideBar = ({ children }) => {
               <DropdownItem
                 icon={HiOutlineClipboardDocumentList}
                 as={Link}
-                to="/my-bookings"
+                to="/history-bookings"
               >
                 My Bookings
               </DropdownItem>

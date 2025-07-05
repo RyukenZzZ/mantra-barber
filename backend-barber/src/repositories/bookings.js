@@ -146,11 +146,6 @@ exports.getBookingByUserId = async (user_id) => {
           price: true,
         },
       },
-      users_bookings_created_byTousers: {
-        select: {
-          name: true,
-        },
-      },
     },
   });
 
@@ -172,8 +167,6 @@ exports.getBookingByUserId = async (user_id) => {
     source: booking.source,
     status: booking.status,
     booking_code: booking.booking_code,
-    created_by: booking.created_by,
-    created_by_name: booking.users_bookings_created_byTousers,
     created_at: booking.created_at,
   }));
 
@@ -201,11 +194,6 @@ exports.createBooking = async (data) => {
         select: {
           name: true,
           price: true,
-        },
-      },
-      users_bookings_created_byTousers: {
-        select: {
-          name: true,
         },
       },
     },
@@ -290,8 +278,6 @@ exports.createBooking = async (data) => {
       source: newBooking.source,
       status: newBooking.status,
       booking_code: newBooking.booking_code,
-      created_by: newBooking.created_by,
-      created_by_name: newBooking.users_bookings_created_byTousers,
       created_at: newBooking.created_at,
     },
     payment: {
@@ -347,9 +333,6 @@ exports.updateBooking = async (id, data) => {
           connect: { id: user_id },
         },
       }),
-      users_bookings_created_byTousers: {
-        connect: { id: data.created_by },
-      },
       barbers: {
         connect: { id: data.barber_id },
       },
@@ -376,11 +359,6 @@ exports.updateBooking = async (id, data) => {
           price: true,
         },
       },
-      users_bookings_created_byTousers: {
-        select: {
-          name: true,
-        },
-      },
     },
   });
 
@@ -400,8 +378,6 @@ exports.updateBooking = async (id, data) => {
     source: updatedBooking.source,
     status: updatedBooking.status,
     booking_code: updatedBooking.booking_code,
-    created_by: updatedBooking.created_by,
-    created_by_name: updatedBooking.users_bookings_created_byTousers,
     created_at: updatedBooking.created_at,
   };
   const serializedData = JSONBigInt.stringify(formattedUpdatedBookingData);
@@ -430,11 +406,6 @@ exports.deleteBookingById = async (id) => {
         select: {
           name: true,
           price: true,
-        },
-      },
-      users_bookings_created_byTousers: {
-        select: {
-          name: true,
         },
       },
     },

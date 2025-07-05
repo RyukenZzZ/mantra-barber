@@ -12,8 +12,8 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as RegisterImport } from './routes/register'
-import { Route as MyBookingsImport } from './routes/my-bookings'
 import { Route as LoginImport } from './routes/login'
+import { Route as HistoryBookingsImport } from './routes/history-bookings'
 import { Route as CreateBookingImport } from './routes/create-booking'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
@@ -34,15 +34,15 @@ const RegisterRoute = RegisterImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const MyBookingsRoute = MyBookingsImport.update({
-  id: '/my-bookings',
-  path: '/my-bookings',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HistoryBookingsRoute = HistoryBookingsImport.update({
+  id: '/history-bookings',
+  path: '/history-bookings',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -130,18 +130,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreateBookingImport
       parentRoute: typeof rootRoute
     }
+    '/history-bookings': {
+      id: '/history-bookings'
+      path: '/history-bookings'
+      fullPath: '/history-bookings'
+      preLoaderRoute: typeof HistoryBookingsImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/my-bookings': {
-      id: '/my-bookings'
-      path: '/my-bookings'
-      fullPath: '/my-bookings'
-      preLoaderRoute: typeof MyBookingsImport
       parentRoute: typeof rootRoute
     }
     '/register': {
@@ -222,8 +222,8 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
+  '/history-bookings': typeof HistoryBookingsRoute
   '/login': typeof LoginRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
   '/admin/barbers': typeof AdminBarbersRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -239,8 +239,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
+  '/history-bookings': typeof HistoryBookingsRoute
   '/login': typeof LoginRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
   '/admin/barbers': typeof AdminBarbersRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -257,8 +257,8 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/create-booking': typeof CreateBookingRoute
+  '/history-bookings': typeof HistoryBookingsRoute
   '/login': typeof LoginRoute
-  '/my-bookings': typeof MyBookingsRoute
   '/register': typeof RegisterRoute
   '/admin/barbers': typeof AdminBarbersRoute
   '/admin/bookings': typeof AdminBookingsRoute
@@ -276,8 +276,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/create-booking'
+    | '/history-bookings'
     | '/login'
-    | '/my-bookings'
     | '/register'
     | '/admin/barbers'
     | '/admin/bookings'
@@ -292,8 +292,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/create-booking'
+    | '/history-bookings'
     | '/login'
-    | '/my-bookings'
     | '/register'
     | '/admin/barbers'
     | '/admin/bookings'
@@ -308,8 +308,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/create-booking'
+    | '/history-bookings'
     | '/login'
-    | '/my-bookings'
     | '/register'
     | '/admin/barbers'
     | '/admin/bookings'
@@ -326,8 +326,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateBookingRoute: typeof CreateBookingRoute
+  HistoryBookingsRoute: typeof HistoryBookingsRoute
   LoginRoute: typeof LoginRoute
-  MyBookingsRoute: typeof MyBookingsRoute
   RegisterRoute: typeof RegisterRoute
   AdminBarbersRoute: typeof AdminBarbersRoute
   AdminBookingsRoute: typeof AdminBookingsRoute
@@ -343,8 +343,8 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateBookingRoute: CreateBookingRoute,
+  HistoryBookingsRoute: HistoryBookingsRoute,
   LoginRoute: LoginRoute,
-  MyBookingsRoute: MyBookingsRoute,
   RegisterRoute: RegisterRoute,
   AdminBarbersRoute: AdminBarbersRoute,
   AdminBookingsRoute: AdminBookingsRoute,
@@ -369,8 +369,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/create-booking",
+        "/history-bookings",
         "/login",
-        "/my-bookings",
         "/register",
         "/admin/barbers",
         "/admin/bookings",
@@ -389,11 +389,11 @@ export const routeTree = rootRoute
     "/create-booking": {
       "filePath": "create-booking.jsx"
     },
+    "/history-bookings": {
+      "filePath": "history-bookings.jsx"
+    },
     "/login": {
       "filePath": "login.jsx"
-    },
-    "/my-bookings": {
-      "filePath": "my-bookings.jsx"
     },
     "/register": {
       "filePath": "register.jsx"

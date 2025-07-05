@@ -1,5 +1,6 @@
 const express = require("express");
 const {authorization} = require("../middlewares/auth");
+const {optionalAuthorization} = require("../middlewares/optionalAuth")
 const {adminRole, userRole} = require("../constants/auth");
 const {
     validateGetBookings,
@@ -23,7 +24,7 @@ const router = express.Router();
 router
 .route("/")
 .get(validateGetBookings,getBookings)
-.post(validateCreateBooking,createBooking);
+.post(optionalAuthorization,validateCreateBooking,createBooking);
 
 router
 .route("/my-bookings")

@@ -72,7 +72,7 @@ const BookingModal = ({
         navigate({ to: `/payments/${bookingId}` });
       } else {
         // fallback jika payment.id tidak ditemukan
-        navigate({ to: "/my-bookings" });
+        navigate({ to: "/history-bookings" });
       }
     },
     onError: (error) => {

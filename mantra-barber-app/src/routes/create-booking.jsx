@@ -19,7 +19,6 @@ import { getServices } from "../service/services";
 import { getBarbers } from "../service/barbers";
 import { createBooking } from "../service/bookings";
 import { toast } from "react-toastify";
-import Protected from "../components/Auth/Protected";
 
 export const Route = createFileRoute("/create-booking")({
   component: CreateBooking,
@@ -105,7 +104,7 @@ const [phone, setPhone] = useState(user ? user.phone : "");
         navigate({ to: `/payments/${bookingId}` });
       } else {
         // fallback jika payment.id tidak ditemukan
-        navigate({ to: "/my-bookings" });
+        navigate({ to: "/history-bookings" });
       }
     },
     onError: (error) => {
@@ -583,6 +582,8 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                     dibatalkan otomatis.
                   </p>
 
+                  <p>Jangan lupa untuk mencatat Kode Booking nya untuk pencarian jika ingin melakukan reschedule jika sudah booking contoh kode booking: <strong>MB-XXXXXX</strong></p>
+
                   <p>
                     Pembayaran dapat dilakukan dengan <strong>DP 50 %</strong>{" "}
                     dari total harga layanan. Sisa pembayaran dilunasi setelah
@@ -602,8 +603,8 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                   </p>
 
                   <p>
-                    Mohon datang tepat waktu dan tetap mematuhi protokol
-                    kebersihan selama berada di barbershop Terima Kasih.
+                    Mohon datang tepat waktu dan sampai jumpa
+                     di barbershop Terima Kasih.
                   </p>
                 </div>
               </ModalBody>

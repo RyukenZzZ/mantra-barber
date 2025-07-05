@@ -293,7 +293,7 @@ function AdminDashboardComponent() {
                         className={`px-3 py-2 rounded-full text-xs font-semibold ${
                           booking.status === "done"
                             ? "bg-green-100 text-green-600"
-                            : booking.status === "pending"
+                            : booking.status === "isPending"
                               ? "bg-yellow-100 text-yellow-600"
                               : booking.status === "cancelled"
                                 ? "bg-red-100 text-red-600"

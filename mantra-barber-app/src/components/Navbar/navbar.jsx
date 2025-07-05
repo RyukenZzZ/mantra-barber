@@ -32,7 +32,6 @@ const NavigationBar = () => {
     dispatch(setToken(null));
     toast.success("Logout berhasil");
     navigate({ to: "/login", replace: true });
-
   }, [dispatch, navigate]);
 
   const { data, isSuccess, isError, isLoading } = useQuery({
@@ -81,10 +80,17 @@ const NavigationBar = () => {
     return null;
   }
 
-  const getLinkClass = (hash) =>
-    `text-lg ${
-      activeSection === hash ? "text-black font-semibold" : "text-gray-500"
-    } hover:text-gray-700`;
+  const getLinkClass = (to, hash) => {
+    if (hash) {
+      return `text-lg ${
+        activeSection === hash ? "text-black font-semibold" : "text-gray-500"
+      } hover:text-gray-700`;
+    }
+
+    // Untuk halaman non-hash seperti /history-bookings
+    const isActive = location.pathname === to;
+    return `text-lg ${isActive ? "text-black font-semibold" : "text-gray-500"} hover:text-gray-700`;
+  };
 
   if (isLoading) return null;
 
@@ -127,9 +133,6 @@ const NavigationBar = () => {
                 {user.email}
               </span>
             </DropdownHeader>
-            <DropdownItem as={Link} to="/my-bookings">
-              My Bookings
-            </DropdownItem>
             <DropdownItem as={Link} to="/profile">
               Profile
             </DropdownItem>
@@ -162,16 +165,17 @@ const NavigationBar = () => {
         <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:justify-end">
           {[
             { to: "/", label: "Home", hash: "home" },
-            { to: "/", label: "About", hash: "about" }, // pakai hash
+            { to: "/", label: "About", hash: "about" },
             { to: "/", label: "Services", hash: "services" },
             { to: "/", label: "Product", hash: "product" },
             { to: "/", label: "Gallery", hash: "gallery" },
+            { to: "/history-bookings", label: "Check Booking" }, // tanpa hash
           ].map(({ to, label, hash }) => (
             <Link
               key={`${to}${hash || ""}`}
               to={to}
-              hash={hash}
-              className={`${getLinkClass(to)} hover:font-semibold transition duration-200`}
+              {...(hash ? { hash } : {})}
+              className={getLinkClass(to, hash)}
             >
               {label}
             </Link>
