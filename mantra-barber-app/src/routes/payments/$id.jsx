@@ -124,7 +124,7 @@ function PaymentsRoute() {
         setSnapEmbedded(true);
       }, 1000);
     }
-  }, [snapReady, payment, snapEmbedded, navigate]);
+  }, [snapReady, payment, snapEmbedded, navigate,booking]);
 
   // Cleanup Snap saat komponen unmount
   useEffect(() => {

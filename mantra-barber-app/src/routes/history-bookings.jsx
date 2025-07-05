@@ -186,7 +186,7 @@ function MyBookingComponent() {
 )}
 
         {/* Booking cards */}
-        <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+        <div className="grid gap-6 grid-cols-1">
           {bookingsToShow
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             .map((booking) => {
@@ -209,7 +209,7 @@ function MyBookingComponent() {
                 : "-";
 
               return (
-                <div key={booking.id} className="">
+                <div key={booking.id} className="mx-auto">
                   <div className="relative w-full max-w-md sm:max-w-xl border-2 border-gray-200 bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10">
                     {/* Status badge */}
                     <span
