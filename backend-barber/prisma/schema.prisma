@@ -31,9 +31,9 @@ model bookings {
   cust_email                       String?         @db.VarChar
   cust_name                        String?         @db.VarChar
   cust_phone_number                String?         @db.VarChar
-  barbers                          barbers?        @relation(fields: [barber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  services                         services?       @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users_bookings_user_idTousers    users?          @relation("bookings_user_idTousers", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  barbers                          barbers?        @relation(fields: [barber_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  services                         services?       @relation(fields: [service_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  users_bookings_user_idTousers    users?          @relation("bookings_user_idTousers", fields: [user_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
   payments                         payments[]
 }
 

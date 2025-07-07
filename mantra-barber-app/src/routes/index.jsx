@@ -9,15 +9,13 @@ import galeri1 from "../assets/galeri1.jpg";
 import galeri2 from "../assets/galeri2.jpg";
 import galeri3 from "../assets/galeri3.jpg";
 import galeri4 from "../assets/galeri4.jpg";
-import servicesBest from "../assets/services1.jpg";
-import higlightHair from "../assets/highlightHair.jpg";
-import colloringFashion from "../assets/colloringFashion.jpg";
-import permHair from "../assets/permHair.jpg";
 import { FaInstagram, FaSpinner, FaTiktok, FaWhatsapp } from "react-icons/fa";
 import { HiLocationMarker } from "react-icons/hi";
 import { useEffect, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getProducts } from "../service/products/index";
+import { getServices } from "../service/services"; // sesuaikan path-nya
+
 import Swal from "sweetalert2";
 
 export const Route = createFileRoute("/")({
@@ -25,10 +23,13 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-
-  const { data: products = [],isLoading } = useQuery({
+  const { data: products = [], isLoading } = useQuery({
     queryKey: ["getProducts"],
     queryFn: getProducts,
+  });
+  const { data: services = [], isLoading: serviceLoading } = useQuery({
+    queryKey: ["getServices"],
+    queryFn: getServices,
   });
 
   const images = [galeri1, galeri2, galeri3, galeri4, bgDashboard];
@@ -67,6 +68,13 @@ function Index() {
 
     window.open(tokopediaUrl, "_blank");
   };
+
+  const bestService = services?.find((s) =>
+    s.name.toLowerCase().includes("best haircut")
+  );
+  const otherServices = services
+    ?.filter((s) => s.id !== bestService?.id)
+    .slice(0, 3); // ambil hanya 3 teratas
 
   return (
     <div className="font-sans">
@@ -124,363 +132,201 @@ function Index() {
       {/* Services Section */}
       <section id="services" className="bg-black text-white px-8 py-12">
         <h2 className="text-2xl font-bold text-center mb-8">Services</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* CARD BEST HAIRCUT */}
-          <Card className="w-full max-w-sm mx-auto">
-            <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-              Best Haircut
-            </h5>
-            <img
-              src={servicesBest} // ganti dengan path gambar kamu
-              alt="Best Haircut"
-              className="w-full h-48 object-cover rounded-t-lg"
-            />
-            <div className="flex items-baseline text-gray-900 dark:text-white">
-              <span className="text-3xl font-semibold">Rp.</span>
-              <span className="text-5xl font-extrabold tracking-tight">65</span>
-              <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
-                K
-              </span>
-            </div>
-            <ul className="my-7 space-y-5">
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
+        {serviceLoading ? (
+          <div className="text-center w-full col-span-3">
+            Loading services...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* BEST HAIRCUT */}
+            {bestService && (
+              <Card className="w-full max-w-sm mx-auto">
+                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                  {bestService.name}
+                </h5>
+                <img
+                  src={bestService.image}
+                  alt={bestService.name}
+                  className="w-full h-48 object-cover rounded-t-lg"
+                />
+                <div className="flex items-baseline text-gray-900 dark:text-white">
+                  <span className="text-3xl font-semibold">Rp.</span>
+                  <span className="text-5xl font-extrabold tracking-tight">
+                    {(bestService.price / 1000).toFixed(0)}
+                  </span>
+                  <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                    K
+                  </span>
+                </div>
+                <ul className="my-7 space-y-5">
+                  {(bestService.description || "No description available")
+                    .split(",")
+                    .map((item, index) => (
+                      <li key={index} className="flex space-x-3 items-center">
+                        <svg
+                          className="h-5 w-5 text-cyan-600"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-base font-normal text-gray-500 dark:text-gray-400 items-center">
+                          {item.trim()}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+                <Button
+                  as={Link}
+                  to="/create-booking"
+                  className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-cyan-700"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Hair Consultation
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Hair Wash
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Hair Tonic
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Hair Styling
-                </span>
-              </li>
-              <li className="flex space-x-3">
-                <svg
-                  className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
-                  Hot Towel
-                </span>
-              </li>
-            </ul>
-            <Button
-              as={Link}
-              to="/create-booking"
-              type="button"
-              className="inline-flex w-full justify-center rounded-lg bg-cyan-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-            >
-              Book Now
-            </Button>
-          </Card>
+                  Book Now
+                </Button>
+              </Card>
+            )}
 
-          <div className="lg:col-span-2 grid grid-rows-3 gap-5">
-            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
-              <img
-                src={higlightHair} // ganti dengan src gambar kamu
-                alt="About us"
-                className="w-1/3 h-full object-cover"
-              />
-              <div className="p-6 flex flex-col justify-between w-full">
-                <div>
-                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
-                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                      Colloring Highlight
-                    </h5>
-                    <span className="text-sm md:text-base font-semibold ms-3">
-                      (Rp.
-                    </span>
-                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
-                      300
-                    </span>
-                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
-                      K)
-                    </span>
-                  </div>
+            {/* OTHER 3 SERVICES */}
+            <div className="lg:col-span-2 grid grid-rows-3 gap-5">
+              {otherServices?.map((service) => (
+                <div
+                  key={service.id}
+                  className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48"
+                >
+                  <img
+                    src={service.image}
+                    alt={service.name}
+                    className="w-1/3 h-full object-cover"
+                  />
+                  <div className="p-6 flex flex-col justify-between w-full">
+                    <div>
+                      <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
+                        <h5 className="text-sm md:text-xl font-bold">
+                          {service.name}
+                        </h5>
+                        <span className="text-sm md:text-base font-semibold ms-3">
+                          (Rp.
+                        </span>
+                        <span className="text-md md:text-2xl font-extrabold tracking-tight">
+                          {(service.price / 1000).toFixed(0)}
+                        </span>
+                        <span className="text-xs ml-1 md:text-xl text-gray-500 dark:text-gray-400">
+                          K)
+                        </span>
+                      </div>
+                      {(service.description || "No description available")
+                        .split(",")
+                        .map((item, index) => (
+                          <li
+                            key={index}
+                            className="flex space-x-3 items-center"
+                          >
+                            <svg
+                              className="h-5 w-5 text-cyan-600"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-base font-normal text-gray-500 dark:text-gray-400 items-center">
+                              {item.trim()}
+                            </span>
+                          </li>
+                        ))}
+                    </div>
 
-                  <div className="mb-4">
-                    <li className="flex items-center space-x-3">
-                      <svg
-                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
+                    <div className="mt-auto flex justify-end">
+                      <Button
+                        as={Link}
+                        to="/create-booking"
+                        className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-sm font-medium text-white hover:bg-cyan-700"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
-                        Coloring by (Request Customer) Bleaching 1/2 Step &
-                        Coloring Half Hair
-                      </span>
-                    </li>
+                        Book Now
+                      </Button>
+                    </div>
                   </div>
                 </div>
-
-                <div className="mt-auto flex justify-end">
-                  <Button
-                    as={Link}
-                    to="/create-booking"
-                    type="button"
-                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-                  >
-                    Book Now
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
-              <img
-                src={colloringFashion} // ganti dengan src gambar kamu
-                alt="About us"
-                className="w-1/3 h-full object-cover"
-              />
-              <div className="p-6 flex flex-col justify-between w-full">
-                <div>
-                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
-                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                      Colloring Fashion
-                    </h5>
-                    <span className="text-sm md:text-base font-semibold ms-3">
-                      (Rp.
-                    </span>
-                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
-                      500
-                    </span>
-                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
-                      K)
-                    </span>
-                  </div>
-
-                  <div className="mb-4">
-                    <li className="flex items-center space-x-3">
-                      <svg
-                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
-                        Coloring by (Request Customer) Bleaching 1/2 Step &
-                        Coloring Half Hair
-                      </span>
-                    </li>
-                  </div>
-                </div>
-
-                <div className="mt-auto flex justify-end">
-                  <Button
-                    as={Link}
-                    to="/create-booking"
-                    type="button"
-                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-                  >
-                    Book Now
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48">
-              <img
-                src={permHair} // ganti dengan src gambar kamu
-                alt="About us"
-                className="w-1/3 h-full object-cover"
-              />
-              <div className="p-6 flex flex-col justify-between w-full">
-                <div>
-                  <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
-                    <h5 className="text-sm md:text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                      Perming
-                    </h5>
-                    <span className="text-sm md:text-base font-semibold ms-3">
-                      (Rp.
-                    </span>
-                    <span className="text-md md:text-2xl font-extrabold tracking-tight">
-                      500
-                    </span>
-                    <span className="text-xs ml-1 md:text-xl font-normal text-gray-500 dark:text-gray-400">
-                      K)
-                    </span>
-                  </div>
-
-                  <div className="mb-4">
-                    <li className="flex items-center space-x-3">
-                      <svg
-                        className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-500"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      <span className="text-xs md:text-xl font-normal leading-tight text-gray-500 dark:text-gray-400">
-                        Curly Hair/Wavy Hair With Processing Perming Product
-                      </span>
-                    </li>
-                  </div>
-                </div>
-
-                <div className="mt-auto flex justify-end">
-                  <Button
-                    as={Link}
-                    to="/create-booking"
-                    type="button"
-                    className="inline-flex justify-center rounded-lg bg-cyan-600 px-5 py-1 md:py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-200 dark:focus:ring-cyan-900"
-                  >
-                    Book Now
-                  </Button>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* product Section */}
-<section id="product" className="px-6 py-12 bg-gray-100">
-  <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
+      <section id="product" className="px-6 py-12 bg-gray-100">
+        <h2 className="text-2xl font-bold text-center mb-8">Product</h2>
 
-  {isLoading ? (
-    <div className="flex justify-center items-center h-64">
-      <FaSpinner className="animate-spin text-blue-600 text-4xl" />
-      <span className="ml-3 text-lg font-semibold text-blue-600">Loading...</span>
-    </div>
-  ) : (
-    <div className="flex flex-wrap justify-center gap-6">
-      {products.map((product) => (
-        <Card
-          key={product.id}
-          className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
-        >
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="h-[220px] object-contain rounded-t-md"
-          />
-
-          <div className="p-5 flex flex-col justify-between flex-grow">
-            <a href="#">
-              <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
-                {product.name}
-              </h5>
-            </a>
-            <div className="mb-5 mt-2.5 flex items-center">
-              {[...Array(5)].map((_, index) => (
-                <svg
-                  key={index}
-                  className="h-5 w-5 text-yellow-300"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-              <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
-                4.9
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                {Math.floor(product.price / 1000)}k
-              </span>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleBuyNow(product.tokopedia_link);
-                }}
-                className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
-              >
-                Buy Now
-              </a>
-            </div>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <FaSpinner className="animate-spin text-blue-600 text-4xl" />
+            <span className="ml-3 text-lg font-semibold text-blue-600">
+              Loading...
+            </span>
           </div>
-        </Card>
-      ))}
-    </div>
-  )}
-</section>
+        ) : (
+          <div className="flex flex-wrap justify-center gap-6">
+            {products.map((product) => (
+              <Card
+                key={product.id}
+                className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
+              >
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="h-[220px] object-contain rounded-t-md"
+                />
+
+                <div className="p-5 flex flex-col justify-between flex-grow">
+                  <a href="#">
+                    <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
+                      {product.name}
+                    </h5>
+                  </a>
+                  <div className="mb-5 mt-2.5 flex items-center">
+                    {[...Array(5)].map((_, index) => (
+                      <svg
+                        key={index}
+                        className="h-5 w-5 text-yellow-300"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                    <span className="ml-3 mr-2 rounded bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:bg-cyan-200 dark:text-cyan-800">
+                      4.9
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                      {Math.floor(product.price / 1000)}k
+                    </span>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleBuyNow(product.tokopedia_link);
+                      }}
+                      className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
+                    >
+                      Buy Now
+                    </a>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </section>
 
       {/* Gallery Section */}
       <section id="gallery" className="bg-black text-white py-12">
