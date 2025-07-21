@@ -35,6 +35,6 @@ router
 .get(validateGetBookingById,getBookingById)
 .put(authorization(adminRole),validateUpdateBooking,updateBooking)
 .delete(authorization(adminRole),validateDeleteBookingById,deleteBookingById)
-.patch(authorization(adminRole,userRole),updateStatusBookingById);
+.patch(updateStatusBookingById);
 
 module.exports = router;

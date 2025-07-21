@@ -145,7 +145,7 @@ function Index() {
                   {bestService.name}
                 </h5>
                 <img
-                  src={bestService.image}
+                  src={bestService.image_service}
                   alt={bestService.name}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
@@ -198,7 +198,7 @@ function Index() {
                   className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48"
                 >
                   <img
-                    src={service.image}
+                    src={service.image_service}
                     alt={service.name}
                     className="w-1/3 h-full object-cover"
                   />
@@ -279,7 +279,7 @@ function Index() {
                 className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
               >
                 <img
-                  src={product.image_url}
+                  src={product.image_product}
                   alt={product.name}
                   className="h-[220px] object-contain rounded-t-md"
                 />
@@ -314,7 +314,7 @@ function Index() {
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        handleBuyNow(product.tokopedia_link);
+                        handleBuyNow(product.link_product);
                       }}
                       className="rounded-lg bg-cyan-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-cyan-800 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-cyan-800"
                     >

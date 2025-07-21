@@ -20,8 +20,8 @@ exports.getBarberById = async (id) => {
 
 exports.createBarber = async (data, file) => {
   // Upload file to image kit
-  if (file?.photo_url) {
-    data.photo_url = await imageUpload(file.photo_url);
+  if (file?.image_barber) {
+    data.image_barber = await imageUpload(file.image_barber);
   }
 
   // Create the data
@@ -41,8 +41,8 @@ exports.updateBarber = async (id, data, file) => {
   };
 
   // Upload file to image kit
-  if (file?.photo_url) {
-    data.photo_url = await imageUpload(file.photo_url);
+  if (file?.image_barber) {
+    data.image_barber = await imageUpload(file.image_barber);
   }
 
   const updatedBarber = await BarberRepository.updateBarber(id, data);

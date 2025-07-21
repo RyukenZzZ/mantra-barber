@@ -53,7 +53,7 @@ function BarbersComponent() {
     id: null,
     name: "",
     bio: "",
-    photo_url: null,
+    image_barber: null,
     is_active: true,
   });
 
@@ -112,15 +112,15 @@ function BarbersComponent() {
       id: null,
       name: "",
       bio: "",
-      photo_url: null,
+      image_barber: null,
       is_active: true,
     });
   }
 
   const handleChange = (e) => {
     const { name, value, files, type, checked } = e.target;
-    if (name === "photo_url") {
-      setForm((prev) => ({ ...prev, photo_url: files[0] }));
+    if (name === "image_barber") {
+      setForm((prev) => ({ ...prev, image_barber: files[0] }));
     } else if (type === "checkbox") {
       setForm((prev) => ({ ...prev, [name]: checked }));
     } else {
@@ -146,7 +146,7 @@ function BarbersComponent() {
       id: barber.id,
       name: barber.name || "",
       bio: barber.bio || "",
-      photo_url: null,
+      image_barber: null,
       is_active: barber.is_active ?? true,
     });
     setIsModalOpen(true);
@@ -248,7 +248,7 @@ function BarbersComponent() {
                 </label>
                 <FileInput
                   id="file-upload"
-                  name="photo_url"
+                  name="image_barber"
                   onChange={handleChange}
                   className="w-full !bg-white !text-black"
                 />
@@ -340,9 +340,9 @@ function BarbersComponent() {
               key={barber.id}
               className="bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden"
             >
-              {barber.photo_url ? (
+              {barber.image_barber ? (
                 <img
-                  src={barber.photo_url}
+                  src={barber.image_barber}
                   alt={barber.name}
                   className="w-full h-32 object-cover"
                 />

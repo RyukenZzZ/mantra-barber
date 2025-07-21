@@ -112,12 +112,12 @@ function PaymentsRoute() {
             setSnapEmbedded(false);
           },
           onError: (err) => {
-            console.error("Snap error", err);
-            navigate({ to: "/" });
+            toast.error("Snap error", err);
+            navigate({ to: "/history-bookings" });
             setSnapEmbedded(false);
           },
           onClose: () => {
-            navigate({ to: "/" });
+            navigate({ to: "/history-bookings" });
             setSnapEmbedded(false);
           },
         });

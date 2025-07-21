@@ -20,8 +20,8 @@ exports.getServiceById = async (id) => {
 
 exports.createService = async (data,file) => {
     // Upload file to image kit
-    if (file?.image) {
-      data.image = await imageUpload(file.image);
+    if (file?.image_service) {
+      data.image_service = await imageUpload(file.image_service);
     }
   
   return serviceRepository.createService(data);
@@ -40,8 +40,8 @@ exports.updateService = async (id, data,file) => {
     };
   
     // Upload file to image kit
-    if (file?.image) {
-      data.image = await imageUpload(file.image);
+    if (file?.image_service) {
+      data.image_service = await imageUpload(file.image_service);
     }
 
   const updatedService = await serviceRepository.updateService(id, data);

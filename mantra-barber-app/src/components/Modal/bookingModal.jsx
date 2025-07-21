@@ -60,6 +60,11 @@ const BookingModal = ({
     mutationFn: (request) => createBooking(request),
     onSuccess: (response) => {
       toast.success("Bookings Created Successfully!");
+              // Simpan booking_code ke localStorage
+  const bookingCode = response?.data?.booking?.booking_code;
+  if (bookingCode) {
+    localStorage.setItem("last_booking_code", bookingCode);
+  }
 
       // Reset state
       resetFormState();
@@ -327,7 +332,7 @@ const onSubmit = () => {
                     // Waktu sekarang + 1 jam
                     const now = new Date();
                     const oneHourLater = new Date(
-                      now.getTime() + 60 * 45 * 1000 //unavaible 45 mnt jam berikutnya
+                      now.getTime() - 60 * 30 * 1000 //unavaible 30 mnt jam berikutnya
                     );
 
                     // Buat waktu jam pilihan pada tanggal yg dipilih

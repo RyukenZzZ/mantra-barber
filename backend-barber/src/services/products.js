@@ -20,8 +20,8 @@ exports.getProductById = async (id) => {
 
 exports.createProduct = async (data, file) => {
   // Upload file to image kit
-  if (file?.image_url) {
-    data.image_url = await imageUpload(file.image_url);
+  if (file?.image_product) {
+    data.image_product = await imageUpload(file.image_product);
   }
 
   // Create the data
@@ -41,8 +41,8 @@ exports.updateProduct = async (id, data, file) => {
   };
 
   // Upload file to image kit
-  if (file?.image_url) {
-    data.image_url = await imageUpload(file.image_url);
+  if (file?.image_product) {
+    data.image_product = await imageUpload(file.image_product);
   }
 
   const updatedProduct = await ProductRepository.updateProduct(id, data);

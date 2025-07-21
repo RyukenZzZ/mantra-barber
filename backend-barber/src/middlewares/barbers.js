@@ -47,7 +47,7 @@ exports.validateCreateBarber = (req, res, next) => {
   // The file is not required
   const validateFileBody = z
     .object({
-      photo_url: z
+      image_barber: z
         .object({
           name: z.string(),
           data: z.any(),
@@ -100,7 +100,7 @@ exports.validateUpdateBarber = (req, res, next) => {
   // The file is not required
   const validateFileBody = z
     .object({
-      photo_url: z
+      image_barber: z
         .object({
           name: z.string(),
           data: z.any(),

@@ -11,7 +11,7 @@ model barbers {
   id               BigInt     @id @default(autoincrement())
   name             String     @db.VarChar
   bio              String?
-  photo_url        String?    @db.VarChar
+  image_barber        String?    @db.VarChar
   is_active        Boolean?   @default(true)
   reset_count_from DateTime?  @default(now()) @db.Timestamp(6)
   bookings         bookings[]
@@ -57,8 +57,8 @@ model products {
   name           String  @db.VarChar
   description    String?
   price          Int?
-  image_url      String?
-  tokopedia_link String?
+  image_product      String?
+  link_product String?
 }
 
 model services {
@@ -66,7 +66,7 @@ model services {
   name        String     @db.VarChar
   description String?
   price       Int
-  image       String?
+  image_service       String?
   bookings    bookings[]
 }
 

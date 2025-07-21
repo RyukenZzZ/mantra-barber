@@ -7,7 +7,7 @@ import { Alert, Button, Spinner } from "flowbite-react";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/history-bookings")({
   component: MyBookingComponent,
@@ -22,6 +22,24 @@ function MyBookingComponent() {
 
   const [searchInput, setSearchInput] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+
+   // Ambil booking code terakhir dari localStorage jika user belum login
+  useEffect(() => {
+    if (!token && typeof window !== "undefined") {
+      const lastCode = localStorage.getItem("last_booking_code");
+      if (lastCode) {
+        setSearchTerm(lastCode);
+        setSearchInput(lastCode);
+      }
+    }
+  }, [token]);
+
+    // Kosongkan localStorage jika user sudah login
+  useEffect(() => {
+    if (token) {
+      localStorage.removeItem("last_booking_code");
+    }
+  }, [token]);
 
   const {
     data: bookings = [],
@@ -43,6 +61,7 @@ function MyBookingComponent() {
     onSuccess: () => {
       toast.success("Booking berhasil dibatalkan");
       queryClient.invalidateQueries({ queryKey: ["getMyBookings"] });
+      queryClient.invalidateQueries({ queryKey: ["getBookings"] });
     },
     onError: (error) => {
       toast.error(error.message);
@@ -72,7 +91,7 @@ function MyBookingComponent() {
   const bookingsToShow =
     searchTerm.trim() !== "" ? filteredBookings : myBookings;
 
-  const handleReschedule = () => {
+  const handleReschedule = (custName,bookingCode) => {
     Swal.fire({
       title: "Ingin Melakukan Reschedule?",
       html: `
@@ -84,12 +103,15 @@ function MyBookingComponent() {
       confirmButtonColor: "#3085d6",
       showCancelButton: true,
       cancelButtonText: "Tutup",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.open("https://wa.me/6287878299029", "_blank");
-      }
-    });
-  };
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const message = `Halo Admin, saya ingin melakukan reschedule booking.\nNama: ${custName}\nBooking Code: ${bookingCode}\nMenjadi Tanggal(jam): `;
+      const encodedMessage = encodeURIComponent(message);
+      const waUrl = `https://wa.me/6287878299029?text=${encodedMessage}`;
+      window.open(waUrl, "_blank");
+    }
+  });
+};
 
   return (
     <div
@@ -295,7 +317,7 @@ function MyBookingComponent() {
                         ) : (
                           <Button
                             color="blue"
-                            onClick={() => handleReschedule()}
+                            onClick={() => handleReschedule(name,booking.booking_code)}
                             className="w-2/3"
                           >
                             Reschedule

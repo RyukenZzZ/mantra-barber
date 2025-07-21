@@ -37,13 +37,13 @@ exports.validateCreateProduct = (req, res, next) => {
     name: z.string(),
     description: z.string(),
     price: z.number(),
-    tokopedia_link: z.string(),
+    link_product: z.string(),
   });
 
   // The file is not required
   const validateFileBody = z
     .object({
-      image_url: z
+      image_product: z
         .object({
           name: z.string(),
           data: z.any(),
@@ -86,13 +86,13 @@ exports.validateUpdateProduct = (req, res, next) => {
     name: z.string(),
     description: z.string(),
     price: z.number(),
-    tokopedia_link: z.string(),
+    link_product: z.string(),
   }).partial();
 
   // The file is not required
   const validateFileBody = z
     .object({
-      image_url: z
+      image_product: z
         .object({
           name: z.string(),
           data: z.any(),

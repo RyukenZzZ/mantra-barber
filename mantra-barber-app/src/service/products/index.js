@@ -53,10 +53,10 @@ export const createProduct = async (request) => {
     formData.append("name", request.name);
     formData.append("description", request.description);
     formData.append("price", request.price);
-    formData.append("tokopedia_link", request.tokopedia_link);
+    formData.append("link_product", request.link_product);
 
-    if (request.image_url) {
-        formData.append("image_url", request.image_url);
+    if (request.image_product) {
+        formData.append("image_product", request.image_product);
     }
 
     const response = await fetch(`${import.meta.env.VITE_API_URL}/products`, {
@@ -79,9 +79,9 @@ export const updateProduct = async (id, request) => {
     formData.append("name", request.name);
     formData.append("description", request.description);
     formData.append("price", request.price);
-    formData.append("tokopedia_link", request.tokopedia_link);
-    if (request.image_url) {
-        formData.append("image_url", request.image_url);
+    formData.append("link_product", request.link_product);
+    if (request.image_product) {
+        formData.append("image_product", request.image_product);
     }
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/products/${id}`,

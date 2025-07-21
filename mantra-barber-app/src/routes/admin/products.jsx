@@ -38,8 +38,8 @@ function ProductsComponent() {
     name: "",
     description: "",
     price: "",
-    tokopedia_link: "",
-    image_url: null,
+    link_product: "",
+    image_product: null,
   });
 
   const resetForm = () => {
@@ -48,15 +48,15 @@ function ProductsComponent() {
       name: "",
       description: "",
       price: "",
-      tokopedia_link: "",
-      image_url: null,
+      link_product: "",
+      image_product: null,
     });
   };
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "image_url") {
-      setForm((prev) => ({ ...prev, image_url: files[0] }));
+    if (name === "image_product") {
+      setForm((prev) => ({ ...prev, image_product: files[0] }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -122,8 +122,8 @@ function ProductsComponent() {
       name: product.name || "",
       description: product.description || "",
       price: product.price || "",
-      tokopedia_link: product.tokopedia_link || "",
-      image_url: null, // file input tidak bisa preload file, harus upload ulang
+      link_product: product.link_product || "",
+      image_product: null, // file input tidak bisa preload file, harus upload ulang
     });
     setIsModalOpen(true);
   };
@@ -216,9 +216,9 @@ function ProductsComponent() {
                 <label className="block mb-1 font-medium">Link</label>
                 <input
                   type="text"
-                  name="tokopedia_link"
+                  name="link_product"
                   placeholder="Masukkan Link E-Commerce barang tersebut"
-                  value={form.tokopedia_link}
+                  value={form.link_product}
                   onChange={handleChange}
                   required
                   className="w-full border px-3 py-2 rounded"
@@ -230,7 +230,7 @@ function ProductsComponent() {
                 </label>
                 <FileInput
                   id="image"
-                  name="image_url"
+                  name="image_product"
                   onChange={handleChange}
                   className="w-full !bg-white !text-black"
                 />
@@ -281,10 +281,10 @@ function ProductsComponent() {
             key={product.id}
             className="bg-white border-gray-200 rounded-lg overflow-hidden shadow-sm"
           >
-            {product.image_url ? (
+            {product.image_product ? (
               <div className="flex items-center justify-center bg-gray-200 h-40 w-full">
                 <img
-                  src={product.image_url}
+                  src={product.image_product}
                   alt={product.name}
                   className="max-h-full max-w-full object-contain"
                 />

@@ -41,7 +41,7 @@ function ServicesComponent() {
     name: "",
     description: "",
     price: "",
-    image: null,
+    image_service: null,
   });
 
   // Mutation untuk create
@@ -92,15 +92,15 @@ function ServicesComponent() {
       name: "",
       description: "",
       price: "",
-      image: null,
+      image_service: null,
     });
   }
 
   // Handle perubahan input
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "image") {
-      setForm((prev) => ({ ...prev, image: files[0] }));
+    if (name === "image_service") {
+      setForm((prev) => ({ ...prev, image_service: files[0] }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -130,7 +130,7 @@ function ServicesComponent() {
       name: service.name || "",
       description: service.description || "",
       price: service.price || "",
-      image: null, // kalau mau, kamu bisa tampilkan gambar lama tapi FileInput harus tetap kosong karena file harus dipilih ulang
+      image_service: null, // kalau mau, kamu bisa tampilkan gambar lama tapi FileInput harus tetap kosong karena file harus dipilih ulang
     });
     setIsModalOpen(true);
   };
@@ -228,7 +228,7 @@ function ServicesComponent() {
                 </label>
                 <FileInput
                   id="file-upload"
-                  name="image"
+                  name="image_service"
                   onChange={handleChange}
                   className="w-full !bg-white !text-black"
                 />
@@ -279,9 +279,9 @@ function ServicesComponent() {
             key={service.id}
             className="bg-white border border-gray-200 shadow-sm rounded-lg overflow-hidden"
           >
-            {service.image ? (
+            {service.image_service ? (
               <img
-                src={service.image}
+                src={service.image_service}
                 alt={service.name}
                 className="w-full h-32 object-cover"
               />

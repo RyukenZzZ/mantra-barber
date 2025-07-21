@@ -86,7 +86,11 @@ const [phone, setPhone] = useState(user ? user.phone : "");
     mutationFn: (request) => createBooking(request),
     onSuccess: (response) => {
       toast.success("Bookings Created Successfully!");
-
+        // Simpan booking_code ke localStorage
+  const bookingCode = response?.data?.booking?.booking_code;
+  if (bookingCode) {
+    localStorage.setItem("last_booking_code", bookingCode);
+  }
       // Reset state
       setStep(1);
       setBarberName("");
@@ -97,6 +101,7 @@ const [phone, setPhone] = useState(user ? user.phone : "");
       setDate("");
       setTime("");
       setAgree(false);
+      console.log(response);
 
       // Ambil payment ID dari response
       const bookingId = response?.data?.payment?.booking_id;
@@ -249,11 +254,11 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                   <div className="h-30 sm:h-40 w-full overflow-hidden rounded-t-lg">
                     <img
                       src={
-                        !b.photo_url ||
-                        b.photo_url === "null" ||
-                        b.photo_url === null
+                        !b.image_barber ||
+                        b.image_barber === "null" ||
+                        b.image_barber === null
                           ? "https://i.pinimg.com/736x/89/90/48/899048ab0cc455154006fdb9676964b3.jpg"
-                          : b.photo_url
+                          : b.image_barber
                       }
                       alt={b.name}
                       referrerPolicy="no-referrer"

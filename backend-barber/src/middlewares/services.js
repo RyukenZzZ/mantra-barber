@@ -42,7 +42,7 @@ exports.validateCreateService = (req, res, next) => {
   // The file is not required
   const validateFileBody = z
     .object({
-      image: z
+      image_service: z
         .object({
           name: z.string(),
           data: z.any(),
@@ -92,7 +92,7 @@ exports.validateUpdateService = (req, res, next) => {
       // The file is not required
   const validateFileBody = z
   .object({
-    image: z
+    image_service: z
       .object({
         name: z.string(),
         data: z.any(),
