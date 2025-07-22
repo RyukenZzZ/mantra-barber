@@ -9,20 +9,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../redux/slices/auth"; // sesuaikan path
 import bgBarber from "../assets/bg-booking6.JPG";
 
-
 export const Route = createFileRoute("/register")({
   component: Register,
 });
 
 function Register() {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const { token,user } = useSelector((state) => state.auth)
-  
+  const { token, user } = useSelector((state) => state.auth);
+
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   const [form, setForm] = useState({
     name: "",
@@ -33,7 +31,7 @@ function Register() {
     profilePicture: null, // kalau nanti mau unggah foto
   });
 
-useEffect(() => {
+  useEffect(() => {
     if (token) {
       if (user?.role === "admin") {
         navigate({ to: "/admin/dashboard" });
@@ -66,39 +64,38 @@ useEffect(() => {
     },
   });
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  if (isSubmitting) return;
+    if (isSubmitting) return;
 
-  if (form.password !== form.confirmPassword) {
-    toast.error("Password dan konfirmasi tidak sama");
-    return;
-  }
-
-  if (!/^\d+$/.test(form.phone)) {
-    toast.error("Nomor telepon hanya boleh diisi angka");
-    return;
-  }
-
-  setIsSubmitting(true); // set submitting true
-
-  doRegister(
-    {
-      name: form.name,
-      email: form.email,
-      password: form.password,
-      phone: form.phone,
-      profilePicture: form.profilePicture,
-    },
-    {
-      onSettled: () => {
-        setIsSubmitting(false); // always reset
-      },
+    if (form.password !== form.confirmPassword) {
+      toast.error("Password dan konfirmasi tidak sama");
+      return;
     }
-  );
-};
 
+    if (!/^\d+$/.test(form.phone)) {
+      toast.error("Nomor telepon hanya boleh diisi angka");
+      return;
+    }
+
+    setIsSubmitting(true); // set submitting true
+
+    doRegister(
+      {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        phone: form.phone,
+        profilePicture: form.profilePicture,
+      },
+      {
+        onSettled: () => {
+          setIsSubmitting(false); // always reset
+        },
+      }
+    );
+  };
 
   return (
     <div
@@ -109,9 +106,7 @@ const handleSubmit = (e) => {
     >
       <div className="w-2/3 max-w-md bg-gray-800 bg-opacity-90 rounded-lg shadow-md p-6">
         <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-white">
-            Create your Free Account
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Create your Account</h1>
         </div>
 
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -227,16 +222,16 @@ const handleSubmit = (e) => {
           <Button
             type="submit"
             id="submit"
-            disabled={ isSubmitting || isLoading}
+            disabled={isSubmitting || isLoading}
             className="disabled:opacity-50 disabled:cursor-not-allowed"
           >
-  {isSubmitting || isLoading ? "Creating..." : "Create an account"}
+            {isSubmitting || isLoading ? "Creating..." : "Create an account"}
           </Button>
 
           <p className="text-sm text-center text-white mt-2">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-400 hover:underline">
-              Login here
+              Sign in here
             </Link>
           </p>
         </form>

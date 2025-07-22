@@ -243,7 +243,7 @@ const onSubmit = () => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Pilih Karyawan
+              Pilih Barber
             </label>
             <div className="flex flex-wrap gap-2">
              {barbers.map((barber) => {

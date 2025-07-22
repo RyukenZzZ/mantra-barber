@@ -115,7 +115,7 @@ const SideBar = ({ children }) => {
               <button onClick={toggleSidebar} className="text-gray-600">
                 {isSidebarOpen ? <HiX size={24} /> : <HiMenuAlt1 size={24} />}
               </button>
-              <h1 className="text-lg font-semibold">Dashboard Admin</h1>
+              <h1 className="text-lg font-semibold">Admin Pages</h1>
             </div>
 
             <Dropdown

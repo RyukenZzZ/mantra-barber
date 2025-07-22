@@ -237,7 +237,7 @@ function AdminDashboardComponent() {
                 <th className="px-6 py-3">Tanggal</th>
                 <th className="px-6 py-3">Jam</th>
                 <th className="px-6 py-3">Layanan (Harga)</th>
-                <th className="px-6 py-3">Barbers</th>
+                <th className="px-6 py-3">Barber</th>
                 <th className="px-6 py-3">Status</th>
                 <th className="px-6 py-3">Aksi</th>
               </tr>

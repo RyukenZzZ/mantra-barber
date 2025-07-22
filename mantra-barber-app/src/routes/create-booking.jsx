@@ -526,7 +526,7 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                 <p className="font-semibold">Jam</p>
                 <p className="col-span-2 ">: {time}</p>
 
-                <p className="font-semibold">Price</p>
+                <p className="font-semibold">Harga</p>
                 <p className="col-span-2">: {Math.floor(price / 1000)}k</p>
               </div>
             </div>
@@ -625,7 +625,7 @@ const [phone, setPhone] = useState(user ? user.phone : "");
       </form>
 
       <footer className="w-full text-center py-3 bg-black bg-opacity-50 text-white mt-35">
-        &copy; {new Date().getFullYear()} Mantra Barber. All rights reserved.
+        Copyright &copy; {new Date().getFullYear()} Mantra Barber. All rights reserved.
       </footer>
     </div>
   );
