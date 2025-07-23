@@ -208,7 +208,7 @@ function MyBookingComponent() {
 )}
 
         {/* Booking cards */}
-        <div className="grid gap-6 grid-cols-1">
+        <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
           {bookingsToShow
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             .map((booking) => {
@@ -232,7 +232,8 @@ function MyBookingComponent() {
 
               return (
                 <div key={booking.id} className="mx-auto">
-                  <div className="relative w-full max-w-md sm:max-w-xl border-2 border-gray-200 bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10">
+                <div className="relative w-full h-[320px] max-w-md sm:max-w-xl border-2 border-gray-200 bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10 flex flex-col justify-between">
+                    <div>
                     {/* Status badge */}
                     <span
                       className={`
@@ -254,7 +255,7 @@ function MyBookingComponent() {
                       {booking.status}
                     </span>
 
-                    <h2 className="text-xl font-semibold mb-7 text-center">
+                    <h2 className="text-xl font-semibold text-center mb-7">
                       {booking.booking_code}
                     </h2>
 
@@ -289,10 +290,11 @@ function MyBookingComponent() {
                         </p>
                       </div>
                     </div>
+                    </div>
 
                     {/* Tombol aksi */}
                     {!isInactive && (
-                      <div className="grid grid-cols-2 gap-3 mt-10">
+                      <div className="grid grid-cols-2 gap-3">
                         <Button
                           onClick={() => handleCancel(booking.id)}
                           disabled={isPending || pendingStatus}
