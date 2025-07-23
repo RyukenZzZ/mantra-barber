@@ -4,8 +4,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 
   user: JSON.parse(localStorage.getItem("user")) || null,
-
   token: localStorage.getItem("token") || null,
+  isLoggingOut: false,
+
 };
 
 // Slice action and reducer
@@ -13,6 +14,9 @@ export const authSlice = createSlice({
   initialState,
   name: "auth",
   reducers: {
+     setLoggingOut: (state, action) => {
+    state.isLoggingOut = action.payload;
+  },
     setUser: (state, action) => {
       if (action.payload) {
 
@@ -35,7 +39,7 @@ export const authSlice = createSlice({
 });
 
 // Export the action
-export const { setToken, setUser } = authSlice.actions;
+export const { setToken, setUser,setLoggingOut } = authSlice.actions;
 
 // Export the state/reducers
 export default authSlice.reducer;

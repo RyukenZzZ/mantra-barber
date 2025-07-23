@@ -5,18 +5,25 @@ import { toast } from "react-toastify";
 
 const Protected = ({ children, roles }) => {
   const navigate = useNavigate();
-  const { token, user } = useSelector((state) => state.auth);
+  const { token, user,isLoggingOut } = useSelector((state) => state.auth);
 
   // Ref untuk menandai apakah redirect sudah terjadi
   const hasRedirected = useRef(false);
 
-  useEffect(() => {
-if (roles.length > 0 && !roles.includes(user?.role)) {
+useEffect(() => {
+  if (
+    !isLoggingOut && // guard tambahan
+    roles.length > 0 &&
+    !roles.includes(user?.role)
+  ) {
+   
       toast.error("Anda tidak memiliki izin untuk mengakses halaman ini.");
       navigate({ to: "/" });
       hasRedirected.current = true;
-    }
-  }, [token, user, roles, navigate]);
+
+  }
+}, [token, user, roles, navigate, isLoggingOut]);
+
 
   if (!token || (roles.length > 0 && !roles.includes(user?.role))) {
     return null;

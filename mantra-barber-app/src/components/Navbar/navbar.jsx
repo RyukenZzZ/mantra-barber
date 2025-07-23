@@ -16,6 +16,7 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { profile } from "../../service/auth";
 import { toast } from "react-toastify";
+import { flushSync } from "react-dom";
 
 const NavigationBar = () => {
   const [activeSection, setActiveSection] = useState("");
@@ -28,8 +29,10 @@ const NavigationBar = () => {
   const { user, token } = useSelector((state) => state.auth);
 
   const handleLogout = useCallback(() => {
+  flushSync(() => {
     dispatch(setUser(null));
     dispatch(setToken(null));
+  });
     toast.success("Logout berhasil");
     navigate({ to: "/login", replace: true });
   }, [dispatch, navigate]);

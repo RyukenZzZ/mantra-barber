@@ -15,8 +15,10 @@ import { Navbar, Dropdown, DropdownHeader, DropdownItem } from "flowbite-react";
 import mantraLogo from "../../assets/mantraLogo.PNG";
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setToken, setUser } from "../../redux/slices/auth";
+import { setToken, setUser,setLoggingOut } from "../../redux/slices/auth";
 import { toast } from "react-toastify";
+import { flushSync } from "react-dom";
+
 
 const adminLinks = [
   { to: "/admin/dashboard", label: "Dashboard", icon: <HiChartPie /> },
@@ -48,12 +50,15 @@ const SideBar = ({ children }) => {
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  const handleLogout = useCallback(() => {
+ const handleLogout = useCallback(() => {
+  dispatch(setLoggingOut(true));
+  flushSync(() => {
     dispatch(setUser(null));
     dispatch(setToken(null));
-    toast.success("Logout berhasil");
-    navigate({ to: "/login" }, { replace: true });
-  }, [dispatch, navigate]);
+  });
+  toast.success("Logout berhasil");
+  navigate({ to: "/login" }, { replace: true });
+}, [dispatch, navigate]);
 
   const shouldShowFullSidebar = isSidebarOpen || isHovering;
 
