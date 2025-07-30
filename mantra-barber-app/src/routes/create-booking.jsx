@@ -165,34 +165,6 @@ const [phone, setPhone] = useState(user ? user.phone : "");
     time
   );
 
-  const handleNext = (event) => {
-    if (event) event.preventDefault();
-
-    if (step === 3) {
-      if (!name) {
-        alert("Nama lengkap wajib diisi.");
-        return;
-      }
-      if (!email) {
-        alert("Email wajib diisi.");
-        return;
-      }
-      if (!phone) {
-        alert("Nomor telepon wajib diisi.");
-        return;
-      }
-      if (!date) {
-        alert("Tanggal booking wajib dipilih.");
-        return;
-      }
-      if (!time) {
-        alert("Jam booking wajib dipilih.");
-        return;
-      }
-    }
-    setStep(step + 1);
-  };
-
   const onSubmit = () => {
     const bookingDateTime = new Date(`${date}T${time}:00`).toISOString();
 
@@ -368,13 +340,17 @@ const [phone, setPhone] = useState(user ? user.phone : "");
               <div className="mb-4">
                 <label className="block mb-1">No. Telepon:</label>
                 <TextInput
+                  id="phone"
                   type="tel"
                   placeholder="0812xxxxxxx"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   shadow
                   color="gray"
+                  maxLength={15}
                 />
               </div>
             </div>
@@ -485,9 +461,8 @@ const [phone, setPhone] = useState(user ? user.phone : "");
               <Button
                 color="dark"
                 className="w-full mt-2"
-                type="button"
+                type="submit"
                 disabled={isFormIncomplete}
-                onClick={handleNext}
               >
                 Confirm Booking
               </Button>
