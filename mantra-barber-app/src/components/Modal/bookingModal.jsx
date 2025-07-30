@@ -291,7 +291,7 @@ const onSubmit = () => {
     [&_button.text-primary-600]:text-blue-600
     [&_button.text-primary-600:hover]:bg-blue-100
 
-    [&_button]:text-black
+    [&_button]:text-white
     [&_button:hover]:bg-gray-200
     [&_thead]:bg-white
     [&_tfoot]:bg-white

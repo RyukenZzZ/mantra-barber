@@ -346,10 +346,9 @@ if (appliedFilter === "thisYear") {
   if (
     date < startOfDay(customRange.from) ||
     date > endOfDay(customRange.to)
-  ) return;
-  
+  ) return;  
 } else if (appliedFilter === "today") {
-    return isSameDay(date, new Date());
+  if (!isSameDay(date, new Date())) return;
   }else if (appliedFilter === "thisWeek") {
   const start = startOfWeek(new Date(), { weekStartsOn: 1 });
   const end = endOfWeek(new Date(), { weekStartsOn: 1 });
@@ -376,6 +375,7 @@ if (appliedFilter === "thisYear") {
 
     barberTotals[barberName].totalService += servicePrice;
   });
+
 
   const exportAllDataToExcel = () => {
     const mode = dateRange?.from && dateRange?.to ? "range" : filterType;
