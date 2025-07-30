@@ -22,12 +22,11 @@ import { toast } from "react-toastify";
 
 export const Route = createFileRoute("/create-booking")({
   component: CreateBooking,
-
 });
 
 function CreateBooking() {
   const navigate = useNavigate();
-  const { user} = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const [agree, setAgree] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -43,10 +42,9 @@ function CreateBooking() {
   const [availableTimes, setAvailableTimes] = useState([]);
   const [step, setStep] = useState(1);
 
-const [name, setName] = useState(user ? user.name :"");
-const [email, setEmail] = useState(user ? user.email : "");
-const [phone, setPhone] = useState(user ? user.phone : "");
-
+  const [name, setName] = useState(user ? user.name : "");
+  const [email, setEmail] = useState(user ? user.email : "");
+  const [phone, setPhone] = useState(user ? user.phone : "");
 
   const { data: services = [], isLoading: servicesLoading } = useQuery({
     queryKey: ["getServices"],
@@ -86,22 +84,6 @@ const [phone, setPhone] = useState(user ? user.phone : "");
     mutationFn: (request) => createBooking(request),
     onSuccess: (response) => {
       toast.success("Bookings Created Successfully!");
-        // Simpan booking_code ke localStorage
-  const bookingCode = response?.data?.booking?.booking_code;
-  if (bookingCode) {
-    localStorage.setItem("last_booking_code", bookingCode);
-  }
-      // Reset state
-      setStep(1);
-      setBarberName("");
-      setBarberId("");
-      setServiceId("");
-      setServiceName("");
-      setPrice("");
-      setDate("");
-      setTime("");
-      setAgree(false);
-      console.log(response);
 
       // Ambil payment ID dari response
       const bookingId = response?.data?.payment?.booking_id;
@@ -111,6 +93,25 @@ const [phone, setPhone] = useState(user ? user.phone : "");
         // fallback jika payment.id tidak ditemukan
         navigate({ to: "/history-bookings" });
       }
+
+      // Simpan booking_code ke localStorage
+      const bookingCode = response?.data?.booking?.booking_code;
+      if (bookingCode) {
+        localStorage.setItem("last_booking_code", bookingCode);
+      }
+      // Reset state
+      // Reset state setelah delay agar tidak menyebabkan "rollback UI"
+      setTimeout(() => {
+        setStep(1);
+        setBarberName("");
+        setBarberId("");
+        setServiceId("");
+        setServiceName("");
+        setPrice("");
+        setDate("");
+        setTime("");
+        setAgree(false);
+      }, 2000);
     },
     onError: (error) => {
       toast.error(error?.message);
@@ -562,7 +563,11 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                     dibatalkan otomatis.
                   </p>
 
-                  <p>Jangan lupa untuk mencatat Kode Booking nya untuk pencarian jika ingin melakukan reschedule jika sudah booking contoh kode booking: <strong>MB-XXXXXX</strong></p>
+                  <p>
+                    Jangan lupa untuk mencatat Kode Booking nya untuk pencarian
+                    jika ingin melakukan reschedule jika sudah booking contoh
+                    kode booking: <strong>MB-XXXXXX</strong>
+                  </p>
 
                   <p>
                     Pembayaran dapat dilakukan dengan <strong>DP 50 %</strong>{" "}
@@ -583,8 +588,8 @@ const [phone, setPhone] = useState(user ? user.phone : "");
                   </p>
 
                   <p>
-                    Mohon datang tepat waktu dan sampai jumpa
-                     di barbershop Terima Kasih.
+                    Mohon datang tepat waktu dan sampai jumpa di barbershop
+                    Terima Kasih.
                   </p>
                 </div>
               </ModalBody>
@@ -600,7 +605,8 @@ const [phone, setPhone] = useState(user ? user.phone : "");
       </form>
 
       <footer className="w-full text-center py-3 bg-black bg-opacity-50 text-white mt-35">
-        Copyright &copy; {new Date().getFullYear()} Mantra Barber. All rights reserved.
+        Copyright &copy; {new Date().getFullYear()} Mantra Barber. All rights
+        reserved.
       </footer>
     </div>
   );
