@@ -252,9 +252,9 @@ function PaymentsRoute() {
                   : "-"
               }
             />
-            <p className="text-xs italic text-red-500">
+            {/* <p className="text-xs italic text-red-500">
               Jika pembayaran tidak muncul, silakan refresh halaman
-            </p>
+            </p> */}
           </Card>
         </div>
       )}
