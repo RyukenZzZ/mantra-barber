@@ -85,14 +85,14 @@ const NavigationBar = () => {
 
   const getLinkClass = (to, hash) => {
     if (hash) {
-      return `text-lg ${
+      return `text-lg md:text-md lg:text-lg ${
         activeSection === hash ? "text-black font-semibold" : "text-gray-500"
       } hover:text-gray-700`;
     }
 
     // Untuk halaman non-hash seperti /history-bookings
     const isActive = location.pathname === to;
-    return `text-lg ${isActive ? "text-black font-semibold" : "text-gray-500"} hover:text-gray-700`;
+    return `text-lg md:text-md lg:text-lg ${isActive ? "text-black font-semibold" : "text-gray-500"} hover:text-gray-700`;
   };
 
   if (isLoading) return null;
@@ -165,7 +165,7 @@ const NavigationBar = () => {
       )}
 
       <NavbarCollapse>
-        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 w-full md:justify-end">
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-2 lg:gap-6 w-full md:justify-end">
           {[
             { to: "/", label: "Home", hash: "home" },
             { to: "/", label: "About", hash: "about" },
