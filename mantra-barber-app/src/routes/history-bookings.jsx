@@ -232,7 +232,7 @@ function MyBookingComponent() {
 
               return (
                 <div key={booking.id} className="mx-auto">
-                <div className="relative w-full h-[320px] max-w-md sm:max-w-xl border-2 border-gray-200 bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10 flex flex-col justify-between">
+                <div className="relative w-full h-[350px] md:h-[320px] max-w-md sm:max-w-xl border-2 border-gray-200 bg-white bg-opacity-60 p-6 rounded-lg text-black mb-10 flex flex-col justify-between">
                     <div>
                     {/* Status badge */}
                     <span
@@ -294,11 +294,11 @@ function MyBookingComponent() {
 
                     {/* Tombol aksi */}
                     {!isInactive && (
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-3 mt-3 md:mt-0">
                         <Button
                           onClick={() => handleCancel(booking.id)}
                           disabled={isPending || pendingStatus}
-                          className={`w-2/3 justify-self-end ${
+                          className={`w-full md:w-2/3 justify-self-end ${
                             pendingStatus || isPending
                               ? "!bg-gray-300 !text-gray-500 cursor-not-allowed"
                               : "!bg-red-600 !text-white !hover:bg-red-700"
@@ -312,7 +312,7 @@ function MyBookingComponent() {
                             as={Link}
                             to={`/payments/${booking.id}`}
                             color="dark"
-                            className="w-2/3"
+                            className="w-full md:w-2/3"
                           >
                             Lanjut&nbsp;Bayar
                           </Button>
@@ -320,7 +320,7 @@ function MyBookingComponent() {
                           <Button
                             color="blue"
                             onClick={() => handleReschedule(name,booking.booking_code)}
-                            className="w-2/3"
+                            className="w-full md:w-2/3"
                           >
                             Reschedule
                           </Button>
