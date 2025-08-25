@@ -296,6 +296,9 @@ function ServicesComponent() {
               <p className="text-blue-600 font-bold">
                 Rp {service.price.toLocaleString()}
               </p>
+              <p className="text-sm text-gray-600 mt-2 line-clamp-3">
+                  {service.description}
+                </p>
 
               <div className="flex justify-end gap-2 mt-4">
                 <button
