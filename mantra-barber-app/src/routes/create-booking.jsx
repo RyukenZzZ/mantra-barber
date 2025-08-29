@@ -554,7 +554,7 @@ function CreateBooking() {
 
             <Modal show={openModal} onClose={() => setOpenModal(false)}>
               <ModalHeader>Syarat & Ketentuan</ModalHeader>
-              <ModalBody className="text-white">
+              <ModalBody className="text-black dark:text-white">
                 <div className="space-y-3 text-sm">
                   <p>
                     Setelah menekan <strong>Submit Booking</strong>, Anda akan

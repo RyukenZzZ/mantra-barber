@@ -203,7 +203,7 @@ function PaymentsRoute() {
       {countdown && (
         <Alert
           color="warning"
-          className="text-center text-white font-semibold text-lg flex flex-row justify-center"
+          className="text-center text-gray-800 font-semibold text-lg flex flex-row justify-center"
         >
           Sisa Waktu Pembayaran:{" "}
           <span className="bg-opacity-40 px-3 py-1 rounded">{countdown}</span>

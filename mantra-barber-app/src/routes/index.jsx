@@ -140,8 +140,8 @@ function Index() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* BEST HAIRCUT */}
             {bestService && (
-              <Card className="w-full max-w-sm mx-auto">
-                <h5 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              <Card className="w-full max-w-sm mx-auto bg-gray-800 border-gray-700">
+                <h5 className="text-2xl font-bold tracking-tight text-white">
                   {bestService.name}
                 </h5>
                 <img
@@ -149,12 +149,12 @@ function Index() {
                   alt={bestService.name}
                   className="w-full h-48 object-cover rounded-t-lg"
                 />
-                <div className="flex items-baseline text-gray-900 dark:text-white">
+                <div className="flex items-baseline text-white">
                   <span className="text-3xl font-semibold">Rp.</span>
                   <span className="text-5xl font-extrabold tracking-tight">
                     {(bestService.price / 1000).toFixed(0)}
                   </span>
-                  <span className="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">
+                  <span className="ml-1 text-xl font-normal text-gray-400">
                     K
                   </span>
                 </div>
@@ -174,7 +174,7 @@ function Index() {
                             clipRule="evenodd"
                           />
                         </svg>
-                        <span className="text-base font-normal text-gray-500 dark:text-gray-400 items-center">
+                        <span className="text-base font-normal text-gray-400 items-center">
                           {item.trim()}
                         </span>
                       </li>
@@ -195,7 +195,7 @@ function Index() {
               {otherServices?.map((service) => (
                 <div
                   key={service.id}
-                  className="flex bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg overflow-hidden shadow-md h-48"
+                  className="flex bg-gray-800 text-white rounded-lg overflow-hidden shadow-md h-48"
                 >
                   <img
                     src={service.image_service}
@@ -204,7 +204,7 @@ function Index() {
                   />
                   <div className="p-6 flex flex-col justify-between w-full">
                     <div>
-                      <div className="flex items-baseline text-gray-900 dark:text-white mb-3">
+                      <div className="flex items-baseline text-white mb-3">
                         <h5 className="text-sm md:text-xl font-bold">
                           {service.name}
                         </h5>
@@ -276,7 +276,7 @@ function Index() {
             {products.map((product) => (
               <Card
                 key={product.id}
-                className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between"
+                className="w-full max-w-3xs rounded-xl xl:max-w-xs h-[450px] xl:h-[500px] flex flex-col justify-between bg-gray-800"
               >
                 <img
                   src={product.image_product}
@@ -285,11 +285,11 @@ function Index() {
                 />
 
                 <div className="p-5 flex flex-col justify-between flex-grow">
-                    <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2">
+                    <h5 className="min-h-[56px] text-md sm:text-xl font-semibold tracking-tight text-white line-clamp-2">
                       {product.name}
                     </h5>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl font-bold text-gray-900 dark:text-white">
+                    <span className="text-3xl font-bold text-white">
                       {Math.floor(product.price / 1000)}k
                     </span>
                     <a

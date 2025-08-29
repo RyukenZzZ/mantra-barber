@@ -177,14 +177,14 @@ function MyBookingComponent() {
         {searchTerm &&
           !bookingLoading &&
           filteredBookings.length === 0 && (
-            <Alert color="warning" className="text-center w-full text-white">
+            <Alert color="warning" className="text-center w-full">
               Booking dengan kode <strong>{searchTerm}</strong> tidak ditemukan.
             </Alert>
           )}
 
         {/* Alert jika user belum pernah booking */}
         {myBookings.length === 0 && !isGuest && !searchTerm && !isLoading && (
-          <Alert color="warning" className="text-center w-full text-white">
+          <Alert color="warning" className="flex flex-col items-center text-center gap-3 w-full self-center">
             Kamu belum melakukan Booking sama sekali.
             <Button
               as={Link}
